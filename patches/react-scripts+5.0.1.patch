@@ -1,0 +1,36 @@
+diff --git a/node_modules/react-scripts/scripts/.build.js.swp b/node_modules/react-scripts/scripts/.build.js.swp
+new file mode 100644
+index 0000000..cdce217
+Binary files /dev/null and b/node_modules/react-scripts/scripts/.build.js.swp differ
+diff --git a/node_modules/react-scripts/scripts/.start.js.swp b/node_modules/react-scripts/scripts/.start.js.swp
+new file mode 100644
+index 0000000..8403f36
+Binary files /dev/null and b/node_modules/react-scripts/scripts/.start.js.swp differ
+diff --git a/node_modules/react-scripts/scripts/build.js b/node_modules/react-scripts/scripts/build.js
+index 7a3a635..499f79d 100644
+--- a/node_modules/react-scripts/scripts/build.js
++++ b/node_modules/react-scripts/scripts/build.js
+@@ -44,7 +44,8 @@ const useYarn = fs.existsSync(paths.yarnLockFile);
+ const WARN_AFTER_BUNDLE_GZIP_SIZE = 512 * 1024;
+ const WARN_AFTER_CHUNK_GZIP_SIZE = 1024 * 1024;
+ 
+-const isInteractive = process.stdout.isTTY;
++// Patch: Disable console cleanup
++const isInteractive = false; // process.stdout.isTTY;
+ 
+ // Warn and crash if required files are missing
+ if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
+diff --git a/node_modules/react-scripts/scripts/start.js b/node_modules/react-scripts/scripts/start.js
+index 8b9a2c2..02896dd 100644
+--- a/node_modules/react-scripts/scripts/start.js
++++ b/node_modules/react-scripts/scripts/start.js
+@@ -44,7 +44,8 @@ const react = require(require.resolve('react', { paths: [paths.appPath] }));
+ 
+ const env = getClientEnvironment(paths.publicUrlOrPath.slice(0, -1));
+ const useYarn = fs.existsSync(paths.yarnLockFile);
+-const isInteractive = process.stdout.isTTY;
++// Patch: Disable console cleanup
++const isInteractive = false; // process.stdout.isTTY;
+ 
+ // Warn and crash if required files are missing
+ if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
