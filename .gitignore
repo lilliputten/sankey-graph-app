@@ -10,6 +10,8 @@
 
 # production
 /build
+/publish
+.gitmodules
 
 # misc
 .DS_Store
