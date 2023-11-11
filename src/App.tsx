@@ -2,6 +2,12 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+/* // DEBUG
+ * console.log('XXX', {
+ *   REACT_APP_DEV: process.env.REACT_APP_DEV,
+ * });
+ */
+
 function App() {
   return (
     <div className="App">
