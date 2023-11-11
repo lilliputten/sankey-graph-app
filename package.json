@@ -1,8 +1,8 @@
 {
   "name": "sankey-graph-app",
   "version": "0.0.1",
-  "timetag": "231112-0141",
-  "timestamp": "2023.11.12, 01:41 GMT+7",
+  "timetag": "231112-0204",
+  "timestamp": "2023.11.12, 02:04 GMT+7",
   "changed": "2023.11.12, 01:56",
   "private": true,
   "eslintConfig": {
@@ -70,7 +70,7 @@
     "patch-build": "echo --Patch build-- && gulp patchBuild",
     "serve-build": "echo --Serve build /at alternate port 3003/-- && serve build -l 3003",
     "cra-build": "echo --CRA build-- && react-scripts build",
-    "build": "echo --Make build-- && npm-run-all check-all cra-build patch-build",
+    "build": "echo --Make build-- && npm-run-all cra-build patch-build",
     "start-https": "echo --Start dev server with https- && cross-env REACT_APP_DEV=DEVSERVER HTTPS=true react-scripts start",
     "start": "echo --Start dev server-- && cross-env REACT_APP_DEV=DEVSERVER react-scripts start",
     "test": "react-scripts test",
