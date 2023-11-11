@@ -1,6 +1,6 @@
 <!--
 @since 2023.11.12, 00:38
-@changed 2023.11.12, 01:45
+@changed 2023.11.12, 01:48
 -->
 
 
@@ -16,8 +16,8 @@ TODO: Add project description.
 
 ## See also
 
-- [CHANGELOG.md](CHANGELOG.md)
-- [TODO.md](TODO.md)
+- [CHANGELOG](CHANGELOG.md)
+- [TODO](TODO.md)
 
 
 ## Client & server
@@ -27,7 +27,7 @@ Repository: https://github.com/lilliputten/sankey-graph-app
 Deploy server (with recent build): http://sankey-graph-app.lilliputten.ru/
 
 
-## Install
+## Project workflow
 
 Install all required node dependencies:
 
@@ -35,24 +35,19 @@ Install all required node dependencies:
 npm i
 ```
 
-
-## Start dev server
-
 Start dev server (locate in browser with `http://localhost:3000`):
 
 ```
 npm run start
 ```
 
-
-## Make build
+Make build:
 
 ```
 npm run build
 ```
 
-
-## Build and publish
+Build and publish:
 
 For success publishing the deploy environment should be propeply set up (see
 npm script command `postinstall-publish-submodule`).
@@ -67,4 +62,4 @@ To just publish previously created build:
 npm run publish
 ```
 
-Builds published into the `release/publish` branch. See utilities configuration in `utils/config.sh`.
+Builds published into the `publish` branch. See utilities configuration in `utils/config.sh`.
