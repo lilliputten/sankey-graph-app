@@ -1,3 +1,6 @@
+@use 'sass:math';
+@use 'sass:color';
+
 $animationTime: 250ms;
 
 $defaultFontSize: 14px;
@@ -6,6 +9,10 @@ $controlsBorderRadius: 10px;
 
 $primaryColor: #26abe0;
 
+$defaultTextColor: #333;
+$defaultLinkColor: #003d9d;
+$neutralColor: #888;
+
 $errorColor: #c33;
 $dangerColor: #c33;
 $warnColor: #f73;
@@ -13,3 +20,5 @@ $successColor: #593;
 $infoColor: #0074eb;
 
 $borderColor: rgba(27, 31, 59, 0.1);
+
+$demoColor: color.change(yellow, $alpha: 0.5);

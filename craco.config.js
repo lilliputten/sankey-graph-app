@@ -3,9 +3,10 @@ module.exports = {
     sass: {
       loaderOptions: {
         additionalData: `
-          @import "src/assets/scss/includes.scss";
-          @import "src/assets/scss/variables.scss";
-          @import "src/assets/scss/mixins.scss";
+          @use 'sass:math';
+          @use 'sass:color';
+          @import "src/core/assets/scss/variables.scss";
+          @import "src/core/assets/scss/mixins.scss";
         `,
       },
     },

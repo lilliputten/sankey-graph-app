@@ -10,30 +10,30 @@ import '@fontsource/roboto/700.css';
 
 import logo from './logo.svg';
 
-import scssVariables from 'src/assets/scss/variables.module.scss';
+import scssVariables from 'src/core/assets/scss/variables.module.scss';
 
-import './App.css';
+import './ReactDemoPage.css';
 
-import styles from './App.module.scss';
+import styles from './ReactDemoPage.module.scss';
 
 // DEBUG
-console.log('[App]', {
+console.log('[ReactDemoPage]', {
   styles,
   // REACT_APP_DEV: process.env.REACT_APP_DEV,
   NODE_ENV: process.env.NODE_ENV,
   scssVariables,
 });
 
-function App() {
+export function ReactDemoPage() {
   return (
-    <div className={classNames('App', styles.root)}>
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+    <div className={classNames('ReactDemoPage', styles.root)}>
+      <header className="ReactDemoPage-header">
+        <img src={logo} className="ReactDemoPage-logo" alt="logo" />
         <p>
-          Edit <code>src/App.tsx</code> and save to reload.
+          Edit <code>src/ReactDemoPage.tsx</code> and save to reload.
         </p>
         <a
-          className="App-link"
+          className="ReactDemoPage-link"
           href="https://reactjs.org"
           target="_blank"
           rel="noopener noreferrer"
@@ -45,5 +45,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
