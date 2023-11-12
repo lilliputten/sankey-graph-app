@@ -42,22 +42,3 @@ export function ThemeWrapper(props: TThemeWrapperProps) {
     </>
   );
 }
-
-/*
-export function withThemeWrapperFabric<P extends JSX.IntrinsicAttributes>(
-  params: TThemeWrapperParams = {},
-): (Component: React.ComponentType<P & TThemeWrapperProps>) => (props: P) => JSX.Element {
-  const { className, fullSize, themeMode = appConfig.themeMode } = params;
-  return function withThemeWrapper<P extends JSX.IntrinsicAttributes>(
-    Component: React.ComponentType<P>,
-  ) {
-    return function WithThemeWrapper(props: P) {
-      return (
-        <ThemeWrapper className={className} fullSize={fullSize} themeMode={themeMode}>
-          <Component {...props} />
-        </ThemeWrapper>
-      );
-    };
-  };
-}
-*/

@@ -21,6 +21,7 @@ export function LoaderSplash(props: TLoaderSplashProps): JSX.Element {
     fullSize && styles.fullSize,
     show || styles.hidden,
   );
+  // @see https://mui.com/material-ui/react-progress/
   return (
     <Paper square elevation={0} className={resultedClassName}>
       <CircularProgress />

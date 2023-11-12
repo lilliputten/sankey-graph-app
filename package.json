@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "timetag": "231112-0204",
   "timestamp": "2023.11.12, 02:04 GMT+7",
-  "changed": "2023.11.12, 15:02",
+  "changed": "2023.11.13, 00:02",
   "private": true,
   "eslintConfig": {
     "extends": [
@@ -50,6 +50,7 @@
     "@types/node": "^16.18.61",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
+    "bind-decorator": "^1.0.11",
     "classnames": "^2.3.2",
     "cross-env": "^7.0.3",
     "date-fns-tz": "^2.0.0",
@@ -57,6 +58,8 @@
     "eslint-plugin-prettier": "^5.0.1",
     "gulp": "^4.0.2",
     "gulp-html-prettify": "^0.0.1",
+    "mobx": "^6.11.0",
+    "mobx-react-lite": "^4.0.5",
     "npm-package-user-scripts-list": "^0.1.10",
     "npm-run-all": "^4.1.5",
     "patch-package": "^8.0.0",
