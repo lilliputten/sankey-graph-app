@@ -5,11 +5,11 @@
 
 import React from 'react';
 
-// import { StoreWrapper } from '@/store';
-// import {
-//   CoreWrapper,
-//   // ThemeWrapper,
-// } from '@/layout';
+// import { StoreWrapper } from 'src/store';
+import {
+  CoreWrapper,
+  // ThemeWrapper,
+} from 'src/app/wrappers/CoreWrapper';
 
 // TODO: Import control nodes/hooks from `features` folder.
 
@@ -21,7 +21,7 @@ type TAppWrapperProps = TWithChildren;
 // Stubs...
 const StubComponent = ({ children }: TWithChildren) => <>{children}</>;
 const StoreWrapper = StubComponent;
-const CoreWrapper = StubComponent;
+// const CoreWrapper = StubComponent;
 
 export function AppWrapper(props: TAppWrapperProps): JSX.Element {
   const { children } = props;

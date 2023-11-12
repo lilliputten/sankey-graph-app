@@ -3,26 +3,19 @@ import classNames from 'classnames';
 
 import Button from '@mui/material/Button';
 
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
-
 import logo from './logo.svg';
-
-import scssVariables from 'src/core/assets/scss/variables.module.scss';
 
 import './ReactDemoPage.css';
 
 import styles from './ReactDemoPage.module.scss';
 
-// DEBUG
-console.log('[ReactDemoPage]', {
-  styles,
-  // REACT_APP_DEV: process.env.REACT_APP_DEV,
-  NODE_ENV: process.env.NODE_ENV,
-  scssVariables,
-});
+/* // DEBUG
+ * console.log('[ReactDemoPage]', {
+ *   styles,
+ *   // REACT_APP_DEV: process.env.REACT_APP_DEV,
+ *   NODE_ENV: process.env.NODE_ENV,
+ * });
+ */
 
 export function ReactDemoPage() {
   return (

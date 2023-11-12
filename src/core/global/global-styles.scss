@@ -1,4 +1,4 @@
-// Import locally installed font (instead link external cdn url, defined in `src/config/site.ts`).
+// Import locally installed font
 @import '@fontsource/roboto/300.css';
 @import '@fontsource/roboto/400.css';
 @import '@fontsource/roboto/500.css';
@@ -17,31 +17,7 @@
   // --toastify-icon-color-error: var(--toastify-color-error);
 }
 
-#__next,
+#root,
 body {
-  // @include expandableFullSizeContainer;
-  overflow: hidden; // NOTE: No scroll (for flex-structured layouts)!
-  &.app-mode-demo {
-    // $demoColor: color.change(yellow, $alpha: 0.5);
-    border: 5px solid $demoColor;
-  }
-}
-
-// TODO: Move to mui-theme?
-a {
-  color: $defaultLinkColor;
-  text-decoration: none;
-  &:hover {
-    opacity: 0.8;
-  }
-}
-
-// Fix MUI buttons (TODO: Incaplulate to our own Button component?)
-button.FixMuiButton {
-  // TODO: To fix it with MUI tools?
-  > .Text {
-    $shift: 2px;
-    margin-top: $shift;
-    margin-bottom: -$shift;
-  }
+  @include singleFullSizeContainer;
 }

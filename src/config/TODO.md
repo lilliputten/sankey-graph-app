@@ -1,0 +1,3 @@
+- Incorporate config into store?
+- Make config updateable from server?
+- Make config initalization the part of system initialization process (and display initialization progress in GenericPageLayout component)?

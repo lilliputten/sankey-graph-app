@@ -1,0 +1,64 @@
+/** @module Spinner.module.scss
+ *  @since 2023.01.27, 20:59
+ *  @changed 2023.01.27, 21:24
+ */
+
+@mixin spinnerSize($size) {
+  &,
+  &:before {
+    height: $size;
+    width: $size;
+  }
+  &:before {
+    $halfSize: math.div($size, 2);
+    margin-top: -$halfSize;
+    margin-left: -$halfSize;
+  }
+}
+
+@mixin spinnerColor($color) {
+  &:before {
+    border-color: $color;
+    border-top-color: transparent;
+  }
+}
+
+.container {
+  position: relative;
+  // Size...
+  &,
+  &.size_medium {
+    @include spinnerSize(40px);
+  }
+  &.size_small {
+    @include spinnerSize(20px);
+  }
+  &.size_large {
+    @include spinnerSize(60px);
+  }
+  &:before {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    border: 2px solid $primaryColor;
+    animation: rotating-spinner 1.5s linear infinite;
+  }
+  // Color...
+  &.color_white {
+    @include spinnerColor(#fff);
+  }
+  &.color_black {
+    @include spinnerColor(#000);
+  }
+  &:before {
+    border-top-color: transparent;
+  }
+  @keyframes rotating-spinner {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
