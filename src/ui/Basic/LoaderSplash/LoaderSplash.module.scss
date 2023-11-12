@@ -16,25 +16,28 @@
     opacity: 0;
     pointer-events: none;
   }
-  &.bg {
-    &,
-    &_page {
-      background-color: $bodyBgColor;
-    }
-    &_black {
-      background-color: #000;
-    }
-    &_white {
-      background-color: #fff;
-    }
-    &_primary {
-      background-color: $primaryColor;
-    }
-    &_neutral,
-    &_gray {
-      background-color: $neutralColor;
-    }
-  }
+  /*
+   * &.bg {
+   *   &,
+   *   &_page {
+   *     // TODO: Get color from mui theme?
+   *     background-color: $bodyBgColor;
+   *   }
+   *   &_black {
+   *     background-color: #000;
+   *   }
+   *   &_white {
+   *     background-color: #fff;
+   *   }
+   *   &_primary {
+   *     background-color: $primaryColor;
+   *   }
+   *   &_neutral,
+   *   &_gray {
+   *     background-color: $neutralColor;
+   *   }
+   * }
+   */
   &.fullSize {
     flex: 1;
   }

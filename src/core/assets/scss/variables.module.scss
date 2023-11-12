@@ -3,17 +3,20 @@
 
 /* stylelint-disable-next-line selector-pseudo-class-no-unknown */
 :export {
+  transitionTimeMs: $transitionTimeMs;
   animationTimeMs: $animationTimeMs;
+  disappearTimeMs: $disappearTimeMs;
 
-  defaultFontSize: $defaultFontSize;
-
-  controlsBorderRadius: $controlsBorderRadius;
+  defaultFontSizePx: $defaultFontSizePx;
 
   primaryColor: $primaryColor;
+  secondaryColor: $secondaryColor;
 
   errorColor: $errorColor;
   dangerColor: $dangerColor;
   warnColor: $warnColor;
   successColor: $successColor;
   infoColor: $infoColor;
+
+  themeControlsRadiusPx: $themeControlsRadiusPx;
 }

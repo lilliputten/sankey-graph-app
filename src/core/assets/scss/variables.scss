@@ -1,13 +1,19 @@
 @use 'sass:math';
 @use 'sass:color';
 
-$animationTimeMs: 250ms;
+// See exports in `variables.module.scss`...
 
-$defaultFontSize: 14px;
+// DEMO
+$demoColor: color.change(yellow, $alpha: 0.5);
 
-$controlsBorderRadius: 10px;
+$transitionTimeMs: 250ms;
+$animationTimeMs: 500ms;
+$disappearTimeMs: 1000ms;
+
+$defaultFontSizePx: 14px;
 
 $primaryColor: #26abe0;
+$secondaryColor: #ffa550;
 
 $defaultTextColor: #333;
 $defaultLinkColor: #003d9d;
@@ -23,4 +29,9 @@ $bodyBgColor: #f5f5f5;
 
 $borderColor: rgba(27, 31, 59, 0.1);
 
-$demoColor: color.change(yellow, $alpha: 0.5);
+$themeControlsRadiusPx: 8px;
+
+$innerPaddingPx: 4px;
+$itemPaddingPx: 8px;
+$containerPaddingPx: 16px;
+$blockPaddingPx: 24px;

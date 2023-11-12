@@ -28,6 +28,10 @@
   display: flex;
   // overflow: hidden;
 }
+@mixin singleFullSizeContainer {
+  @include fullSizeBlock;
+  @include clippingFullSizeContainer;
+}
 @mixin fullSizeBlock {
   flex: 1;
   display: flex;
@@ -36,8 +40,3 @@
   position: relative;
   justify-content: center;
 }
-@mixin singleFullSizeContainer {
-  @include fullSizeBlock;
-  @include clippingFullSizeContainer;
-}
-

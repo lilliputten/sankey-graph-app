@@ -1,0 +1,17 @@
+/** @module FullScreenPageLayout.module.scss
+ *  @since 2023.01.26, 23:51
+ *  @changed 2023.01.26, 23:51
+ */
+
+.container {
+  @include expandableFullSizeContainer;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+}
+
+.content {
+  flex: 1;
+  // padding: 20px;
+  // box-sizing: border-box;
+}
