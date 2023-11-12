@@ -1,0 +1,19 @@
+// Export variables for use in js code.
+// NOTE: Remember to use `parseInt` to extract numeric values.
+
+/* stylelint-disable-next-line selector-pseudo-class-no-unknown */
+:export {
+  animationTime: $animationTime;
+
+  defaultFontSize: $defaultFontSize;
+
+  controlsBorderRadius: $controlsBorderRadius;
+
+  primaryColor: $primaryColor;
+
+  errorColor: $errorColor;
+  dangerColor: $dangerColor;
+  warnColor: $warnColor;
+  successColor: $successColor;
+  infoColor: $infoColor;
+}

@@ -1,0 +1,9 @@
+// Make fixed clippable layout with inner scrollable zone
+@mixin fixedClippableLayout {
+  &,
+  & :global(.page-main),
+  .root {
+    overflow: hidden;
+    height: 100vh;
+  }
+}

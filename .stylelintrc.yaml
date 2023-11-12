@@ -7,6 +7,7 @@ extends:
   # - stylelint-config-styled-components
   # - stylelint-config-standard
   - stylelint-config-recommended-scss
+  - stylelint-config-css-modules
 
 files:
   - 'src/**/*.css'

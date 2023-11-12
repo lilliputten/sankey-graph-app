@@ -32,6 +32,7 @@ lerna-debug.log*
 utils/config-local.sh
 
 # Temporariy, swap, log & ignored files
+tsconfig.tsbuildinfo
 *UNUSED
 *_
 *~
