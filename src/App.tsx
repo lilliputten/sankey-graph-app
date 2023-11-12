@@ -5,6 +5,7 @@ import './App.css';
 /* // DEBUG
  * console.log('XXX', {
  *   REACT_APP_DEV: process.env.REACT_APP_DEV,
+ *   NODE_ENV: process.env.NODE_ENV,
  * });
  */
 
