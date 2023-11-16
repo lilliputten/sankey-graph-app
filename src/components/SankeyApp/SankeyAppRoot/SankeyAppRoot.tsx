@@ -2,9 +2,9 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 
 import {
-  SankeyAppSessionProvider,
-  useSankeyAppSession,
-} from 'src/components/SankeyApp/SankeyAppSession';
+  SankeyAppSessionStoreProvider,
+  useSankeyAppSessionStore,
+} from 'src/components/SankeyApp/SankeyAppSessionStore';
 import { FullScreenPageLayout } from 'src/ui/layouts/FullScreenPageLayout';
 import { TMuiThemeMode } from 'src/core/types';
 
@@ -55,7 +55,7 @@ const SankeyAppComponent: React.FC<TSankeyAppComponentProps> = (props) => {
 
 /** Choose & render suitable application part */
 const RenderComponent: React.FC = observer(() => {
-  const sankeySession = useSankeyAppSession();
+  const sankeySession = useSankeyAppSessionStore();
   const { isDataLoaded, isFinished } = sankeySession;
   const isReady = true;
   // Show Preview page for guide if settings hasn't done
@@ -78,8 +78,8 @@ const RenderComponent: React.FC = observer(() => {
 
 export const SankeyAppRoot: React.FC = () => {
   return (
-    <SankeyAppSessionProvider>
+    <SankeyAppSessionStoreProvider>
       <RenderComponent />
-    </SankeyAppSessionProvider>
+    </SankeyAppSessionStoreProvider>
   );
 };

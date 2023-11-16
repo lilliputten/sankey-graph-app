@@ -1,12 +1,12 @@
 import { Context, createContext, Provider, useContext } from 'react';
 
 // import { makeStoreContext } from '@/helpers/store/storeContextHelpers';
-import { SankeyAppSession } from './SankeyAppSession';
+import { SankeyAppSessionStore } from './SankeyAppSessionStore';
 
-const SankeyAppSessionContext: Context<SankeyAppSession> = createContext({} as SankeyAppSession);
-export const SankeyAppSessionContextProvider: Provider<SankeyAppSession> =
-  SankeyAppSessionContext.Provider;
+const SankeyAppSessionStoreContext: Context<SankeyAppSessionStore> = createContext({} as SankeyAppSessionStore);
+export const SankeyAppSessionStoreContextProvider: Provider<SankeyAppSessionStore> =
+  SankeyAppSessionStoreContext.Provider;
 
-export function useSankeyAppSession() {
-  return useContext(SankeyAppSessionContext);
+export function useSankeyAppSessionStore() {
+  return useContext(SankeyAppSessionStoreContext);
 }

@@ -8,13 +8,13 @@ export type TMediaProviderSessionStatus =
   | 'stoping'
   | 'stopped';
 
-export type TSankeyAppSessionStatus = undefined | 'dataLoaded' | 'finished';
+export type TSankeyAppSessionStoreStatus = undefined | 'dataLoaded' | 'finished';
 
-export class SankeyAppSession {
+export class SankeyAppSessionStore {
   // NOTE: remember to clean/reset properties in `clearData`
 
   @observable inited: boolean = false;
-  @observable status: TSankeyAppSessionStatus;
+  @observable status: TSankeyAppSessionStoreStatus;
   @observable error?: Error = undefined;
   // @observable settingsDone: boolean = false; // ???
 
@@ -43,15 +43,15 @@ export class SankeyAppSession {
 
   // Core setters...
 
-  // @action setSettingDone(settingsDone: typeof SankeyAppSession.prototype.settingsDone) {
+  // @action setSettingDone(settingsDone: typeof SankeyAppSessionStore.prototype.settingsDone) {
   //   this.settingsDone = settingsDone;
   // }
 
-  @action setInited(inited: typeof SankeyAppSession.prototype.inited) {
+  @action setInited(inited: typeof SankeyAppSessionStore.prototype.inited) {
     this.inited = inited;
   }
 
-  @action setError(error: typeof SankeyAppSession.prototype.error) {
+  @action setError(error: typeof SankeyAppSessionStore.prototype.error) {
     this.error = error;
   }
 
@@ -59,7 +59,7 @@ export class SankeyAppSession {
     this.setError(undefined);
   }
 
-  @action setStatus(status: typeof SankeyAppSession.prototype.status) {
+  @action setStatus(status: typeof SankeyAppSessionStore.prototype.status) {
     this.status = status;
   }
 

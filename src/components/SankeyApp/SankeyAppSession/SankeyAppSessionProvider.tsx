@@ -1,18 +1,18 @@
 import React from 'react';
 
-import { SankeyAppSession } from './SankeyAppSession';
+import { SankeyAppSessionStore } from './SankeyAppSessionStore';
 import {
   // casterSession,
-  SankeyAppSessionContextProvider,
-} from './SankeyAppSessionContext';
+  SankeyAppSessionStoreContextProvider,
+} from './SankeyAppSessionStoreContext';
 
-interface TSankeyAppSessionProviderProps {
+interface TSankeyAppSessionStoreProviderProps {
   children?: React.ReactNode;
 }
-export function SankeyAppSessionProvider(props: TSankeyAppSessionProviderProps): JSX.Element {
+export function SankeyAppSessionStoreProvider(props: TSankeyAppSessionStoreProviderProps): JSX.Element {
   const { children } = props;
   const casterSession = React.useMemo(() => {
-    return new SankeyAppSession();
+    return new SankeyAppSessionStore();
   }, []);
   React.useEffect(() => {
     // TODO: To set inited flag in other place?
@@ -24,20 +24,20 @@ export function SankeyAppSessionProvider(props: TSankeyAppSessionProviderProps):
   }, [casterSession]);
   // prettier-ignore
   return (
-    <SankeyAppSessionContextProvider value={casterSession}>
+    <SankeyAppSessionStoreContextProvider value={casterSession}>
       {children}
-    </SankeyAppSessionContextProvider>
+    </SankeyAppSessionStoreContextProvider>
   );
 }
 
-export function withSankeyAppSessionProvider<P extends JSX.IntrinsicAttributes>(
+export function withSankeyAppSessionStoreProvider<P extends JSX.IntrinsicAttributes>(
   Component: React.ComponentType<P>,
 ) {
-  return function SankeyAppSessionWrapped(props: P) {
+  return function SankeyAppSessionStoreWrapped(props: P) {
     return (
-      <SankeyAppSessionProvider>
+      <SankeyAppSessionStoreProvider>
         <Component {...props} />
-      </SankeyAppSessionProvider>
+      </SankeyAppSessionStoreProvider>
     );
   };
 }
