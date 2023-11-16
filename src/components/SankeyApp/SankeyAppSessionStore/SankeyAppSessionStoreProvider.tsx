@@ -9,7 +9,9 @@ import {
 interface TSankeyAppSessionStoreProviderProps {
   children?: React.ReactNode;
 }
-export function SankeyAppSessionStoreProvider(props: TSankeyAppSessionStoreProviderProps): JSX.Element {
+export function SankeyAppSessionStoreProvider(
+  props: TSankeyAppSessionStoreProviderProps,
+): JSX.Element {
   const { children } = props;
   const casterSession = React.useMemo(() => {
     return new SankeyAppSessionStore();
