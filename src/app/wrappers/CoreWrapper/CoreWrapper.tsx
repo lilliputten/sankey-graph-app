@@ -1,28 +1,23 @@
 import React from 'react';
-import { Typography } from '@mui/material';
+import { CssBaseline, Typography } from '@mui/material';
 import classnames from 'classnames';
 
 import { WithToastsWrapper } from 'src/ui/Basic';
-// import { TMuiThemeMode } from 'src/core/types/MuiThemeMode';
-// import {
-//   useAppParams,
-//   useGlobalCssClasses,
-//   // useUserParams,
-// } from 'src/helpers/hooks';
-
 import styles from './CoreWrapper.module.scss';
 
 export interface TCoreWrapperProps extends JSX.IntrinsicAttributes {
   className?: string;
   children: React.ReactNode;
-  // mode?: TMuiThemeMode;
+  // themeMode?: TMuiThemeMode;
 }
 
 export function CoreWrapper(props: TCoreWrapperProps) {
   const { children, className } = props;
+  // TODO: `useGlobalCssClasses`?
   return (
     <>
       {/* Theme root for app-through typograpy support */}
+      <CssBaseline />
       <Typography className={classnames(className, styles.container)} component="div">
         {/* Toasts support */}
         <WithToastsWrapper>

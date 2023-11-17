@@ -1,79 +1,102 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
+import { Box } from '@mui/material';
+import classNames from 'classnames';
 
+import { isDevBrowser } from 'src/config/build';
+import { defaultMuiThemeMode } from 'src/config/app';
+import { PropsWithClassName, TMuiThemeMode } from 'src/core/types';
 import {
   SankeyAppSessionStoreProvider,
   useSankeyAppSessionStore,
 } from 'src/components/SankeyApp/SankeyAppSessionStore';
 import { FullScreenPageLayout } from 'src/ui/layouts/FullScreenPageLayout';
-import { TMuiThemeMode } from 'src/core/types';
 
 import { SankeyAppCore } from 'src/components/SankeyApp/SankeyAppCore';
+import { SankeyAppRootWaiter } from './SankeyAppRootWaiter/SankeyAppRootWaiter';
+import { SankeyAppRootWelcome } from './SankeyAppRootWelcome';
 
-/* // TODO: Implement a set of components for different sankey states...
- * import { SankeyAppCore } from 'src/components/SankeyApp/SankeyAppCore';
- */
+import styles from './SankeyAppRoot.module.scss';
 
-const StubComponent = (text: string) => () => <>{text}</>;
-const SankeyAppWaiter = StubComponent('SankeyAppWaiter');
-const SankeyAppFinished = StubComponent('SankeyAppFinished');
+/** DEBUG: Don't wait for user action */
+const __debugEmulateSessionReady = isDevBrowser;
+
+// DEBUG!
+const StubComponent = (id: string) => () => (
+  <Box className={classNames('SankeyAppRootStub', id)}>
+    Stub component: <strong>{id}</strong>
+  </Box>
+);
+// const SankeyAppRootWelcome = StubComponent('SankeyAppRootWelcome');
+const SankeyAppRootFinished = StubComponent('SankeyAppRootFinished');
 // const SankeyAppCore = StubComponent('SankeyAppCore');
-const SankeyAppStart = StubComponent('SankeyAppStart');
+// const SankeyAppStart = StubComponent('SankeyAppStart');
 
-interface TSubComponentProps {
+interface TCurrentComponentProps {
+  inited: boolean;
+  loading: boolean;
   ready: boolean;
   finished: boolean;
-  showMainApp: boolean;
   themeMode: TMuiThemeMode;
 }
 
 /** Components router */
-const SubComponent: React.FC<TSubComponentProps> = (props) => {
+const RenderCurrentComponent: React.FC<TCurrentComponentProps> = (props) => {
   const {
     // prettier-ignore
+    inited,
+    loading,
     ready,
     finished,
-    showMainApp,
     themeMode,
   } = props;
-  // TODO: notReady
-  if (!ready) {
-    return <SankeyAppWaiter />; // themeMode={themeMode} waiting />;
+  if (!inited || loading) {
+    return <SankeyAppRootWaiter />;
   } else if (finished) {
-    return <SankeyAppFinished />;
-  } else if (showMainApp) {
+    return <SankeyAppRootFinished />;
+  } else if (ready) {
     return <SankeyAppCore themeMode={themeMode} />;
   } else {
-    return <SankeyAppStart />;
+    return <SankeyAppRootWelcome />;
   }
 };
 
 /** Choose & render suitable application part */
-const RenderComponent: React.FC = observer(() => {
-  const sankeySession = useSankeyAppSessionStore();
-  const { ready, finished } = sankeySession;
-  // Show Preview page for guide if settings hasn't done
-  const showMainApp = ready;
-  // Use dark theme for main application and light for all the other pages.
-  const useDarkTheme = true;
-  const themeMode: TMuiThemeMode = useDarkTheme ? 'dark' : 'light';
+const RenderLayout: React.FC = observer(() => {
+  const sankeyAppSessionStore = useSankeyAppSessionStore();
+  React.useEffect(() => {
+    // Init store...
+    sankeyAppSessionStore.setInited(true);
+    if (__debugEmulateSessionReady) {
+      sankeyAppSessionStore.setReady(true);
+    }
+  }, [sankeyAppSessionStore]);
+  const { inited, loading, ready, finished } = sankeyAppSessionStore;
+  // TODO: Get theme mode from config, session or the local storage?
+  const themeMode: TMuiThemeMode = defaultMuiThemeMode;
   // TODO: Wrap with error & loader splash renderer?
   return (
-    <FullScreenPageLayout themeMode={themeMode}>
-      <SubComponent
+    <FullScreenPageLayout className={classNames(styles.layout)} themeMode={themeMode}>
+      <RenderCurrentComponent
+        inited={inited}
+        loading={loading}
         ready={ready}
         finished={finished}
-        showMainApp={showMainApp}
         themeMode={themeMode}
       />
     </FullScreenPageLayout>
   );
 });
 
-export const SankeyAppRoot: React.FC = () => {
+type TSankeyAppRootProps = PropsWithClassName;
+
+export const SankeyAppRoot: React.FC<TSankeyAppRootProps> = (props) => {
+  const { className } = props;
   return (
     <SankeyAppSessionStoreProvider>
-      <RenderComponent />
+      <Box className={classNames(className, styles.root)}>
+        <RenderLayout />
+      </Box>
     </SankeyAppSessionStoreProvider>
   );
 };

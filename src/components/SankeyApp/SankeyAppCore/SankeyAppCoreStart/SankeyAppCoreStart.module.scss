@@ -1,0 +1,15 @@
+.root {
+  // Scrollable container
+  @include scrollableContainer;
+}
+.section {
+  /*!KEEP*/
+  margin: $containerPaddingPx 0;
+}
+.content {
+  /*!KEEP*/
+}
+.actions {
+  /*!KEEP*/
+}
+

@@ -1,0 +1,21 @@
+.root {
+  // Scrollable container
+  @include scrollableContainer;
+  // flex: 1;
+  // display: flex !important;
+  // flex-direction: column;
+  // overflow: auto;
+  // justify-content: center;
+  // align-items: stretch;
+}
+.section {
+  /*!KEEP*/
+  margin: $containerPaddingPx 0;
+}
+.content {
+  /*!KEEP*/
+}
+.actions {
+  /*!KEEP*/
+}
+

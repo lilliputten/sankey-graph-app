@@ -31,8 +31,11 @@ export interface TMuiThemeParams {
 
 function getMuiThemeOptions(params?: TMuiThemeParams) {
   const { mode = defaultMuiThemeMode } = params || {};
-  const { defaultFontSizePx, themeControlsRadiusPx } = scssVariables;
-  const defaultFontSize = parseInt(defaultFontSizePx);
+  const {
+    // defaultFontSizePx,
+    themeControlsRadiusPx,
+  } = scssVariables;
+  // const defaultFontSize = parseInt(defaultFontSizePx);
   const themeControlsRadius = parseInt(themeControlsRadiusPx);
   // TODO: Check for primaryMuiColors, secondaryMuiColors, defaultFontSizePx?
   const backgroundColor = mode === 'dark' ? '#000' : '#fff';
@@ -52,10 +55,11 @@ function getMuiThemeOptions(params?: TMuiThemeParams) {
   // @see https://mui.com/material-ui/customization/typography/
   const typography: TypographyOptions = {
     // TODO: To investigate the method of customizing mui theme font properties!
-    fontSize: defaultFontSize,
-    htmlFontSize: defaultFontSize,
+    // fontSize: defaultFontSize,
+    // htmlFontSize: defaultFontSize,
     allVariants: {
-      fontSize: defaultFontSize,
+      // NOTE: This setting affects all the elements.
+      // fontSize: defaultFontSize,
     },
     button: {
       textTransform: 'none',

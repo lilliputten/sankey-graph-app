@@ -41,3 +41,12 @@
   @include fullSizeBlock;
   @include clippingFullSizeContainer;
 }
+@mixin scrollableContainer {
+  flex: 1;
+  display: flex !important; // Override mui settings!
+  flex-direction: column;
+  overflow: auto;
+  justify-content: center;
+  align-items: stretch;
+}
+
