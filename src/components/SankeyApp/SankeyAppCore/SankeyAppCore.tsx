@@ -8,22 +8,22 @@ import {
 import { FullScreenPageLayout } from 'src/ui/layouts/FullScreenPageLayout';
 import { TMuiThemeMode } from 'src/core/types';
 
-import { SankeyAppCore } from 'src/components/SankeyApp/SankeyAppCore';
-
 /* // TODO: Implement a set of components for different sankey states...
- * import { SankeyAppCore } from 'src/components/SankeyApp/SankeyAppCore';
+ * import { SankeyAppReady } from 'src/components/SankeyApp/SankeyAppReady';
  */
 
 const StubComponent = (text: string) => () => <>{text}</>;
 const SankeyAppWaiter = StubComponent('SankeyAppWaiter');
-const SankeyAppFinished = StubComponent('SankeyAppFinished');
-// const SankeyAppCore = StubComponent('SankeyAppCore');
-const SankeyAppStart = StubComponent('SankeyAppStart');
+const SankeyAppReady = StubComponent('SankeyAppReady');
+
+interface TSankeyAppCoreProps {
+  themeMode: TMuiThemeMode;
+}
 
 interface TSubComponentProps {
   ready: boolean;
   finished: boolean;
-  showMainApp: boolean;
+  showReadyApp: boolean;
   themeMode: TMuiThemeMode;
 }
 
@@ -33,47 +33,42 @@ const SubComponent: React.FC<TSubComponentProps> = (props) => {
     // prettier-ignore
     ready,
     finished,
-    showMainApp,
-    themeMode,
+    showReadyApp,
+    // themeMode,
   } = props;
-  // TODO: notReady
-  if (!ready) {
-    return <SankeyAppWaiter />; // themeMode={themeMode} waiting />;
-  } else if (finished) {
-    return <SankeyAppFinished />;
-  } else if (showMainApp) {
-    return <SankeyAppCore themeMode={themeMode} />;
+  // TODO: error?
+  if (ready && !finished && showReadyApp) {
+    return <SankeyAppReady />;
   } else {
-    return <SankeyAppStart />;
+    return <SankeyAppWaiter />; // themeMode={themeMode} waiting />;
   }
 };
 
 /** Choose & render suitable application part */
-const RenderComponent: React.FC = observer(() => {
+const RenderComponent: React.FC<TSankeyAppCoreProps> = observer((props) => {
+  const { themeMode } = props;
   const sankeySession = useSankeyAppSessionStore();
   const { ready, finished } = sankeySession;
   // Show Preview page for guide if settings hasn't done
-  const showMainApp = ready;
+  const showReadyApp = ready;
   // Use dark theme for main application and light for all the other pages.
-  const useDarkTheme = true;
-  const themeMode: TMuiThemeMode = useDarkTheme ? 'dark' : 'light';
   // TODO: Wrap with error & loader splash renderer?
   return (
     <FullScreenPageLayout themeMode={themeMode}>
       <SubComponent
         ready={ready}
         finished={finished}
-        showMainApp={showMainApp}
+        showReadyApp={showReadyApp}
         themeMode={themeMode}
       />
     </FullScreenPageLayout>
   );
 });
 
-export const SankeyAppRoot: React.FC = () => {
+export const SankeyAppCore: React.FC<TSankeyAppCoreProps> = (props) => {
   return (
     <SankeyAppSessionStoreProvider>
-      <RenderComponent />
+      <RenderComponent {...props} />
     </SankeyAppSessionStoreProvider>
   );
 };
