@@ -3,6 +3,7 @@ export * from './dates';
 export * from './dom';
 export * from './errors';
 export * from './functions';
+export * from './numbers';
 export * from './objects';
 export * from './parseQuery';
 export * from './strings';

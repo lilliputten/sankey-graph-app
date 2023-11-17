@@ -24,16 +24,16 @@ export type ToastId = ReturnType<typeof toast.info>;
 export type ToastFunc = (msg: TMessage, options?: ToastOptions) => ToastId;
 
 export function showInfo(msg: TMessage, options?: ToastOptions): ToastId {
-  return toast.info(errorToString(msg), options);
+  return toast.info<string>(errorToString(msg), options);
 }
 export function showSuccess(msg: TMessage, options?: ToastOptions): ToastId {
-  return toast.success(errorToString(msg), options);
+  return toast.success<string>(errorToString(msg), options);
 }
 export function showWarn(msg: TMessage, options?: ToastOptions): ToastId {
-  return toast.warn(errorToString(msg), options);
+  return toast.warn<string>(errorToString(msg), options);
 }
 export function showError(msg: TMessage, options?: ToastOptions): ToastId {
-  return toast.error(errorToString(msg), options);
+  return toast.error<string>(errorToString(msg), options);
 }
 
 // Create context...

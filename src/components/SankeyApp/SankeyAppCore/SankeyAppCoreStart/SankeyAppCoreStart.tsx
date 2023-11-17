@@ -3,9 +3,10 @@ import { Box, Button, Container, Typography } from '@mui/material';
 import classNames from 'classnames';
 
 import { PropsWithClassName } from 'src/core/types';
+import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
+import { FileUploadField } from 'src/ui/Basic/FileUploadField';
 
 import styles from './SankeyAppCoreStart.module.scss';
-import { useSankeyAppDataStore } from '../../SankeyAppDataStore';
 
 type TSankeyAppCoreStartProps = PropsWithClassName;
 
@@ -13,7 +14,7 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = (props) =>
   const { className } = props;
   const sankeyDataStore = useSankeyAppDataStore();
   /** If data has already loaded then it's possible to go to core visualizer/editor */
-  const [isDataLoaded, setIsDataLoaded] = React.useState(false);
+  const [isDataLoaded, setDataLoaded] = React.useState(false);
   const doStart = React.useCallback(() => {
     console.log('[SankeyAppCoreStart:doStart]', {
     });
@@ -39,6 +40,13 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = (props) =>
           unde suscipit, quam beatae rerum inventore consectetur, neque doloribus, cupiditate
           numquam dignissimos laborum fugiat deleniti? Eum quasi quidem quibusdam.
         </Typography>
+      </Box>
+      <Box className={classNames(styles.section, styles.inputs)}>
+        <FileUploadField
+          // prettier-ignore
+          id="testData"
+          text="Upload data file"
+        />
       </Box>
       <Box className={classNames(styles.section, styles.actions)}>
         <Button
