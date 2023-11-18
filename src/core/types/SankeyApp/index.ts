@@ -1,4 +1,4 @@
-export * from './TDataSet';
+export * from './TChartDataSet';
 export * from './TEdgesData';
 export * from './TFlowsData';
 export * from './TGraphsData';

@@ -1,0 +1,7 @@
+.root {
+  @include singleFullSizeContainer;
+  // Chart container
+  :global(#ac-chart-container) {
+    @include singleFullSizeContainer;
+  }
+}

@@ -1,0 +1,123 @@
+import React from 'react';
+import { observer } from 'mobx-react-lite';
+import { Box } from '@mui/material';
+import classNames from 'classnames';
+
+import { isDevBrowser } from 'src/config/build';
+import { TAnyChartData } from 'src/core/types/anychart';
+import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
+// @ts-ignore
+import AnyChart from 'anychart-react';
+
+import styles from './SankeyAnychartDemo.module.scss';
+import {
+  constructEdgesData,
+  constructGraphsHashGraphsData,
+  constructNodesHashFromData,
+} from 'src/helpers/anychart';
+import { TChartDataSet, TFullChartDataSet } from 'src/core/types';
+
+/** DEBUG: Don't wait for user action */
+const __debugUseDemoData = false && isDevBrowser;
+
+const demoChartData: TAnyChartData = [
+  { from: 'First Class', to: 'Child', value: 6 },
+  { from: 'Second Class', to: 'Child', value: 24 },
+  { from: 'Third Class', to: 'Child', value: 79 },
+  { from: 'Crew', to: 'Child', value: 0 },
+  { from: 'First Class', to: 'Adult', value: 319 },
+  { from: 'Second Class', to: 'Adult', value: 261 },
+  { from: 'Third Class', to: 'Adult', value: 627 },
+  { from: 'Crew', to: 'Adult', value: 885 },
+  { from: 'Child', to: 'Female', value: 45 },
+  { from: 'Child', to: 'Male', value: 64 },
+  { from: 'Adult', to: 'Female', value: 425 },
+  { from: 'Adult', to: 'Male', value: 1667 },
+  { from: 'Female', to: 'Survived', value: 344 },
+  { from: 'Female', to: 'Perished', value: 126 },
+  { from: 'Male', to: 'Survived', value: 367 },
+  { from: 'Male', to: 'Perished', value: 1364 },
+];
+
+interface TSankeyAnychartDemoProps {
+  className?: string;
+}
+
+export const SankeyAnychartDemo: React.FC<TSankeyAnychartDemoProps> = observer((props) => {
+  const { className } = props;
+  const sankeyAppDataStore = useSankeyAppDataStore();
+  const {
+    // prettier-ignore
+    edgesData,
+    flowsData,
+    graphsData,
+    nodesData,
+  } = sankeyAppDataStore;
+  // graphsHash: TGraphHash;
+  // nodesHash: TNodeHash;
+  const getFullDataSet = React.useCallback((dataSet: Partial<TChartDataSet>) => {
+    const {
+      // prettier-ignore
+      edgesData,
+      flowsData,
+      graphsData,
+      nodesData,
+    } = dataSet;
+    if (!edgesData || !flowsData || !graphsData || !nodesData) {
+      return undefined;
+    }
+    const graphsHash = constructGraphsHashGraphsData(graphsData);
+    const nodesHash = constructNodesHashFromData(nodesData);
+    const fullDataSet: TFullChartDataSet = {
+      edgesData,
+      flowsData,
+      graphsData,
+      nodesData,
+      graphsHash,
+      nodesHash,
+    };
+    return fullDataSet;
+  }, []);
+  const chartData = React.useMemo<TAnyChartData | undefined>(() => {
+    if (__debugUseDemoData) {
+      return demoChartData;
+    }
+    const fullDataSet = getFullDataSet({
+      // prettier-ignore
+      edgesData,
+      flowsData,
+      graphsData,
+      nodesData,
+    });
+    if (fullDataSet) {
+      return constructEdgesData(fullDataSet);
+    }
+    return undefined;
+  }, [
+    // prettier-ignore
+    edgesData,
+    flowsData,
+    graphsData,
+    nodesData,
+    getFullDataSet,
+  ]);
+
+  return (
+    <Box className={classNames(className, styles.root)}>
+      {/* // Debug: show some small stats...
+      <Box>
+        <Typography>Edges: {getSankeyDataInfo(edgesData)}</Typography>
+        <Typography>Flows: {getSankeyDataInfo(flowsData)}</Typography>
+        <Typography>Graphs: {getSankeyDataInfo(graphsData)}</Typography>
+        <Typography>Nodes: {getSankeyDataInfo(nodesData)}</Typography>
+      </Box>
+      */}
+      <AnyChart
+        className={styles.chart}
+        type="sankey"
+        data={chartData}
+        // title="Simple chart"
+      />
+    </Box>
+  );
+});
