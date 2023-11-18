@@ -157,14 +157,16 @@ export const DataFileUploadField = <T extends unknown>(props: TDataFileUploadFie
         .then((data) => {
           const fileName = url.replace(/^.*\//, '');
           const { type, size } = data;
+          const cmpType = type.replace(/;.*$/, '');
           console.log('[DataFileUploadField:loadDataFromUrl] data`', {
+            cmpType,
             type,
             data,
             size,
             fileName,
             url,
           });
-          if (!expectedDataTypes.includes(type)) {
+          if (!expectedDataTypes.includes(cmpType)) {
             throw new Error(
               'Invalid data type for url "' +
                 url +

@@ -3,5 +3,6 @@
   // Chart container
   :global(#ac-chart-container) {
     @include singleFullSizeContainer;
+    padding: 20px;
   }
 }
