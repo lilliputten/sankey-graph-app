@@ -15,12 +15,56 @@ interface TUploadSankeyDataField<T = unknown> {
   setFileInfo?: (info?: TDataFileUploadInfo) => void;
   setData?: (data?: T) => void;
   setError?: (error?: Error) => void;
-  // buttonProps?: ButtonOwnProps;
+  /** Initial loaded flag */
+  defaultLoaded?: boolean;
+  dataInfo?: string;
 }
 
 const buttonProps: ButtonOwnProps = {
   fullWidth: true,
 };
+
+// TODO: Move the following helpers to an external module?
+
+function getFileInfoText(fileInfo?: TDataFileUploadInfo) {
+  if (fileInfo) {
+    const {
+      fileName,
+      // fileType,
+      fileSize,
+    } = fileInfo;
+    const name = '"' + fileName + '"';
+    const size = getApproxSize(fileSize, { normalize: true }).join('');
+    return `${name}, ${size}`;
+  }
+}
+
+function getInfoText(
+  isLoaded: boolean,
+  dataName: string,
+  fileInfo?: TDataFileUploadInfo,
+  dataInfo?: string,
+) {
+  const statusText = isLoaded ? 'Loaded' : 'Load';
+  let extraText = '';
+  if (isLoaded) {
+    let fileInfoText = getFileInfoText(fileInfo);
+    if (fileInfoText && dataInfo) {
+      fileInfoText = `(${fileInfoText})`;
+    }
+    extraText = [dataInfo, fileInfoText].filter(Boolean).join(' ');
+  }
+  const text = [
+    // prettier-ignore
+    `${statusText} ${dataName}`,
+    extraText,
+    // isLoaded && getFileInfoText(fileInfo),
+    // isLoaded && dataInfo,
+  ]
+    .filter(Boolean)
+    .join(': ');
+  return text;
+}
 
 export const UploadSankeyDataField = <T extends unknown>(props: TUploadSankeyDataField<T>) => {
   const {
@@ -32,11 +76,15 @@ export const UploadSankeyDataField = <T extends unknown>(props: TUploadSankeyDat
     setData,
     setFileInfo: setParentFileInfo,
     setError,
+    defaultLoaded,
+    dataInfo,
   } = props;
   const [fileInfo, setFileInfo] = React.useState<TDataFileUploadInfo | undefined>();
+  const [isLoaded, setLoaded] = React.useState(!!defaultLoaded);
   const handleFileInfo = React.useCallback(
     (fileInfo: TDataFileUploadInfo | undefined) => {
       setFileInfo(fileInfo);
+      setLoaded(!!fileInfo);
       if (setParentFileInfo) {
         setParentFileInfo(fileInfo);
       }
@@ -44,17 +92,8 @@ export const UploadSankeyDataField = <T extends unknown>(props: TUploadSankeyDat
     [setParentFileInfo],
   );
   const text = React.useMemo(() => {
-    if (fileInfo) {
-      const {
-        fileName,
-        // fileType,
-        fileSize,
-      } = fileInfo;
-      const size = getApproxSize(fileSize, { normalize: true }).join('');
-      return `Loaded ${dataName}: ${fileName} (${size})`;
-    }
-    return `Load ${dataName}`;
-  }, [dataName, fileInfo]);
+    return getInfoText(isLoaded, dataName, fileInfo, dataInfo);
+  }, [dataName, isLoaded, fileInfo]);
   return (
     <DataFileUploadField
       // prettier-ignore
@@ -65,6 +104,7 @@ export const UploadSankeyDataField = <T extends unknown>(props: TUploadSankeyDat
       setError={setError}
       setFileInfo={handleFileInfo}
       buttonProps={buttonProps}
+      defaultLoaded={defaultLoaded}
     />
   );
 };

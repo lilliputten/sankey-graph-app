@@ -7,20 +7,16 @@ interface TWithChildren {
 }
 type TAppWrapperProps = TWithChildren;
 
-// Stubs...
-const StubComponent = ({ children }: TWithChildren) => <>{children}</>;
-const StoreWrapper = StubComponent;
+// // Placeholders...
+// const PlaceholderComponent = ({ children }: TWithChildren) => <>{children}</>;
+// const StoreWrapper = PlaceholderComponent;
 
 export function AppWrapper(props: TAppWrapperProps): JSX.Element {
   const { children } = props;
   return (
-    <>
-      <StoreWrapper>
-        <CoreWrapper>
-          {/* TODO: Expose root control nodes or use custom hooks? */}
-          {children}
-        </CoreWrapper>
-      </StoreWrapper>
-    </>
+    <CoreWrapper>
+      {/* TODO: Expose root control nodes or use custom hooks? */}
+      {children}
+    </CoreWrapper>
   );
 }

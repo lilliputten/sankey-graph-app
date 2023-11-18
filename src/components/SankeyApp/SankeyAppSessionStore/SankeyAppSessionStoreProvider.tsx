@@ -13,20 +13,20 @@ export function SankeyAppSessionStoreProvider(
   props: TSankeyAppSessionStoreProviderProps,
 ): JSX.Element {
   const { children } = props;
-  const casterSession = React.useMemo(() => {
+  const sankeyAppSessionStore = React.useMemo(() => {
     return new SankeyAppSessionStore();
   }, []);
   React.useEffect(() => {
     // TODO: To set inited flag in other place?
-    casterSession.setInited(true);
+    sankeyAppSessionStore.setInited(true);
     // TODO: Do some initializations?
     return () => {
-      casterSession.destroy();
+      sankeyAppSessionStore.destroy();
     };
-  }, [casterSession]);
+  }, [sankeyAppSessionStore]);
   // prettier-ignore
   return (
-    <SankeyAppSessionStoreContextProvider value={casterSession}>
+    <SankeyAppSessionStoreContextProvider value={sankeyAppSessionStore}>
       {children}
     </SankeyAppSessionStoreContextProvider>
   );

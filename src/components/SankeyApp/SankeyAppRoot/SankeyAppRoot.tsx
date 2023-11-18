@@ -22,15 +22,15 @@ import styles from './SankeyAppRoot.module.scss';
 const __debugEmulateSessionReady = isDevBrowser;
 
 // DEBUG!
-const StubComponent = (id: string) => () => (
-  <Box className={classNames('SankeyAppRootStub', id)}>
-    Stub component: <strong>{id}</strong>
+const PlaceholderComponent = (id: string) => () => (
+  <Box className={classNames('SankeyAppRootPlaceholder', id)}>
+    Placeholder component: <strong>{id}</strong>
   </Box>
 );
-// const SankeyAppRootWelcome = StubComponent('SankeyAppRootWelcome');
-const SankeyAppRootFinished = StubComponent('SankeyAppRootFinished');
-// const SankeyAppCore = StubComponent('SankeyAppCore');
-// const SankeyAppStart = StubComponent('SankeyAppStart');
+// const SankeyAppRootWelcome = PlaceholderComponent('SankeyAppRootWelcome');
+const SankeyAppRootFinished = PlaceholderComponent('SankeyAppRootFinished');
+// const SankeyAppCore = PlaceholderComponent('SankeyAppCore');
+// const SankeyAppStart = PlaceholderComponent('SankeyAppStart');
 
 interface TCurrentComponentProps {
   inited: boolean;

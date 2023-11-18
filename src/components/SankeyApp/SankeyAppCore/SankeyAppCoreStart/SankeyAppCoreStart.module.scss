@@ -3,12 +3,15 @@
   @include scrollableContainer;
 }
 .section {
-  /*!KEEP*/
   margin: $containerPaddingPx 0;
 }
-.content {
+.content,
+.actions,
+.inputFields {
   /*!KEEP*/
 }
-.actions {
-  /*!KEEP*/
+
+.list {
+  margin-top: 0;
+  margin-bottom: 0.35em;
 }

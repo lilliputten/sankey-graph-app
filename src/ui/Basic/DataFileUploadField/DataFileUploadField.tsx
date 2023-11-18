@@ -28,6 +28,8 @@ interface TDataFileUploadFieldProps<T = unknown> extends PropsWithClassName {
   setData?: (data?: T) => void;
   setError?: (error?: Error) => void;
   buttonProps?: ButtonOwnProps;
+  /** Initial loaded flag */
+  defaultLoaded?: boolean;
 }
 
 export const DataFileUploadField = <T extends unknown>(props: TDataFileUploadFieldProps<T>) => {
@@ -40,9 +42,10 @@ export const DataFileUploadField = <T extends unknown>(props: TDataFileUploadFie
     setData,
     setError,
     buttonProps,
+    defaultLoaded,
   } = props;
   /** If data has already loaded then it's possible to go to core visualizer/editor */
-  const [isLoaded, setLoaded] = React.useState(false);
+  const [isLoaded, setLoaded] = React.useState(!!defaultLoaded);
   const [isLoading, setLoading] = React.useState(false);
   const [loadingProgress, setLoadingProgress] = React.useState<number | undefined>();
   const handleLoadingProgress = React.useCallback((params: TLoadDataFileProgressParams) => {

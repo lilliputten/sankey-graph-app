@@ -103,8 +103,7 @@
     "start": "echo --Start dev server-- && craco start",
     "start-cra-UNUSED": "echo --Start dev server-- && react-scripts start",
     "test": "craco test --watchAll=false",
-    "test-cra-UNUSED": "react-scripts test",
-    "eject-UNUSED": "react-scripts eject",
+    "test-watch": "craco test",
     "help": "echo --List all available script commands-- && npm-package-user-scripts-list"
   }
 }

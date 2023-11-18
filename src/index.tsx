@@ -9,11 +9,21 @@ import 'src/core/global/global-styles.scss';
 
 const rootNode = document.getElementById('root') as HTMLElement;
 const root = ReactDOM.createRoot(rootNode);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-);
+
+const __debugUseStrictMode = true;
+
+let RootNode = <App />;
+
+if (__debugUseStrictMode) {
+  RootNode = (
+    <React.StrictMode>
+      {/* Execute main content with strict mode */}
+      {RootNode}
+    </React.StrictMode>
+  );
+}
+
+root.render(RootNode);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

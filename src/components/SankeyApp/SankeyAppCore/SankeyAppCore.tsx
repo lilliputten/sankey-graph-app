@@ -20,15 +20,15 @@ import styles from './SankeyAppCore.module.scss';
 const __debugEmulateDataReady = false && isDevBrowser;
 
 // DEBUG!
-const StubComponent = (id: string) => () => (
-  <Box className={classNames('SankeyAppCoreStub', id)}>
-    Stub component: <strong>{id}</strong>
+const PlaceholderComponent = (id: string) => () => (
+  <Box className={classNames('SankeyAppCorePlaceholder', id)}>
+    Placeholder for component: <strong>{id}</strong>
   </Box>
 );
-// const SankeyAppCoreWaiter = StubComponent('SankeyAppCoreWaiter');
-const SankeyAppCoreReady = StubComponent('SankeyAppCoreReady');
-// const SankeyAppCoreStart = StubComponent('SankeyAppCoreStart');
-const SankeyAppCoreFinished = StubComponent('SankeyAppCoreFinished');
+// const SankeyAppCoreWaiter = PlaceholderComponent('SankeyAppCoreWaiter');
+const SankeyAppCoreReady = PlaceholderComponent('SankeyAppCoreReady');
+// const SankeyAppCoreStart = PlaceholderComponent('SankeyAppCoreStart');
+const SankeyAppCoreFinished = PlaceholderComponent('SankeyAppCoreFinished');
 
 interface TSankeyAppCoreProps {
   className?: string;
@@ -69,8 +69,10 @@ const RenderLayout: React.FC<TSankeyAppCoreProps> = observer((props) => {
   const { themeMode } = props;
   const sankeyAppDataStore = useSankeyAppDataStore();
   React.useEffect(() => {
-    // Init store...
-    sankeyAppDataStore.setInited(true);
+    /* // NOTE: It's already inited in `SankeyAppDataStoreProvider`
+     * sankeyAppDataStore.setInited(true);
+     */
+    // Set ready flag for demo mode. Otherwise it'll be set in `SankeyAppCoreStart` after data load
     if (__debugEmulateDataReady) {
       // TODO: Set demo data
       sankeyAppDataStore.setReady(true);

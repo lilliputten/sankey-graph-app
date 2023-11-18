@@ -7,14 +7,25 @@ import {
 } from 'mobx';
 import bound from 'bind-decorator';
 
+import { TEdgesData, TFlowsData, TGraphsData, TNodesData } from 'src/core/types';
+
+const defaultEdgesData: TEdgesData = [{ x: 1 }];
+
 export class SankeyAppDataStore {
   // NOTE: remember to clean/reset properties in `clearData`
 
+  // State...
   @observable inited: boolean = false;
   @observable finished: boolean = false;
   @observable ready: boolean = false;
   @observable loading: boolean = false;
-  @observable error?: Error = undefined;
+  @observable error?: Error;
+
+  // Data...
+  @observable edgesData?: TEdgesData = defaultEdgesData;
+  @observable flowsData?: TFlowsData;
+  @observable graphsData?: TGraphsData;
+  @observable nodesData?: TNodesData;
 
   // Lifecycle...
 
@@ -29,7 +40,7 @@ export class SankeyAppDataStore {
     // TODO: Cleanup before exit?
   }
 
-  // Core setters...
+  // Status setters...
 
   @action setInited(inited: typeof SankeyAppDataStore.prototype.inited) {
     this.inited = inited;
@@ -56,10 +67,32 @@ export class SankeyAppDataStore {
   }
 
   @action clearData() {
+    // NOTE: Don't just clear the data. It's a place to set them to default values.
+    // Status...
     this.inited = false;
     this.finished = false;
     this.ready = false;
     this.loading = false;
     this.error = undefined;
+    // Data...
+    this.edgesData = defaultEdgesData;
+    this.flowsData = undefined;
+    this.graphsData = undefined;
+    this.nodesData = undefined;
+  }
+
+  // Data setters...
+
+  @action setEdgesData(edgesData: typeof SankeyAppDataStore.prototype.edgesData) {
+    this.edgesData = edgesData;
+  }
+  @action setFlowsData(flowsData: typeof SankeyAppDataStore.prototype.flowsData) {
+    this.flowsData = flowsData;
+  }
+  @action setGraphsData(graphsData: typeof SankeyAppDataStore.prototype.graphsData) {
+    this.graphsData = graphsData;
+  }
+  @action setNodesData(nodesData: typeof SankeyAppDataStore.prototype.nodesData) {
+    this.nodesData = nodesData;
   }
 }

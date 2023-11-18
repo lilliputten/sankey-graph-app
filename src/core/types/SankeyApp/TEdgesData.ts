@@ -1,2 +1,3 @@
 /** Stub for future data description */
-export type TEdgesData = unknown;
+export type TEdgeItem = unknown;
+export type TEdgesData = TEdgeItem[];

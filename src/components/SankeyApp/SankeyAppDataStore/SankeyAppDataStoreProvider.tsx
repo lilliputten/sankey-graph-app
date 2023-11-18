@@ -1,30 +1,27 @@
 import React from 'react';
 
 import { SankeyAppDataStore } from './SankeyAppDataStore';
-import {
-  // casterSession,
-  SankeyAppDataStoreContextProvider,
-} from './SankeyAppDataStoreContext';
+import { SankeyAppDataStoreContextProvider } from './SankeyAppDataStoreContext';
 
 interface TSankeyAppDataStoreProviderProps {
   children?: React.ReactNode;
 }
 export function SankeyAppDataStoreProvider(props: TSankeyAppDataStoreProviderProps): JSX.Element {
   const { children } = props;
-  const casterSession = React.useMemo(() => {
+  const sankeyAppDataStore = React.useMemo(() => {
     return new SankeyAppDataStore();
   }, []);
   React.useEffect(() => {
     // TODO: To set inited flag in other place?
-    casterSession.setInited(true);
+    sankeyAppDataStore.setInited(true);
     // TODO: Do some initializations?
     return () => {
-      casterSession.destroy();
+      sankeyAppDataStore.destroy();
     };
-  }, [casterSession]);
+  }, [sankeyAppDataStore]);
   // prettier-ignore
   return (
-    <SankeyAppDataStoreContextProvider value={casterSession}>
+    <SankeyAppDataStoreContextProvider value={sankeyAppDataStore}>
       {children}
     </SankeyAppDataStoreContextProvider>
   );

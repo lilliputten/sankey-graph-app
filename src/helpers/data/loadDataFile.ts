@@ -17,7 +17,7 @@ export interface TLoadDataFileOptions<T> {
   timeout?: number;
 }
 
-// TODO: Add possibility to cancel the loading?
+// TODO: Add possibility to cancel the loading for user?
 
 export function loadDataFile<T = unknown>(file: File, opts: TLoadDataFileOptions<T> = {}) {
   const { name: fileName, type: fileType, size: fileSize } = file;
@@ -59,13 +59,13 @@ export function loadDataFile<T = unknown>(file: File, opts: TLoadDataFileOptions
         timeoutHandler = undefined;
       }
     }
-    /* // TODO: Other events?
-     * abort
-     * error
-     * load
-     * loadend
-     * loadstart
-     * progress
+    /* // TODO: Other events? @see: https://developer.mozilla.org/en-US/docs/Web/API/FileReader
+     * - abort
+     * - error
+     * - load
+     * - loadend
+     * - loadstart
+     * - progress
      */
     if (onProgress) {
       // Optional progress handler...
