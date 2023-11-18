@@ -39,13 +39,14 @@ export function loadDataFile<T = unknown>(file: File, opts: TLoadDataFileOptions
           const errMsg =
             'Timeout of ' + timeout + 'ms exceeded during upload of file "' + fileName + '"';
           const timeoutError = new Error(errMsg);
-          console.log('[loadDataFile] timeout error', {
+          // eslint-disable-next-line no-console
+          console.error('[loadDataFile] timeout error', {
             timeoutError,
             timeout,
             fileName,
             fileReader,
           });
-          debugger;
+          debugger; // eslint-disable-line no-debugger
           if (onError) {
             onError({ error: timeoutError, file, fileReader });
           }
@@ -146,17 +147,18 @@ export function loadDataFile<T = unknown>(file: File, opts: TLoadDataFileOptions
           .filter(Boolean)
           .join(': ');
         const dataError = new Error(errMsg);
+        // eslint-disable-next-line no-console
         console.error('[loadDataFile] onloadend: get data error', {
           dataError,
           error,
         });
-        debugger;
+        debugger; // eslint-disable-line no-debugger
         if (onError) {
           onError({ error: dataError, file, fileReader });
         }
         return reject(dataError);
       } finally {
-        // finishLoading();
+        finishLoading();
       }
     };
     // Error handler...
@@ -179,6 +181,7 @@ export function loadDataFile<T = unknown>(file: File, opts: TLoadDataFileOptions
         // total, // 0
         type: errorType, // "error"
       } = ev;
+      // eslint-disable-next-line no-console
       console.error('[loadDataFile] onerror', {
         fileName,
         loaded, // 0
@@ -202,11 +205,12 @@ export function loadDataFile<T = unknown>(file: File, opts: TLoadDataFileOptions
           .join(': ');
         resultError = new Error(errMsg);
       }
+      // eslint-disable-next-line no-console
       console.error('[loadDataFile] onerror: event error', {
         // error,
         resultError,
       });
-      debugger;
+      debugger; // eslint-disable-line no-debugger
       if (onError) {
         onError({ error: resultError, file, fileReader });
       }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, Container, Typography, CircularProgress } from '@mui/material';
+import { Box, Button, ButtonOwnProps, CircularProgress } from '@mui/material';
 import { Check, CloudUpload } from '@mui/icons-material';
 import classNames from 'classnames';
 
@@ -14,7 +14,7 @@ import {
   TLoadDataFileProgressParams,
 } from 'src/helpers';
 
-interface TFileInfo {
+export interface TDataFileUploadInfo {
   fileName: string;
   fileType: string;
   fileSize: number;
@@ -24,9 +24,10 @@ interface TDataFileUploadFieldProps<T = unknown> extends PropsWithClassName {
   id: string;
   /** Text string to show in file upload button */
   text?: string;
-  setFileInfo?: (info?: TFileInfo) => void;
+  setFileInfo?: (info?: TDataFileUploadInfo) => void;
   setData?: (data?: T) => void;
   setError?: (error?: Error) => void;
+  buttonProps?: ButtonOwnProps;
 }
 
 export const DataFileUploadField = <T extends unknown>(props: TDataFileUploadFieldProps<T>) => {
@@ -38,6 +39,7 @@ export const DataFileUploadField = <T extends unknown>(props: TDataFileUploadFie
     setFileInfo,
     setData,
     setError,
+    buttonProps,
   } = props;
   /** If data has already loaded then it's possible to go to core visualizer/editor */
   const [isLoaded, setLoaded] = React.useState(false);
@@ -75,7 +77,7 @@ export const DataFileUploadField = <T extends unknown>(props: TDataFileUploadFie
       const fileInfo = { fileName, fileType, fileSize };
       if (!/\.json$/.test(fileName) || fileType !== 'application/json') {
         // Error...
-        toasts.showError('Expected json file!');
+        toasts.showWarn('Expected json data file!');
         return;
       }
       const normalizedSize = getApproxSize(fileSize);
@@ -98,7 +100,6 @@ export const DataFileUploadField = <T extends unknown>(props: TDataFileUploadFie
             data,
             fileInfo,
           });
-          debugger;
           toasts.showSuccess('File successfully loaded!');
           setLoaded(true);
           if (setData) {
@@ -112,13 +113,14 @@ export const DataFileUploadField = <T extends unknown>(props: TDataFileUploadFie
           }
         })
         .catch((error) => {
+          // eslint-disable-next-line no-console
           console.error('[DataFileUploadField:handleSelectFile] loadDataFile error', {
             error,
             fileName,
             fileType,
             fileSize,
           });
-          debugger;
+          debugger; // eslint-disable-line no-debugger
           // Set error to parrent component or show the toast
           if (setError) {
             setError(error);
@@ -159,11 +161,13 @@ export const DataFileUploadField = <T extends unknown>(props: TDataFileUploadFie
   return (
     <Box className={classNames(className, styles.root)} id={'DataFileUploadField-' + id}>
       <Button
+        {...buttonProps}
         className={styles.button}
         component="label"
         variant="contained"
         startIcon={IconNode} // Show icon depending on state...
         disabled={isLoading}
+        color={isLoaded ? 'success' : 'primary'}
       >
         {text}
         <input
