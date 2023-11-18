@@ -1,6 +1,6 @@
 Project: sankey-graph-app
-Version: 0.0.2
+Version: 0.0.3
 Branch: main
-Commit: 4d268fd
-Fixed: 2023.11.19, 05:04 GMT+7
-Built: 2023.11.19, 05:09 GMT+7
+Commit: fbc7c36
+Fixed: 2023.11.19, 05:28 GMT+7
+Built: 2023.11.19, 05:30 GMT+7
