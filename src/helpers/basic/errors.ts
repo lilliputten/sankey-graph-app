@@ -1,5 +1,5 @@
-export function getErrorText(err?: Error | string): string {
-  return err ? (err instanceof Error ? err.message : err) : '';
+export function getErrorText(err?: Error | string | unknown): string {
+  return err ? (err instanceof Error ? err.message : String(err)) : '';
 }
 
 export function derivedErrorMessage(text: Error | string, parentError?: Error | string): string {
