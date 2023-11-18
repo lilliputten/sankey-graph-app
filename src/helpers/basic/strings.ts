@@ -136,8 +136,8 @@ export function padNumber(num: number | string, size: number): string {
  * @param {String} [periodChar=' ']
  * @return {String}
  */
-export function periodizeNumber(num: number | string, periodChar: string): string {
-  periodChar = periodChar || ' ';
+export function periodizeNumber(num: number | string, periodChar: string = ' '): string {
+  // periodChar = periodChar || ' ';
   let numStr = String(num);
   // If long number...
   if (numStr.length > 3 && !numStr.match(/\D/)) {

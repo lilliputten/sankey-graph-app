@@ -3,6 +3,9 @@ import { observer } from 'mobx-react-lite';
 import { Box, Stack, Button, Container, Typography } from '@mui/material';
 import classNames from 'classnames';
 
+import { isDevBrowser } from 'src/config/build';
+import { sampleDataUrlPrefix } from 'src/config/app';
+import { periodizeNumber } from 'src/helpers';
 import {
   PropsWithClassName,
   TEdgesData,
@@ -11,11 +14,32 @@ import {
   TNodesData,
 } from 'src/core/types';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
-
-import styles from './SankeyAppCoreStart.module.scss';
 import { UploadSankeyDataField } from 'src/components/SankeyMisc/UploadSankeyDataField';
 
+import styles from './SankeyAppCoreStart.module.scss';
+
 type TSankeyAppCoreStartProps = PropsWithClassName;
+
+const __debugDoAutoLoadData = true && isDevBrowser;
+
+/** Default file names for specific data types */
+const defaultDataFiles = {
+  edges: 'edges.json',
+  flows: 'flows.json',
+  graphs: 'nodes-supply-chain.json', // 'graphs.json',
+  nodes: 'nodes.json',
+};
+/** Create demo urls list */
+const autoLoadUrls = Object.keys(defaultDataFiles).reduce<Partial<typeof defaultDataFiles>>(
+  (urls, id) => {
+    urls[id as keyof typeof defaultDataFiles] =
+      sampleDataUrlPrefix + defaultDataFiles[id as keyof typeof defaultDataFiles];
+    return urls;
+  },
+  {},
+);
+
+// TODO: Move the following helpers to an external modules?
 
 function getDataInfo(list?: unknown[]) {
   if (!Array.isArray(list)) {
@@ -25,7 +49,8 @@ function getDataInfo(list?: unknown[]) {
   if (!size) {
     return 'empty';
   } else {
-    return size + ' record' + (size > 1 ? 's' : '');
+    const records = periodizeNumber(size, ',');
+    return records + ' record' + (size > 1 ? 's' : '');
   }
 }
 
@@ -42,16 +67,16 @@ const InfoContent: React.FC = () => (
     </Typography>
     <ul className={styles.list}>
       <li>
-        Edges: <u>edges.json</u>
+        Edges: <u>{defaultDataFiles.edges}</u>
       </li>
       <li>
-        Flows: <u>flows.json</u>
+        Flows: <u>{defaultDataFiles.flows}</u>
       </li>
       <li>
-        Graphs: <u>nodes-supply-chain.json</u>
+        Graphs: <u>{defaultDataFiles.graphs}</u>
       </li>
       <li>
-        Nodes: <u>nodes.json</u>
+        Nodes: <u>{defaultDataFiles.nodes}</u>
       </li>
     </ul>
   </>
@@ -120,6 +145,8 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
           setData={handleEdgesData}
           defaultLoaded={!!edgesData}
           dataInfo={getDataInfo(edgesData)}
+          autoLoadUrl={__debugDoAutoLoadData ? autoLoadUrls.edges : undefined}
+          className={styles.uploadButton}
         />
         <UploadSankeyDataField
           id="flowsData"
@@ -127,6 +154,8 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
           setData={handleFlowsData}
           defaultLoaded={!!flowsData}
           dataInfo={getDataInfo(flowsData)}
+          autoLoadUrl={__debugDoAutoLoadData ? autoLoadUrls.flows : undefined}
+          className={styles.uploadButton}
         />
         <UploadSankeyDataField
           id="graphsData"
@@ -134,6 +163,8 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
           setData={handleGraphsData}
           defaultLoaded={!!graphsData}
           dataInfo={getDataInfo(graphsData)}
+          autoLoadUrl={__debugDoAutoLoadData ? autoLoadUrls.graphs : undefined}
+          className={styles.uploadButton}
         />
         <UploadSankeyDataField
           id="nodesData"
@@ -141,6 +172,8 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
           setData={handleNodesData}
           defaultLoaded={!!nodesData}
           dataInfo={getDataInfo(nodesData)}
+          autoLoadUrl={__debugDoAutoLoadData ? autoLoadUrls.nodes : undefined}
+          className={styles.uploadButton}
         />
       </Stack>
       <Box className={classNames(styles.section, styles.actions)}>

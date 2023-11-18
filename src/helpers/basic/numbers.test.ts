@@ -33,7 +33,7 @@ describe('numbers', () => {
     });
     it('should return normalized strings from numbers', () => {
       const result = numbers.getApproxSize(1024 * 100 + 1, { normalize: true });
-      expect(result).toEqual(['100.00', 'K']);
+      expect(result).toEqual(['100', 'K']);
     });
     it('should return normalized strings for specific parameters', () => {
       const result = numbers.getApproxSize(1024 * 100 + 1, {

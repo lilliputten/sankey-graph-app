@@ -5,14 +5,13 @@ export interface TLoadDataFileProgressParams {
   progress: number | undefined;
   loaded: number;
   total: number;
-  file: File;
   fileReader: FileReader;
 }
 
 export interface TLoadDataFileOptions<T> {
   onProgress?: (params: TLoadDataFileProgressParams) => void;
-  onLoaded?: (p: { data: T; file: File; fileReader: FileReader }) => void;
-  onError?: (p: { error: Error; file: File; fileReader: FileReader }) => void;
+  onLoaded?: (p: { data: T; fileReader: FileReader }) => void;
+  onError?: (p: { error: Error; fileReader: FileReader }) => void;
   /** Async load waiting timeout (ms) */
   timeout?: number;
 }
@@ -26,7 +25,7 @@ export function loadDataFile<T = unknown>(file: File, opts: TLoadDataFileOptions
     const fileReader = new FileReader();
     console.log('[loadDataFile:onloadend] start', {
       fileReader,
-      file,
+      // file,
       fileName,
       fileType,
       fileSize,
@@ -48,7 +47,7 @@ export function loadDataFile<T = unknown>(file: File, opts: TLoadDataFileOptions
           });
           debugger; // eslint-disable-line no-debugger
           if (onError) {
-            onError({ error: timeoutError, file, fileReader });
+            onError({ error: timeoutError, fileReader });
           }
           return reject(timeoutError);
         }, timeout)
@@ -98,7 +97,7 @@ export function loadDataFile<T = unknown>(file: File, opts: TLoadDataFileOptions
           ev,
           fileReader,
         });
-        onProgress({ progress, loaded, total, file, fileReader });
+        onProgress({ progress, loaded, total, fileReader });
       };
     }
     // Successfully data loaded handler...
@@ -132,11 +131,11 @@ export function loadDataFile<T = unknown>(file: File, opts: TLoadDataFileOptions
           total, // 5878
           ev,
           fileReader,
-          file,
           fileName,
         });
+        // TODO: Get and return file info also?
         if (onLoaded) {
-          onLoaded({ data, file, fileReader });
+          onLoaded({ data, fileReader });
         }
         return resolve(data);
       } catch (error) {
@@ -154,7 +153,7 @@ export function loadDataFile<T = unknown>(file: File, opts: TLoadDataFileOptions
         });
         debugger; // eslint-disable-line no-debugger
         if (onError) {
-          onError({ error: dataError, file, fileReader });
+          onError({ error: dataError, fileReader });
         }
         return reject(dataError);
       } finally {
@@ -212,7 +211,7 @@ export function loadDataFile<T = unknown>(file: File, opts: TLoadDataFileOptions
       });
       debugger; // eslint-disable-line no-debugger
       if (onError) {
-        onError({ error: resultError, file, fileReader });
+        onError({ error: resultError, fileReader });
       }
       finishLoading();
       return reject(resultError);

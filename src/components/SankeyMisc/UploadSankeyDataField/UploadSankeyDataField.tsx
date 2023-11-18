@@ -18,6 +18,8 @@ interface TUploadSankeyDataField<T = unknown> {
   /** Initial loaded flag */
   defaultLoaded?: boolean;
   dataInfo?: string;
+  /** File to automatic load */
+  autoLoadUrl?: string;
 }
 
 const buttonProps: ButtonOwnProps = {
@@ -78,6 +80,7 @@ export const UploadSankeyDataField = <T extends unknown>(props: TUploadSankeyDat
     setError,
     defaultLoaded,
     dataInfo,
+    autoLoadUrl,
   } = props;
   const [fileInfo, setFileInfo] = React.useState<TDataFileUploadInfo | undefined>();
   const [isLoaded, setLoaded] = React.useState(!!defaultLoaded);
@@ -93,7 +96,7 @@ export const UploadSankeyDataField = <T extends unknown>(props: TUploadSankeyDat
   );
   const text = React.useMemo(() => {
     return getInfoText(isLoaded, dataName, fileInfo, dataInfo);
-  }, [dataName, isLoaded, fileInfo]);
+  }, [dataName, isLoaded, fileInfo, dataInfo]);
   return (
     <DataFileUploadField
       // prettier-ignore
@@ -105,6 +108,7 @@ export const UploadSankeyDataField = <T extends unknown>(props: TUploadSankeyDat
       setFileInfo={handleFileInfo}
       buttonProps={buttonProps}
       defaultLoaded={defaultLoaded}
+      autoLoadUrl={autoLoadUrl}
     />
   );
 };

@@ -9,7 +9,7 @@ import bound from 'bind-decorator';
 
 import { TEdgesData, TFlowsData, TGraphsData, TNodesData } from 'src/core/types';
 
-const defaultEdgesData: TEdgesData = [{ x: 1 }];
+// const defaultEdgesData: TEdgesData = [{ x: 1 }];
 
 export class SankeyAppDataStore {
   // NOTE: remember to clean/reset properties in `clearData`
@@ -22,7 +22,7 @@ export class SankeyAppDataStore {
   @observable error?: Error;
 
   // Data...
-  @observable edgesData?: TEdgesData = defaultEdgesData;
+  @observable edgesData?: TEdgesData;
   @observable flowsData?: TFlowsData;
   @observable graphsData?: TGraphsData;
   @observable nodesData?: TNodesData;
@@ -75,7 +75,7 @@ export class SankeyAppDataStore {
     this.loading = false;
     this.error = undefined;
     // Data...
-    this.edgesData = defaultEdgesData;
+    this.edgesData = undefined;
     this.flowsData = undefined;
     this.graphsData = undefined;
     this.nodesData = undefined;

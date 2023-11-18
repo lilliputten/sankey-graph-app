@@ -7,12 +7,7 @@ import { PropsWithClassName } from 'src/core/types';
 import * as toasts from 'src/ui/Basic/Toasts';
 
 import styles from './DataFileUploadField.module.scss';
-import {
-  loadDataFile,
-  getApproxSize,
-  // getErrorText,
-  TLoadDataFileProgressParams,
-} from 'src/helpers';
+import { loadDataFile, TLoadDataFileProgressParams } from 'src/helpers';
 
 export interface TDataFileUploadInfo {
   fileName: string;
@@ -30,6 +25,18 @@ interface TDataFileUploadFieldProps<T = unknown> extends PropsWithClassName {
   buttonProps?: ButtonOwnProps;
   /** Initial loaded flag */
   defaultLoaded?: boolean;
+  /** File to automatic load */
+  autoLoadUrl?: string;
+}
+
+const expectedDataTypes = [
+  // prettier-ignore
+  'application/json',
+];
+const defaultDataType = expectedDataTypes[0];
+
+interface TMemo {
+  inited?: boolean;
 }
 
 export const DataFileUploadField = <T extends unknown>(props: TDataFileUploadFieldProps<T>) => {
@@ -40,58 +47,67 @@ export const DataFileUploadField = <T extends unknown>(props: TDataFileUploadFie
     className,
     setFileInfo,
     setData,
-    setError,
+    setError: setParentError,
     buttonProps,
     defaultLoaded,
+    autoLoadUrl,
   } = props;
+  const memo = React.useMemo<TMemo>(() => ({}), []);
+  const [error, setError] = React.useState<Error>();
+  // Hoist the error to parent component
+  React.useEffect(() => {
+    if (setParentError) {
+      setParentError(error);
+    }
+  }, [setParentError, error]);
   /** If data has already loaded then it's possible to go to core visualizer/editor */
   const [isLoaded, setLoaded] = React.useState(!!defaultLoaded);
   const [isLoading, setLoading] = React.useState(false);
   const [loadingProgress, setLoadingProgress] = React.useState<number | undefined>();
+  // Data loading services...
   const handleLoadingProgress = React.useCallback((params: TLoadDataFileProgressParams) => {
     const {
       // prettier-ignore
       progress,
       loaded,
       total,
-      file,
       fileReader,
     } = params;
     console.log('[DataFileUploadField:handleLoadingProgress]', {
       progress,
       loaded,
       total,
-      file,
       fileReader,
     });
     // TODO:
     setLoadingProgress(progress);
   }, []);
-  const handleSelectFile: React.ChangeEventHandler<HTMLInputElement> = React.useCallback(
-    (ev) => {
-      const files = ev.target.files;
-      const file = files && files[0];
-      if (!file) {
-        // Error...
-        toasts.showError('No file selected!');
-        return;
+  const processError = React.useCallback(
+    (error: Error) => {
+      // eslint-disable-next-line no-console
+      console.error('[DataFileUploadField:processError]', {
+        error,
+      });
+      debugger; // eslint-disable-line no-debugger
+      // Set error to parent component or show the toast
+      if (setError) {
+        setError(error);
+      } else {
+        toasts.showError(error);
       }
+      if (setData) {
+        setData(undefined);
+      }
+      if (setFileInfo) {
+        setFileInfo(undefined);
+      }
+    },
+    [setFileInfo, setData, setError],
+  );
+  const loadDataFromFile = React.useCallback(
+    (file: File) => {
       const { name: fileName, type: fileType, size: fileSize } = file;
       const fileInfo = { fileName, fileType, fileSize };
-      if (!/\.json$/.test(fileName) || fileType !== 'application/json') {
-        // Error...
-        toasts.showWarn('Expected json data file!');
-        return;
-      }
-      const normalizedSize = getApproxSize(fileSize);
-      // const formData = new FormData();
-      console.log('[DataFileUploadField:handleSelectFile]', {
-        fileInfo,
-        normalizedSize,
-        files,
-        file,
-        ev,
-      });
       setLoaded(false);
       setLoading(true);
       loadDataFile(file, {
@@ -99,7 +115,7 @@ export const DataFileUploadField = <T extends unknown>(props: TDataFileUploadFie
         onProgress: handleLoadingProgress,
       })
         .then((data) => {
-          console.log('[DataFileUploadField:handleSelectFile] loadDataFile success', {
+          console.log('[DataFileUploadField:loadDataFromFile] loadDataFile success', {
             data,
             fileInfo,
           });
@@ -115,35 +131,102 @@ export const DataFileUploadField = <T extends unknown>(props: TDataFileUploadFie
             setError(undefined);
           }
         })
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error('[DataFileUploadField:handleSelectFile] loadDataFile error', {
-            error,
-            fileName,
-            fileType,
-            fileSize,
-          });
-          debugger; // eslint-disable-line no-debugger
-          // Set error to parrent component or show the toast
-          if (setError) {
-            setError(error);
-          } else {
-            toasts.showError(error);
-          }
-          if (setData) {
-            setData(undefined);
-          }
-          if (setFileInfo) {
-            setFileInfo(undefined);
-          }
-        })
+        .catch(processError)
         .finally(() => {
           setLoading(false);
           setLoadingProgress(undefined);
         });
     },
-    [handleLoadingProgress, setLoading, setFileInfo, setData, setError],
+    [handleLoadingProgress, setData, setFileInfo, setError, processError],
   );
+  const loadDataFromUrl = React.useCallback(
+    (url: string) => {
+      console.log('[DataFileUploadField:loadDataFromUrl] start', {
+        url,
+      });
+      setLoaded(false);
+      setLoading(true);
+      fetch(url)
+        .then((res) => {
+          console.log('[DataFileUploadField:loadDataFromUrl] response', {
+            res,
+            url,
+          });
+          return res.blob();
+        })
+        .then((data) => {
+          const fileName = url.replace(/^.*\//, '');
+          const { type, size } = data;
+          console.log('[DataFileUploadField:loadDataFromUrl] data`', {
+            type,
+            data,
+            size,
+            fileName,
+            url,
+          });
+          if (!expectedDataTypes.includes(type)) {
+            throw new Error(
+              'Invalid data type for url "' +
+                url +
+                '": "' +
+                type +
+                '" (probably this data file is absent or wrong name has specified)',
+            );
+          }
+          const metadata = {
+            type: defaultDataType,
+          };
+          const file = new File([data], fileName, metadata);
+          loadDataFromFile(file);
+        })
+        .catch(processError)
+        .finally(() => {
+          setLoading(false);
+        });
+    },
+    [loadDataFromFile, processError],
+  );
+  const handleSelectedFile: React.ChangeEventHandler<HTMLInputElement> = React.useCallback(
+    (ev) => {
+      const files = ev.target.files;
+      const file = files && files[0];
+      if (!file) {
+        // Error...
+        toasts.showError('No file selected!');
+        return;
+      }
+      const { name: fileName, type: fileType, size: fileSize } = file;
+      const fileInfo = { fileName, fileType, fileSize };
+      if (!/\.json$/.test(fileName) || fileType !== 'application/json') {
+        // Error...
+        toasts.showWarn('Expected json data file!');
+        return;
+      }
+      console.log('[DataFileUploadField:handleSelectedFile]', {
+        fileInfo,
+        files,
+        file,
+        ev,
+      });
+      loadDataFromFile(file);
+    },
+    [loadDataFromFile],
+  );
+  /** Effect: Handle auto-load url */
+  React.useEffect(() => {
+    if (!memo.inited) {
+      // Prevent double calling in strict mode (to use memoized `inited` status)
+      memo.inited = true;
+      if (autoLoadUrl && !defaultLoaded) {
+        console.log('[DataFileUploadField:Effect: Handle auto-load url]', {
+          inited: memo.inited,
+          autoLoadUrl,
+        });
+        loadDataFromUrl(autoLoadUrl);
+      }
+    }
+  }, [memo, defaultLoaded, autoLoadUrl, loadDataFromUrl]);
+  /** Button icon depending to current component state */
   const IconNode = React.useMemo<JSX.Element>(() => {
     if (isLoaded) {
       return <Check />;
@@ -170,13 +253,13 @@ export const DataFileUploadField = <T extends unknown>(props: TDataFileUploadFie
         variant="contained"
         startIcon={IconNode} // Show icon depending on state...
         disabled={isLoading}
-        color={isLoaded ? 'success' : 'primary'}
+        color={!!error ? 'error' : isLoaded ? 'success' : 'primary'}
       >
         {text}
         <input
           // prettier-ignore
           className={styles.input}
-          onChange={handleSelectFile}
+          onChange={handleSelectedFile}
           type="file"
           accept=".json"
           hidden
