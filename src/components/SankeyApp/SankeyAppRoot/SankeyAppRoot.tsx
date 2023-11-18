@@ -19,7 +19,7 @@ import { SankeyAppRootWelcome } from './SankeyAppRootWelcome';
 import styles from './SankeyAppRoot.module.scss';
 
 /** DEBUG: Don't wait for user action */
-const __debugEmulateSessionReady = isDevBrowser;
+const __debugEmulateSessionReady = false && isDevBrowser;
 
 // DEBUG!
 const PlaceholderComponent = (id: string) => () => (

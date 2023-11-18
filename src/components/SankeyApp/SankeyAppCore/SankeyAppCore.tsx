@@ -80,15 +80,13 @@ const RenderLayout: React.FC<TSankeyAppCoreProps> = observer((props) => {
   }, [sankeyAppDataStore]);
   const { inited, loading, ready, finished } = sankeyAppDataStore;
   return (
-    <FullScreenPageLayout themeMode={themeMode}>
-      <RenderCurrentComponent
-        inited={inited}
-        loading={loading}
-        ready={ready}
-        finished={finished}
-        themeMode={themeMode}
-      />
-    </FullScreenPageLayout>
+    <RenderCurrentComponent
+      inited={inited}
+      loading={loading}
+      ready={ready}
+      finished={finished}
+      themeMode={themeMode}
+    />
   );
 });
 
