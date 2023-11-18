@@ -5,7 +5,6 @@ import classNames from 'classnames';
 
 import { isDevBrowser } from 'src/config/build';
 import { sampleDataUrlPrefix } from 'src/config/app';
-import { periodizeNumber } from 'src/helpers';
 import {
   PropsWithClassName,
   TEdgesData,
@@ -13,7 +12,10 @@ import {
   TGraphsData,
   TNodesData,
 } from 'src/core/types';
-import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
+import {
+  getSankeyDataInfo,
+  useSankeyAppDataStore,
+} from 'src/components/SankeyApp/SankeyAppDataStore';
 import { UploadSankeyDataField } from 'src/components/SankeyMisc/UploadSankeyDataField';
 
 import styles from './SankeyAppCoreStart.module.scss';
@@ -41,19 +43,6 @@ const autoLoadUrls = Object.keys(defaultDataFiles).reduce<Partial<typeof default
 
 // TODO: Move the following helpers to an external modules?
 
-function getDataInfo(list?: unknown[]) {
-  if (!Array.isArray(list)) {
-    return 'no data';
-  }
-  const size = list.length;
-  if (!size) {
-    return 'empty';
-  } else {
-    const records = periodizeNumber(size, ',');
-    return records + ' record' + (size > 1 ? 's' : '');
-  }
-}
-
 const InfoContent: React.FC = () => (
   <>
     <Typography variant="h3" gutterBottom>
@@ -63,7 +52,7 @@ const InfoContent: React.FC = () => (
       An intro text providing some explanations about the data loading procedure.
     </Typography>
     <Typography variant="h5" gutterBottom>
-      Sample data file names:
+      Default data file names:
     </Typography>
     <ul className={styles.list}>
       <li>
@@ -95,9 +84,9 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
   /** If data has already loaded then it's possible to go to core visualizer/editor */
   const [isAllDataLoaded, setAllDataLoaded] = React.useState(false);
   /** Start core application if all the data is ready... */
-  const doStart = React.useCallback(() => {
+  const doVisualize = React.useCallback(() => {
     // All data is ready
-    console.log('[SankeyAppCoreStart:doStart]', {});
+    console.log('[SankeyAppCoreStart:doVisualize]', {});
     sankeyAppDataStore.setReady(true);
   }, [sankeyAppDataStore]);
   /** Handle loaded edges data... */
@@ -144,7 +133,7 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
           dataName="edges data"
           setData={handleEdgesData}
           defaultLoaded={!!edgesData}
-          dataInfo={getDataInfo(edgesData)}
+          dataInfo={getSankeyDataInfo(edgesData)}
           autoLoadUrl={__debugDoAutoLoadData ? autoLoadUrls.edges : undefined}
           className={styles.uploadButton}
         />
@@ -153,7 +142,7 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
           dataName="flows data"
           setData={handleFlowsData}
           defaultLoaded={!!flowsData}
-          dataInfo={getDataInfo(flowsData)}
+          dataInfo={getSankeyDataInfo(flowsData)}
           autoLoadUrl={__debugDoAutoLoadData ? autoLoadUrls.flows : undefined}
           className={styles.uploadButton}
         />
@@ -162,7 +151,7 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
           dataName="graphs data"
           setData={handleGraphsData}
           defaultLoaded={!!graphsData}
-          dataInfo={getDataInfo(graphsData)}
+          dataInfo={getSankeyDataInfo(graphsData)}
           autoLoadUrl={__debugDoAutoLoadData ? autoLoadUrls.graphs : undefined}
           className={styles.uploadButton}
         />
@@ -171,7 +160,7 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
           dataName="nodes data"
           setData={handleNodesData}
           defaultLoaded={!!nodesData}
-          dataInfo={getDataInfo(nodesData)}
+          dataInfo={getSankeyDataInfo(nodesData)}
           autoLoadUrl={__debugDoAutoLoadData ? autoLoadUrls.nodes : undefined}
           className={styles.uploadButton}
         />
@@ -180,10 +169,10 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
         <Button
           // prettier-ignore
           variant="contained"
-          onClick={doStart}
+          onClick={doVisualize}
           disabled={!isAllDataLoaded}
         >
-          Start visualizing
+          Visualize
         </Button>
       </Box>
     </Container>

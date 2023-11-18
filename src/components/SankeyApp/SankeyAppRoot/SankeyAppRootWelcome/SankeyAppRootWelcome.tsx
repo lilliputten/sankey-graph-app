@@ -11,10 +11,10 @@ type TSankeyAppRootWelcomeProps = PropsWithClassName;
 
 export const SankeyAppRootWelcome: React.FC<TSankeyAppRootWelcomeProps> = (props) => {
   const { className } = props;
-  const sankeySessionStore = useSankeyAppSessionStore();
+  const sankeyAppSessionStore = useSankeyAppSessionStore();
   const doStart = React.useCallback(() => {
-    sankeySessionStore.setReady(true);
-  }, [sankeySessionStore]);
+    sankeyAppSessionStore.setReady(true);
+  }, [sankeyAppSessionStore]);
   return (
     <Container className={classNames(className, styles.root)} maxWidth="md">
       <Box className={classNames(styles.section, styles.content)}>
@@ -38,7 +38,7 @@ export const SankeyAppRootWelcome: React.FC<TSankeyAppRootWelcomeProps> = (props
       </Box>
       <Box className={classNames(styles.section, styles.actions)}>
         <Button variant="contained" onClick={doStart}>
-          Start
+          Load data
         </Button>
       </Box>
     </Container>

@@ -7,6 +7,7 @@ import { isDevBrowser } from 'src/config/build';
 import { defaultMuiThemeMode } from 'src/config/app';
 import { PropsWithClassName, TMuiThemeMode } from 'src/core/types';
 import {
+  SankeyAppSessionStore,
   SankeyAppSessionStoreProvider,
   useSankeyAppSessionStore,
 } from 'src/components/SankeyApp/SankeyAppSessionStore';
@@ -27,16 +28,10 @@ const PlaceholderComponent = (id: string) => () => (
     Placeholder component: <strong>{id}</strong>
   </Box>
 );
-// const SankeyAppRootWelcome = PlaceholderComponent('SankeyAppRootWelcome');
 const SankeyAppRootFinished = PlaceholderComponent('SankeyAppRootFinished');
-// const SankeyAppCore = PlaceholderComponent('SankeyAppCore');
-// const SankeyAppStart = PlaceholderComponent('SankeyAppStart');
 
 interface TCurrentComponentProps {
-  inited: boolean;
-  loading: boolean;
-  ready: boolean;
-  finished: boolean;
+  rootState: typeof SankeyAppSessionStore.prototype.rootState;
   themeMode: TMuiThemeMode;
 }
 
@@ -44,20 +39,18 @@ interface TCurrentComponentProps {
 const RenderCurrentComponent: React.FC<TCurrentComponentProps> = (props) => {
   const {
     // prettier-ignore
-    inited,
-    loading,
-    ready,
-    finished,
+    rootState,
     themeMode,
   } = props;
-  if (!inited || loading) {
-    return <SankeyAppRootWaiter />;
-  } else if (finished) {
-    return <SankeyAppRootFinished />;
-  } else if (ready) {
-    return <SankeyAppCore themeMode={themeMode} />;
-  } else {
-    return <SankeyAppRootWelcome />;
+  switch (rootState) {
+    case 'waiting':
+      return <SankeyAppRootWaiter />;
+    case 'finished':
+      return <SankeyAppRootFinished />;
+    case 'ready':
+      return <SankeyAppCore themeMode={themeMode} />;
+    case 'welcome':
+      return <SankeyAppRootWelcome />;
   }
 };
 
@@ -71,17 +64,15 @@ const RenderLayout: React.FC = observer(() => {
       sankeyAppSessionStore.setReady(true);
     }
   }, [sankeyAppSessionStore]);
-  const { inited, loading, ready, finished } = sankeyAppSessionStore;
+  const { rootState } = sankeyAppSessionStore;
   // TODO: Get theme mode from config, session or the local storage?
   const themeMode: TMuiThemeMode = defaultMuiThemeMode;
   // TODO: Wrap with error & loader splash renderer?
   return (
     <FullScreenPageLayout className={classNames(styles.layout)} themeMode={themeMode}>
       <RenderCurrentComponent
-        inited={inited}
-        loading={loading}
-        ready={ready}
-        finished={finished}
+        // prettier-ignore
+        rootState={rootState}
         themeMode={themeMode}
       />
     </FullScreenPageLayout>

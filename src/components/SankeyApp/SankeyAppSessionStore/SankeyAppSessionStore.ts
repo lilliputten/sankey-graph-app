@@ -14,6 +14,8 @@ export class SankeyAppSessionStore {
   @observable error?: Error = undefined;
   // @observable settingsDone: boolean = false; // ???
 
+  @observable loadNewDataCb?: () => void | undefined;
+
   // Lifecycle...
 
   constructor() {
@@ -28,6 +30,25 @@ export class SankeyAppSessionStore {
   }
 
   // Core getters...
+
+  @computed get rootState() {
+    const {
+      // prettier-ignore
+      inited,
+      loading,
+      ready,
+      finished,
+    } = this;
+    if (!inited || loading) {
+      return 'waiting';
+    } else if (finished) {
+      return 'finished';
+    } else if (ready) {
+      return 'ready';
+    } else {
+      return 'welcome';
+    }
+  }
 
   /** Is current status final and successful (started, stopped)? */
   @computed get isFinished() {
@@ -75,5 +96,11 @@ export class SankeyAppSessionStore {
     this.status = undefined;
     this.error = undefined;
     // this.settingsDone = false;
+  }
+
+  // Other...
+
+  @action setLoadNewDataCb(loadNewDataCb: typeof SankeyAppSessionStore.prototype.loadNewDataCb) {
+    this.loadNewDataCb = loadNewDataCb;
   }
 }

@@ -18,14 +18,11 @@ export interface TFullScreenPageLayoutProps {
 export function FullScreenPageLayout(props: TFullScreenPageLayoutProps): JSX.Element {
   // NOTE: Get props from nextjs (as `pageProps`)
   const { className, children, themeMode } = props;
-  // prettier-ignore
   return (
-    <ThemeWrapper className={classNames(className,styles.container)} themeMode={themeMode} fullSize>
+    <ThemeWrapper className={classNames(className, styles.root)} themeMode={themeMode} fullSize>
       <AppHeader className={styles.header} />
-      <Box className={styles.content}>
-        {children}
-      </Box>
-      <AppFooter />
+      <Box className={styles.content}>{children}</Box>
+      <AppFooter className={styles.footer} />
     </ThemeWrapper>
   );
 }

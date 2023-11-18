@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { observer } from 'mobx-react-lite';
 import {
   AppBar,
   Box,
@@ -17,23 +18,63 @@ import { Menu } from '@mui/icons-material';
 import classNames from 'classnames';
 
 import { PropsWithClassName } from 'src/core/types';
-// import { ThemeWrapper } from 'src/ui/wrappers/ThemeWrapper';
-// import { TMuiThemeMode } from 'src/core/types';
+import { appTitle } from 'src/config/app';
+import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 
 import styles from './AppHeader.module.scss';
-import { appTitle } from 'src/config/app';
 
 const drawerWidth = 280;
-const navItems = ['Home', 'About', 'Contact'];
 
-export const AppHeader: React.FC<PropsWithClassName> = (props) => {
+interface TNavItem {
+  id: string;
+  text: string;
+}
+
+export const AppHeader: React.FC<PropsWithClassName> = observer((props) => {
   const { className } = props;
   const container = document.body;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const sankeyAppSessionStore = useSankeyAppSessionStore();
+  const { loadNewDataCb } = sankeyAppSessionStore;
+  const navItems = React.useMemo<TNavItem[]>(() => {
+    return [
+      { id: 'home', text: 'Home' },
+      loadNewDataCb && { id: 'loadNewData', text: 'Load new data' },
+    ].filter(Boolean) as TNavItem[];
+  }, [loadNewDataCb]);
 
-  const handleDrawerToggle = () => {
+  /** Mobile drawer state */
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+  /** Toggle mobile drawer... */
+  const handleDrawerToggle = React.useCallback(() => {
     setMobileOpen((prevState) => !prevState);
-  };
+  }, []);
+  /** Handle user action... */
+  const handleNavItemClick = React.useCallback<
+    React.MouseEventHandler<HTMLDivElement | HTMLButtonElement>
+  >(
+    (ev) => {
+      const { currentTarget } = ev;
+      const { id } = currentTarget;
+      console.log('[AppHeader:handleNavItemClick]', {
+        id,
+        currentTarget,
+        ev,
+      });
+      switch (id) {
+        case 'home': {
+          sankeyAppSessionStore.setReady(false);
+          break;
+        }
+        case 'loadNewData': {
+          if (loadNewDataCb) {
+            loadNewDataCb();
+          }
+          break;
+        }
+      }
+    },
+    [sankeyAppSessionStore, loadNewDataCb],
+  );
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
@@ -43,9 +84,9 @@ export const AppHeader: React.FC<PropsWithClassName> = (props) => {
       <Divider />
       <List>
         {navItems.map((item) => (
-          <ListItem key={item} disablePadding>
-            <ListItemButton sx={{ textAlign: 'center' }}>
-              <ListItemText primary={item} />
+          <ListItem key={item.id} disablePadding>
+            <ListItemButton id={item.id} sx={{ textAlign: 'center' }} onClick={handleNavItemClick}>
+              <ListItemText primary={item.text} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -75,8 +116,13 @@ export const AppHeader: React.FC<PropsWithClassName> = (props) => {
           </Typography>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
             {navItems.map((item) => (
-              <Button key={item} sx={{ color: 'white' }}>
-                {item}
+              <Button
+                key={item.id}
+                id={item.id}
+                sx={{ color: 'white' }}
+                onClick={handleNavItemClick}
+              >
+                {item.text}
               </Button>
             ))}
           </Box>
@@ -101,4 +147,4 @@ export const AppHeader: React.FC<PropsWithClassName> = (props) => {
       </nav>
     </>
   );
-};
+});

@@ -9,10 +9,11 @@ import {
   SankeyAppDataStoreProvider,
   useSankeyAppDataStore,
 } from 'src/components/SankeyApp/SankeyAppDataStore';
-import { FullScreenPageLayout } from 'src/ui/layouts/FullScreenPageLayout';
+import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 
 import { SankeyAppCoreWaiter } from './SankeyAppCoreWaiter';
 import { SankeyAppCoreStart } from './SankeyAppCoreStart';
+import { SankeyViewer } from 'src/components/SankeyViewer/SankeyViewer';
 
 import styles from './SankeyAppCore.module.scss';
 
@@ -26,7 +27,7 @@ const PlaceholderComponent = (id: string) => () => (
   </Box>
 );
 // const SankeyAppCoreWaiter = PlaceholderComponent('SankeyAppCoreWaiter');
-const SankeyAppCoreReady = PlaceholderComponent('SankeyAppCoreReady');
+// const SankeyAppCoreReady = PlaceholderComponent('SankeyAppCoreReady');
 // const SankeyAppCoreStart = PlaceholderComponent('SankeyAppCoreStart');
 const SankeyAppCoreFinished = PlaceholderComponent('SankeyAppCoreFinished');
 
@@ -58,7 +59,7 @@ const RenderCurrentComponent: React.FC<TCurrentComponentProps> = (props) => {
   } else if (finished) {
     return <SankeyAppCoreFinished />;
   } else if (ready) {
-    return <SankeyAppCoreReady />;
+    return <SankeyViewer />;
   } else {
     return <SankeyAppCoreStart />;
   }
@@ -67,7 +68,12 @@ const RenderCurrentComponent: React.FC<TCurrentComponentProps> = (props) => {
 /** Choose & render suitable application part */
 const RenderLayout: React.FC<TSankeyAppCoreProps> = observer((props) => {
   const { themeMode } = props;
+  const sankeyAppSessionStore = useSankeyAppSessionStore();
   const sankeyAppDataStore = useSankeyAppDataStore();
+  const loadNewData = React.useCallback(() => {
+    console.log('[SankeyAppCore:loadNewData]');
+    sankeyAppDataStore.setReady(false);
+  }, [sankeyAppDataStore]);
   React.useEffect(() => {
     /* // NOTE: It's already inited in `SankeyAppDataStoreProvider`
      * sankeyAppDataStore.setInited(true);
@@ -77,7 +83,12 @@ const RenderLayout: React.FC<TSankeyAppCoreProps> = observer((props) => {
       // TODO: Set demo data
       sankeyAppDataStore.setReady(true);
     }
-  }, [sankeyAppDataStore]);
+    // Set (and reset) handler for navigate to data load page...
+    sankeyAppSessionStore.setLoadNewDataCb(loadNewData);
+    return () => {
+      sankeyAppSessionStore.setLoadNewDataCb(undefined);
+    };
+  }, [sankeyAppDataStore, sankeyAppSessionStore, loadNewData]);
   const { inited, loading, ready, finished } = sankeyAppDataStore;
   return (
     <RenderCurrentComponent
