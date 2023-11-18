@@ -26,6 +26,7 @@ export function constructEdgesData(fullDataSet: TFullChartDataSet) {
       consumer_graph_id: fromId, // 0,
       amount, // 0.0016624585259705782
     }) => {
+      // TODO: Check data and throw errors?
       const fromGraph = getGraphForId(graphsHash, fromId);
       const toGraph = getGraphForId(graphsHash, toId);
       const fromNode = getNodeForId(nodesHash, fromGraph.id_in_database);

@@ -10,12 +10,14 @@ import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataSto
 import AnyChart from 'anychart-react';
 
 import styles from './SankeyAnychartDemo.module.scss';
+import * as toasts from 'src/ui/Basic/Toasts';
 import {
   constructEdgesData,
   constructGraphsHashGraphsData,
   constructNodesHashFromData,
 } from 'src/helpers/anychart';
 import { TChartDataSet, TFullChartDataSet } from 'src/core/types';
+import { getErrorText } from 'src/helpers';
 
 /** DEBUG: Don't wait for user action */
 const __debugUseDemoData = false && isDevBrowser;
@@ -46,6 +48,12 @@ interface TSankeyAnychartDemoProps {
 export const SankeyAnychartDemo: React.FC<TSankeyAnychartDemoProps> = observer((props) => {
   const { className } = props;
   const sankeyAppDataStore = useSankeyAppDataStore();
+  const [errorText, setErrorText] = React.useState<string | undefined>();
+  React.useEffect(() => {
+    if (errorText) {
+      toasts.showError(errorText);
+    }
+  }, [errorText]);
   const {
     // prettier-ignore
     edgesData,
@@ -53,8 +61,6 @@ export const SankeyAnychartDemo: React.FC<TSankeyAnychartDemoProps> = observer((
     graphsData,
     nodesData,
   } = sankeyAppDataStore;
-  // graphsHash: TGraphHash;
-  // nodesHash: TNodeHash;
   const getFullDataSet = React.useCallback((dataSet: Partial<TChartDataSet>) => {
     const {
       // prettier-ignore
@@ -63,20 +69,44 @@ export const SankeyAnychartDemo: React.FC<TSankeyAnychartDemoProps> = observer((
       graphsData,
       nodesData,
     } = dataSet;
-    if (!edgesData || !flowsData || !graphsData || !nodesData) {
-      return undefined;
+    try {
+      if (!edgesData || !flowsData || !graphsData || !nodesData) {
+        const errMsg = 'Some of required data is undefined';
+        const error = new Error(errMsg);
+        throw error;
+      }
+      const graphsHash = constructGraphsHashGraphsData(graphsData);
+      const nodesHash = constructNodesHashFromData(nodesData);
+      const fullDataSet: TFullChartDataSet = {
+        edgesData,
+        flowsData,
+        graphsData,
+        nodesData,
+        graphsHash,
+        nodesHash,
+      };
+      return fullDataSet;
+    } catch (error) {
+      const errMsg = [
+        // prettier-ignore
+        'Cannot costruct full data set',
+        getErrorText(error),
+      ]
+        .filter(Boolean)
+        .join(': ');
+      const resultError = new Error(errMsg);
+      // eslint-disable-next-line no-console
+      console.error('[SankeyAnychartDemo:getFullDataSet] error', {
+        // error,
+        resultError,
+        edgesData,
+        flowsData,
+        graphsData,
+        nodesData,
+      });
+      debugger; // eslint-disable-line no-debugger
+      setErrorText(getErrorText(resultError));
     }
-    const graphsHash = constructGraphsHashGraphsData(graphsData);
-    const nodesHash = constructNodesHashFromData(nodesData);
-    const fullDataSet: TFullChartDataSet = {
-      edgesData,
-      flowsData,
-      graphsData,
-      nodesData,
-      graphsHash,
-      nodesHash,
-    };
-    return fullDataSet;
   }, []);
   const chartData = React.useMemo<TAnyChartData | undefined>(() => {
     if (__debugUseDemoData) {
@@ -89,10 +119,36 @@ export const SankeyAnychartDemo: React.FC<TSankeyAnychartDemoProps> = observer((
       graphsData,
       nodesData,
     });
-    if (fullDataSet) {
-      return constructEdgesData(fullDataSet);
+    if (!fullDataSet) {
+      // Error should already be processed in `getFullDataSet`
+      return undefined;
     }
-    return undefined;
+    try {
+      const chartData = constructEdgesData(fullDataSet);
+      setErrorText(undefined);
+      return chartData;
+    } catch (error) {
+      const errMsg = [
+        // prettier-ignore
+        'Cannot costruct chart data',
+        getErrorText(error),
+      ]
+        .filter(Boolean)
+        .join(': ');
+      const resultError = new Error(errMsg);
+      // eslint-disable-next-line no-console
+      console.error('[SankeyAnychartDemo:chartData] error', {
+        // error,
+        resultError,
+        fullDataSet,
+        edgesData,
+        flowsData,
+        graphsData,
+        nodesData,
+      });
+      debugger; // eslint-disable-line no-debugger
+      setErrorText(getErrorText(resultError));
+    }
   }, [
     // prettier-ignore
     edgesData,
@@ -112,12 +168,15 @@ export const SankeyAnychartDemo: React.FC<TSankeyAnychartDemoProps> = observer((
         <Typography>Nodes: {getSankeyDataInfo(nodesData)}</Typography>
       </Box>
       */}
-      <AnyChart
-        className={styles.chart}
-        type="sankey"
-        data={chartData}
-        // title="Simple chart"
-      />
+      {!!errorText && <Box className={styles.errorBox}>{errorText}</Box>}
+      {!!chartData && (
+        <AnyChart
+          className={styles.chart}
+          type="sankey"
+          data={chartData}
+          // title="Simple chart"
+        />
+      )}
     </Box>
   );
 });
