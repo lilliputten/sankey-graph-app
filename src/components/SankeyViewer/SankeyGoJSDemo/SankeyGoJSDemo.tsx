@@ -56,6 +56,12 @@ function getColorsList() {
   ];
 }
 
+function getColorForIndex(idx: number) {
+  const colors = getColorsList();
+  const colorIdx = idx % colors.length;
+  return colors[colorIdx];
+}
+
 function getRandomColor() {
   const colors = getColorsList();
   const maxColor = colors.length - 1;
@@ -219,6 +225,28 @@ function getGojsSampleData(): TGojsData {
   return gojsData;
 }
 
+function getGojsSampleMinimalData(): TGojsData {
+  // prettier-ignore
+  const nodeDataArray: Array<go.ObjectData> = [
+    { key: 20, text: 'Twenty', color: '#9d75c2' },
+    { key: 40, text: 'Forty', color: '#fe8b25' },
+    { key: 60, text: 'Sixty', color: '#2dc3d2' },
+  ];
+  const linkDataArray: Array<go.ObjectData> = [
+    { from: 20, to: 60, width: 20 },
+    { from: 40, to: 60, width: 40 },
+    { from: 60, to: 100, width: 60 },
+  ];
+  const gojsData: TGojsData = {
+    // class: 'go.GraphLinksModel',
+    nodeDataArray,
+    linkDataArray,
+  };
+  // // TODO?
+  // const modelData = go.Model.fromJson(gojsData);
+  return gojsData;
+}
+
 interface TSankeyGoJSDemoProps {
   className?: string;
 }
@@ -235,17 +263,19 @@ function constructNodeDataArray(fullDataSet: TFullChartDataSet): TGojsNodeDataAr
     nodesHash,
     // graphsHash,
   } = fullDataSet;
-  const nodeDataArray: TGojsNodeDataArray = graphsData.map((graph: TGraphItem) => {
+  const nodeDataArray: TGojsNodeDataArray = graphsData.map((graph: TGraphItem, idx) => {
     const {
       // prettier-ignore
-      id_in_database: nodeId,
+      id_in_graph: nodeId,
+      // id_in_database: nodeId,
     } = graph;
     const node: TNodeItem = getNodeForId(nodesHash, nodeId);
     const { id, name } = node;
-    const color = getRandomColor();
+    // const color = getRandomColor();
+    const color = getColorForIndex(idx);
     return {
       // prettier-ignore
-      key: String(id),
+      key: id,
       text: String(id), // name,
       color,
     };
@@ -270,15 +300,18 @@ function constructLinkDataArray(fullDataSet: TFullChartDataSet): TGojsLinkDataAr
   const linkDataArray: TGojsLinkDataArray = edgesData.map((edge: TEdgeItem) => {
     const {
       // prettier-ignore
+      // consumer_graph_id: toId, // 2,
+      // producer_graph_id: fromId, // 0,
       producer_graph_id: toId, // 2,
       consumer_graph_id: fromId, // 0,
       amount, // 0.0016624585259705782
     } = edge;
+    const multipy = 10;
     return {
       // prettier-ignore
-      from: String(fromId),
-      to: String(toId),
-      width: 100, // amount,
+      from: fromId,
+      to: toId,
+      width: multipy * amount,
     };
   });
   /* // Data sample:
@@ -305,12 +338,14 @@ export const SankeyGoJSDemo: React.FC<TSankeyGoJSDemoProps> = observer((props) =
     graphsData,
     nodesData,
   } = sankeyAppDataStore;
+
   const gojsData = React.useMemo(() => {
     if (__debugUseDemoData) {
-      return getGojsSampleData();
+      // return getGojsSampleData();
+      return getGojsSampleMinimalData();
     }
+    const gojsDataSample =  getGojsSampleMinimalData();
     try {
-      // let gojsData = getGojsSampleData();
       const fullDataSet = getFullDataSet({
         // prettier-ignore
         edgesData,
@@ -318,24 +353,36 @@ export const SankeyGoJSDemo: React.FC<TSankeyGoJSDemoProps> = observer((props) =
         graphsData,
         nodesData,
       });
-      // prettier-ignore
-      const nodeDataArray = constructNodeDataArray(fullDataSet);
-      const linkDataArray = constructLinkDataArray(fullDataSet);
-      // const modelData = go.Model.fromJson(gojsData);
-      const gojsData = {
-        // class: 'go.GraphLinksModel',
-        nodeDataArray,
-        linkDataArray,
-      };
       console.log('[SankeyGoJSDemo:gojsData] start', {
         edgesData: edgesData?.map((it) => ({ ...it })),
         flowsData: flowsData?.map((it) => ({ ...it })),
         graphsData: graphsData?.map((it) => ({ ...it })),
         nodesData: nodesData?.map((it) => ({ ...it })),
+      });
+      // prettier-ignore
+      const nodeDataArray = constructNodeDataArray(fullDataSet);
+      const linkDataArray = constructLinkDataArray(fullDataSet);
+      // const modelData = go.Model.fromJson(gojsData);
+      console.log('[SankeyGoJSDemo:gojsData] data', {
         fullDataSet,
         nodeDataArray,
         linkDataArray,
-        // gojsData,
+      });
+      const gojsData = {
+        // class: 'go.GraphLinksModel',
+        nodeDataArray,
+        linkDataArray,
+      };
+      console.log('[SankeyGoJSDemo:gojsData] done', {
+        // edgesData: edgesData?.map((it) => ({ ...it })),
+        // flowsData: flowsData?.map((it) => ({ ...it })),
+        // graphsData: graphsData?.map((it) => ({ ...it })),
+        // nodesData: nodesData?.map((it) => ({ ...it })),
+        // fullDataSet,
+        // nodeDataArray,
+        // linkDataArray,
+        gojsData,
+        gojsDataSample,
       });
       // debugger;
       return gojsData;
@@ -370,7 +417,6 @@ export const SankeyGoJSDemo: React.FC<TSankeyGoJSDemoProps> = observer((props) =
 
   const fullGojsData = React.useMemo(() => {
     if (gojsData) {
-      // const gojsData = getGojsSampleData();
       return {
         ...gojsData,
         modelData: {

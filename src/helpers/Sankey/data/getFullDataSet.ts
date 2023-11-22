@@ -9,7 +9,7 @@ export function getFullDataSet(dataSet: Partial<TChartDataSet>) {
     // prettier-ignore
     edgesData,
     flowsData,
-    graphsData,
+    graphsData, // nodes-supply-chain.json
     nodesData,
   } = dataSet;
   try {

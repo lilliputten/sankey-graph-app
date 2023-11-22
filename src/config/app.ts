@@ -6,7 +6,13 @@ export const defaultMuiThemeMode: TMuiThemeMode = useDarkTheme ? 'dark' : 'light
 
 export const defaultToastDelay = isDev ? 1500 : 1000;
 
-export const sampleDataUrlPrefix = '/sample-data/';
+const useTestData = true;
+const useMinimalTestData = false;
+export const sampleDataUrlPrefix = useTestData
+  ? useMinimalTestData
+    ? '/sample-data-minimal/'
+    : '/sample-data-test/'
+  : '/sample-data/';
 
-/** App title. Don't forget to sync with `public/index.html` */
+/** App title. Don't forget to sync it in `public/index.html` */
 export const appTitle = 'Sankey Graph Visualizer';
