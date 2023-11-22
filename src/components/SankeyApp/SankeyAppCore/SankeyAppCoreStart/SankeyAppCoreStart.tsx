@@ -1,10 +1,10 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { Box, Stack, Button, Container, Typography } from '@mui/material';
+import { Box, Stack, Button, Container } from '@mui/material';
 import classNames from 'classnames';
 
-import { isDevBrowser } from 'src/config/build';
-import { sampleDataUrlPrefix } from 'src/config/app';
+// import { isDevBrowser } from 'src/config/build';
+import { autoLoadUrls } from 'src/core/constants/Sankey';
 import {
   PropsWithClassName,
   TEdgesData,
@@ -17,59 +17,15 @@ import {
   useSankeyAppDataStore,
 } from 'src/components/SankeyApp/SankeyAppDataStore';
 import { UploadSankeyDataField } from 'src/components/SankeyMisc/UploadSankeyDataField';
+import { InfoContent } from './InfoContent';
 
 import styles from './SankeyAppCoreStart.module.scss';
 
 type TSankeyAppCoreStartProps = PropsWithClassName;
 
-const __debugDoAutoLoadData = true && isDevBrowser;
-
-/** Default file names for specific data types */
-const defaultDataFiles = {
-  edges: 'edges.json',
-  flows: 'flows.json',
-  graphs: 'nodes-supply-chain.json', // 'graphs.json',
-  nodes: 'nodes.json',
-};
-/** Create demo urls list */
-const autoLoadUrls = Object.keys(defaultDataFiles).reduce<Partial<typeof defaultDataFiles>>(
-  (urls, id) => {
-    urls[id as keyof typeof defaultDataFiles] =
-      sampleDataUrlPrefix + defaultDataFiles[id as keyof typeof defaultDataFiles];
-    return urls;
-  },
-  {},
-);
+// const __debugDoAutoLoadData = true && isDevBrowser;
 
 // TODO: Move the following helpers to an external modules?
-
-const InfoContent: React.FC = () => (
-  <>
-    <Typography variant="h3" gutterBottom>
-      Load data
-    </Typography>
-    <Typography variant="subtitle1" gutterBottom>
-      An intro text providing some explanations about the data loading procedure.
-    </Typography>
-    <Typography variant="h5" gutterBottom>
-      Default data file names:
-    </Typography>
-    <ul className={styles.list}>
-      <li>
-        Edges: <u>{defaultDataFiles.edges}</u>
-      </li>
-      <li>
-        Flows: <u>{defaultDataFiles.flows}</u>
-      </li>
-      <li>
-        Graphs: <u>{defaultDataFiles.graphs}</u>
-      </li>
-      <li>
-        Nodes: <u>{defaultDataFiles.nodes}</u>
-      </li>
-    </ul>
-  </>
-);
 
 export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((props) => {
   const { className } = props;
@@ -122,6 +78,7 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
     const isAllDataLoaded = !!(edgesData && flowsData && graphsData && nodesData);
     setAllDataLoaded(isAllDataLoaded);
   }, [edgesData, flowsData, graphsData, nodesData]);
+  const [doAutoLoad, setAutoLoad] = React.useState(false); // __debugDoAutoLoadData
   return (
     <Container className={classNames(className, styles.root)} maxWidth="md">
       <Box className={classNames(styles.section, styles.content)}>
@@ -134,7 +91,7 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
           setData={handleEdgesData}
           defaultLoaded={!!edgesData}
           dataInfo={getSankeyDataInfo(edgesData)}
-          autoLoadUrl={__debugDoAutoLoadData ? autoLoadUrls.edges : undefined}
+          autoLoadUrl={doAutoLoad ? autoLoadUrls.edges : undefined}
           className={styles.uploadButton}
         />
         <UploadSankeyDataField
@@ -143,7 +100,7 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
           setData={handleFlowsData}
           defaultLoaded={!!flowsData}
           dataInfo={getSankeyDataInfo(flowsData)}
-          autoLoadUrl={__debugDoAutoLoadData ? autoLoadUrls.flows : undefined}
+          autoLoadUrl={doAutoLoad ? autoLoadUrls.flows : undefined}
           className={styles.uploadButton}
         />
         <UploadSankeyDataField
@@ -152,7 +109,7 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
           setData={handleGraphsData}
           defaultLoaded={!!graphsData}
           dataInfo={getSankeyDataInfo(graphsData)}
-          autoLoadUrl={__debugDoAutoLoadData ? autoLoadUrls.graphs : undefined}
+          autoLoadUrl={doAutoLoad ? autoLoadUrls.graphs : undefined}
           className={styles.uploadButton}
         />
         <UploadSankeyDataField
@@ -161,7 +118,7 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
           setData={handleNodesData}
           defaultLoaded={!!nodesData}
           dataInfo={getSankeyDataInfo(nodesData)}
-          autoLoadUrl={__debugDoAutoLoadData ? autoLoadUrls.nodes : undefined}
+          autoLoadUrl={doAutoLoad ? autoLoadUrls.nodes : undefined}
           className={styles.uploadButton}
         />
       </Stack>
@@ -173,6 +130,15 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
           disabled={!isAllDataLoaded}
         >
           Visualize
+        </Button>
+        <Button
+          // prettier-ignore
+          variant="contained"
+          onClick={() => setAutoLoad(true)}
+          color="warning"
+          disabled={isAllDataLoaded}
+        >
+          Load demo data
         </Button>
       </Box>
     </Container>

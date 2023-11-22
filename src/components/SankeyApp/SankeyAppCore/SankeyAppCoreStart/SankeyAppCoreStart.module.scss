@@ -11,13 +11,13 @@
   /*!KEEP*/
 }
 
-.list {
-  margin-top: 0;
-  margin-bottom: 0.35em;
-}
-
 .uploadButton {
   label {
     justify-content: flex-start;
   }
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
 }

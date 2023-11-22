@@ -1,0 +1,19 @@
+.root {
+  @include singleFullSizeContainer;
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 20px;
+  gap: 20px;
+  // Chart container
+  :global(#ac-chart-container) {
+    // @include singleFullSizeContainer;
+    @include fullSizeBlock;
+  }
+}
+
+.errorBox {
+  background-color: $errorColor;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 4px;
+}

@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { Box } from '@mui/material';
 import classNames from 'classnames';
 
-import { isDevBrowser } from 'src/config/build';
+// import { isDevBrowser } from 'src/config/build';
 import { defaultMuiThemeMode } from 'src/config/app';
 import { PropsWithClassName, TMuiThemeMode } from 'src/core/types';
 import {
@@ -19,8 +19,9 @@ import { SankeyAppRootWelcome } from './SankeyAppRootWelcome';
 
 import styles from './SankeyAppRoot.module.scss';
 
-/** DEBUG: Don't wait for user action */
-const __debugEmulateSessionReady = false && isDevBrowser;
+/* [>* DEBUG: Don't wait for user action <]
+ * const __debugEmulateSessionReady = false && isDevBrowser;
+ */
 
 // DEBUG!
 const PlaceholderComponent = (id: string) => () => (
@@ -60,9 +61,10 @@ const RenderLayout: React.FC = observer(() => {
   React.useEffect(() => {
     // Init store...
     sankeyAppSessionStore.setInited(true);
-    if (__debugEmulateSessionReady) {
-      sankeyAppSessionStore.setReady(true);
-    }
+    sankeyAppSessionStore.setReady(true);
+    // if (__debugEmulateSessionReady) {
+    //   sankeyAppSessionStore.setReady(true);
+    // }
   }, [sankeyAppSessionStore]);
   const { rootState } = sankeyAppSessionStore;
   // TODO: Get theme mode from config, session or the local storage?

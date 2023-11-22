@@ -3,7 +3,8 @@ import { Box } from '@mui/material';
 import classNames from 'classnames';
 
 // import { isDevBrowser } from 'src/config/build';
-import { SankeyAnychartDemo } from 'src/components/SankeyViewer/SankeyAnychartDemo';
+// import { SankeyAnychartDemo } from 'src/components/SankeyViewer/SankeyAnychartDemo';
+import { SankeyGoJSDemo } from 'src/components/SankeyViewer/SankeyGoJSDemo';
 
 import styles from './SankeyViewer.module.scss';
 
@@ -19,7 +20,7 @@ export const SankeyViewer: React.FC<TSankeyViewerProps> = (props) => {
   const { className } = props;
   return (
     <Box className={classNames(className, styles.root)}>
-      <SankeyAnychartDemo />
+      <SankeyGoJSDemo />
     </Box>
   );
 };

@@ -37,6 +37,7 @@ const defaultDataType = expectedDataTypes[0];
 
 interface TMemo {
   inited?: boolean;
+  loaded?: boolean;
 }
 
 export const DataFileUploadField = <T extends unknown>(props: TDataFileUploadFieldProps<T>) => {
@@ -64,6 +65,9 @@ export const DataFileUploadField = <T extends unknown>(props: TDataFileUploadFie
   const [isLoaded, setLoaded] = React.useState(!!defaultLoaded);
   const [isLoading, setLoading] = React.useState(false);
   const [loadingProgress, setLoadingProgress] = React.useState<number | undefined>();
+  React.useEffect(() => {
+    memo.loaded = isLoaded;
+  }, [memo, isLoaded]);
   // Data loading services...
   const handleLoadingProgress = React.useCallback((params: TLoadDataFileProgressParams) => {
     const {
@@ -218,8 +222,8 @@ export const DataFileUploadField = <T extends unknown>(props: TDataFileUploadFie
   React.useEffect(() => {
     if (!memo.inited) {
       // Prevent double calling in strict mode (to use memoized `inited` status)
-      memo.inited = true;
       if (autoLoadUrl && !defaultLoaded) {
+        memo.inited = true;
         console.log('[DataFileUploadField:Effect: Handle auto-load url]', {
           inited: memo.inited,
           autoLoadUrl,
