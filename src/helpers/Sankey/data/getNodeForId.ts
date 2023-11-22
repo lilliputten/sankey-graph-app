@@ -1,6 +1,6 @@
-import { TNodeHash, TNodeId } from 'src/core/types';
+import { TNodeHash, TNodeId, TNodeItem } from 'src/core/types';
 
-export function getNodeForId(nodesHash: TNodeHash, id: TNodeId) {
+export function getNodeForId(nodesHash: TNodeHash, id: TNodeId): TNodeItem {
   const node = nodesHash[id];
   if (!node) {
     if (id === -1) {
@@ -8,6 +8,7 @@ export function getNodeForId(nodesHash: TNodeHash, id: TNodeId) {
       // eslint-disable-next-line no-console
       console.warn('[getNodeForId]', error.message);
       return {
+        id,
         name: 'Root node',
         product: 'Root product',
       };
@@ -16,6 +17,7 @@ export function getNodeForId(nodesHash: TNodeHash, id: TNodeId) {
       // eslint-disable-next-line no-console
       console.warn('[getNodeForId]', error.message);
       return {
+        id,
         name: 'Node ' + id,
         product: 'Product' + id,
       };

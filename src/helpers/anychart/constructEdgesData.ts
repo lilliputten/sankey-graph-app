@@ -1,7 +1,8 @@
 import { TFullChartDataSet } from 'src/core/types';
-import { getGraphForId } from './getGraphForId';
-import { getNodeForId } from './getNodeForId';
+// import { getGraphForId } from './getGraphForId';
+// import { getNodeForId } from './getNodeForId';
 import { TAnyChartRecord } from 'src/core/types/anychart';
+import { getGraphForId, getNodeForId } from 'src/helpers/Sankey/data';
 
 /** Create chart data from the data set */
 export function constructEdgesData(fullDataSet: TFullChartDataSet) {

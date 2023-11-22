@@ -1,6 +1,6 @@
-import { TGraphHash, TGraphId } from 'src/core/types';
+import { TGraphHash, TGraphId, TGraphItem } from 'src/core/types';
 
-export function getGraphForId(graphsHash: TGraphHash, id: TGraphId) {
+export function getGraphForId(graphsHash: TGraphHash, id: TGraphId): TGraphItem {
   const graph = graphsHash[id];
   if (!graph) {
     const error = new Error('Cannot find graph for id ' + id);

@@ -2,7 +2,7 @@ export type TGraphId = number;
 
 export interface TGraphItem {
   id_in_graph: number; // -1
-  id_in_database: number; // -1
+  id_in_database: number; // -1, node id
   product_id_in_database: number; // -1
   product_scaling_amount: number; // 1.0
   process_amount: number; // 1.0

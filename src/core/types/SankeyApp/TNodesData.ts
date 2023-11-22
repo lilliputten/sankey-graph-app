@@ -6,7 +6,7 @@ export interface TNodeItem {
   name: string; // 'tau-Fluvalinate'
   product?: string; // '1,1-difluoroethane, HFC-152a'
   type?: string; // 'ordinary transforming activity'
-  unit: string; // 'kilogram'
+  unit?: string; // 'kilogram'
   context?: string[]; // ['soil', 'agricultural'];
 }
 

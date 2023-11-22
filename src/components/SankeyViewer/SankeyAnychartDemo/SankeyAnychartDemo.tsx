@@ -11,11 +11,8 @@ import AnyChart from 'anychart-react';
 
 import styles from './SankeyAnychartDemo.module.scss';
 import * as toasts from 'src/ui/Basic/Toasts';
-import {
-  constructEdgesData,
-  constructGraphsHashGraphsData,
-  constructNodesHashFromData,
-} from 'src/helpers/anychart';
+import { constructEdgesData } from 'src/helpers/anychart';
+import { constructGraphsHashGraphsData, constructNodesHashFromData } from 'src/helpers/Sankey';
 import { TChartDataSet, TFullChartDataSet } from 'src/core/types';
 import { getErrorText } from 'src/helpers';
 

@@ -5,65 +5,66 @@ import classNames from 'classnames';
 import * as go from 'gojs';
 
 import { isDevBrowser } from 'src/config/build';
-import { TAnyChartData } from 'src/core/types/anychart';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 // @ts-ignore
 // import AnyChart from 'anychart-react';
 
 import styles from './SankeyGoJSDemo.module.scss';
 import * as toasts from 'src/ui/Basic/Toasts';
-import {
-  constructEdgesData,
-  constructGraphsHashGraphsData,
-  constructNodesHashFromData,
-} from 'src/helpers/anychart';
-import { TChartDataSet, TFullChartDataSet } from 'src/core/types';
+import { getFullDataSet, getNodeForId } from 'src/helpers/Sankey';
+import { TEdgeItem, TFullChartDataSet, TGraphItem, TNodeItem } from 'src/core/types';
 import { getErrorText } from 'src/helpers';
 import { DiagramWrapper } from 'src/core/gojs';
 
 /** DEBUG: Don't wait for user action */
-const __debugUseDemoData = true && isDevBrowser;
+const __debugUseDemoData = false && isDevBrowser;
 
-const anychartDemoData: TAnyChartData = [
-  { from: 'First Class', to: 'Child', value: 6 },
-  { from: 'Second Class', to: 'Child', value: 24 },
-  { from: 'Third Class', to: 'Child', value: 79 },
-  { from: 'Crew', to: 'Child', value: 0 },
-  { from: 'First Class', to: 'Adult', value: 319 },
-  { from: 'Second Class', to: 'Adult', value: 261 },
-  { from: 'Third Class', to: 'Adult', value: 627 },
-  { from: 'Crew', to: 'Adult', value: 885 },
-  { from: 'Child', to: 'Female', value: 45 },
-  { from: 'Child', to: 'Male', value: 64 },
-  { from: 'Adult', to: 'Female', value: 425 },
-  { from: 'Adult', to: 'Male', value: 1667 },
-  { from: 'Female', to: 'Survived', value: 344 },
-  { from: 'Female', to: 'Perished', value: 126 },
-  { from: 'Male', to: 'Survived', value: 367 },
-  { from: 'Male', to: 'Perished', value: 1364 },
-];
-
-interface TGojsDemoData {
+interface TGojsData {
   nodeDataArray: Array<go.ObjectData>;
   linkDataArray?: Array<go.ObjectData>;
 }
-const gojsDemoData: TGojsDemoData = {
-  nodeDataArray: [
-    { key: 0, text: 'Alpha', color: 'lightblue', loc: '0 0' },
-    { key: 1, text: 'Beta', color: 'orange', loc: '150 0' },
-    { key: 2, text: 'Gamma', color: 'lightgreen', loc: '0 150' },
-    { key: 3, text: 'Delta', color: 'pink', loc: '150 150' },
-  ],
-  linkDataArray: [
-    { key: -1, from: 0, to: 1 },
-    { key: -2, from: 0, to: 2 },
-    { key: -3, from: 1, to: 1 },
-    { key: -4, from: 2, to: 3 },
-    { key: -5, from: 3, to: 0 },
-  ],
-};
 
-function getGojsSampleData() {
+function getColorsList() {
+  return [
+    '#2dc3d2',
+    '#3483ba',
+    '#40a840',
+    '#556171',
+    '#5c5c10',
+    '#681313',
+    '#6b6b45',
+    '#6f3a5f',
+    '#7c3e06',
+    '#868686',
+    '#8b8b8b',
+    '#96665c',
+    '#9d75c2',
+    '#a1e194',
+    '#a6dce6',
+    '#b5cbe9',
+    '#c7a39b',
+    '#c9a59d',
+    '#c9b7d8',
+    '#cbcbcb',
+    '#d93c3c',
+    '#e483c7',
+    '#f6bcd5',
+    '#fe8b25',
+    '#fea19f',
+    '#fec184',
+    'yellow',
+  ];
+}
+
+function getRandomColor() {
+  const colors = getColorsList();
+  const maxColor = colors.length - 1;
+  const randomIdx = Math.round(Math.random() * maxColor);
+  return colors[randomIdx];
+}
+
+function getGojsSampleData(): TGojsData {
+  // prettier-ignore
   const nodeDataArray: Array<go.ObjectData> = [
     { key: 'Coal reserves', text: 'Coal reserves', color: '#9d75c2' },
     { key: 'Coal imports', text: 'Coal imports', color: '#9d75c2' },
@@ -105,22 +106,10 @@ function getGojsSampleData() {
     { key: 'Over generation / exports', ltext: 'Over generation / exports', color: '#f6bcd5' },
     { key: 'Heating and cooling - homes', ltext: 'Heating and cooling - homes', color: '#c7a39b' },
     { key: 'Road transport', ltext: 'Road transport', color: '#cbcbcb' },
-    {
-      key: 'Heating and cooling - commercial',
-      ltext: 'Heating and cooling - commercial',
-      color: '#c9a59d',
-    },
+    { key: 'Heating and cooling - commercial', ltext: 'Heating and cooling - commercial', color: '#c9a59d' },
     { key: 'Industry', ltext: 'Industry', color: '#96665c' },
-    {
-      key: 'Lighting &amp; appliances - homes',
-      ltext: 'Lighting &amp; appliances - homes',
-      color: '#2dc3d2',
-    },
-    {
-      key: 'Lighting &amp; appliances - commercial',
-      ltext: 'Lighting &amp; appliances - commercial',
-      color: '#2dc3d2',
-    },
+    { key: 'Lighting &amp; appliances - homes', ltext: 'Lighting &amp; appliances - homes', color: '#2dc3d2' },
+    { key: 'Lighting &amp; appliances - commercial', ltext: 'Lighting &amp; appliances - commercial', color: '#2dc3d2' },
     { key: 'Agriculture', ltext: 'Agriculture', color: '#5c5c10' },
     { key: 'Rail transport', ltext: 'Rail transport', color: '#6b6b45' },
     { key: 'Domestic aviation', ltext: 'Domestic aviation', color: '#40a840' },
@@ -220,70 +209,84 @@ function getGojsSampleData() {
     { from: 'Electricity grid', to: 'Geosequestration', width: 1 },
     { from: 'Gas', to: 'Losses', width: 2 },
   ];
-  const sampleData = {
+  const gojsData: TGojsData = {
     // class: 'go.GraphLinksModel',
     nodeDataArray,
     linkDataArray,
   };
-  // const modelData = go.Model.fromJson(sampleData);
-  console.log('XXX', {
-    sampleData,
-    // modelData,
-  });
-  return sampleData;
+  // // TODO?
+  // const modelData = go.Model.fromJson(gojsData);
+  return gojsData;
 }
 
 interface TSankeyGoJSDemoProps {
   className?: string;
 }
 
-function getFullDataSet(dataSet: Partial<TChartDataSet>) {
+type TGojsNodeDataArray = Array<go.ObjectData>;
+type TGojsLinkDataArray = Array<go.ObjectData>;
+
+function constructNodeDataArray(fullDataSet: TFullChartDataSet): TGojsNodeDataArray {
   const {
-    // prettier-ignore
-    edgesData,
-    flowsData,
+    // edgesData,
+    // flowsData,
     graphsData,
-    nodesData,
-  } = dataSet;
-  try {
-    if (!edgesData || !flowsData || !graphsData || !nodesData) {
-      const errMsg = 'Some of required data is undefined';
-      const error = new Error(errMsg);
-      throw error;
-    }
-    const graphsHash = constructGraphsHashGraphsData(graphsData);
-    const nodesHash = constructNodesHashFromData(nodesData);
-    const fullDataSet: TFullChartDataSet = {
-      edgesData,
-      flowsData,
-      graphsData,
-      nodesData,
-      graphsHash,
-      nodesHash,
-    };
-    return fullDataSet;
-  } catch (error) {
-    const errMsg = [
+    // nodesData,
+    nodesHash,
+    // graphsHash,
+  } = fullDataSet;
+  const nodeDataArray: TGojsNodeDataArray = graphsData.map((graph: TGraphItem) => {
+    const {
       // prettier-ignore
-      'Cannot costruct full data set',
-      getErrorText(error),
-    ]
-      .filter(Boolean)
-      .join(': ');
-    const resultError = new Error(errMsg);
-    // eslint-disable-next-line no-console
-    console.error('[SankeyGoJSDemo:getFullDataSet] error', {
-      // error,
-      resultError,
-      edgesData,
-      flowsData,
-      graphsData,
-      nodesData,
-    });
-    debugger; // eslint-disable-line no-debugger
-    throw resultError;
-    // setErrorText(getErrorText(resultError));
-  }
+      id_in_database: nodeId,
+    } = graph;
+    const node: TNodeItem = getNodeForId(nodesHash, nodeId);
+    const { id, name } = node;
+    const color = getRandomColor();
+    return {
+      // prettier-ignore
+      key: String(id),
+      text: String(id), // name,
+      color,
+    };
+  });
+  /* // Data sample:
+  const nodeDataArray: TGojsNodeDataArray = [
+    { key: 'Coal reserves', text: 'Coal reserves', color: '#9d75c2' },
+  ];
+  */
+  return nodeDataArray;
+}
+
+function constructLinkDataArray(fullDataSet: TFullChartDataSet): TGojsLinkDataArray {
+  const {
+    edgesData,
+    // flowsData,
+    // graphsData,
+    // nodesData,
+    // nodesHash,
+    // graphsHash,
+  } = fullDataSet;
+  const linkDataArray: TGojsLinkDataArray = edgesData.map((edge: TEdgeItem) => {
+    const {
+      // prettier-ignore
+      producer_graph_id: toId, // 2,
+      consumer_graph_id: fromId, // 0,
+      amount, // 0.0016624585259705782
+    } = edge;
+    return {
+      // prettier-ignore
+      from: String(fromId),
+      to: String(toId),
+      width: 100, // amount,
+    };
+  });
+  /* // Data sample:
+  const linkDataArray: Array<go.ObjectData> = [
+    { from: 'Coal reserves', to: 'Coal', width: 31 },
+  ];
+  */
+  return linkDataArray;
 }
 
 export const SankeyGoJSDemo: React.FC<TSankeyGoJSDemoProps> = observer((props) => {
@@ -302,70 +305,82 @@ export const SankeyGoJSDemo: React.FC<TSankeyGoJSDemoProps> = observer((props) =
     graphsData,
     nodesData,
   } = sankeyAppDataStore;
-  /* // anychartData
-   * const anychartData = React.useMemo<TAnyChartData | undefined>(() => {
-   *   if (__debugUseDemoData) {
-   *     return anychartDemoData;
-   *   }
-   *   const fullDataSet = getFullDataSet({
-   *     // prettier-ignore
-   *     edgesData,
-   *     flowsData,
-   *     graphsData,
-   *     nodesData,
-   *   });
-   *   if (!fullDataSet) {
-   *     // Error should already be processed in `getFullDataSet`
-   *     return undefined;
-   *   }
-   *   try {
-   *     const anychartData = constructEdgesData(fullDataSet);
-   *     setErrorText(undefined);
-   *     return anychartData;
-   *   } catch (error) {
-   *     const errMsg = [
-   *       // prettier-ignore
-   *       'Cannot costruct chart data',
-   *       getErrorText(error),
-   *     ]
-   *       .filter(Boolean)
-   *       .join(': ');
-   *     const resultError = new Error(errMsg);
-   *     // eslint-disable-next-line no-console
-   *     console.error('[SankeyGoJSDemo:anychartData] error', {
-   *       // error,
-   *       resultError,
-   *       fullDataSet,
-   *       edgesData,
-   *       flowsData,
-   *       graphsData,
-   *       nodesData,
-   *     });
-   *     debugger; // eslint-disable-line no-debugger
-   *     setErrorText(getErrorText(resultError));
-   *   }
-   * }, [
-   *   // prettier-ignore
-   *   edgesData,
-   *   flowsData,
-   *   graphsData,
-   *   nodesData,
-   *   getFullDataSet,
-   * ]);
-   */
-
   const gojsData = React.useMemo(() => {
-    const sampleGojsData = getGojsSampleData();
-    return {
-      // ...gojsDemoData,
-      ...sampleGojsData,
-      modelData: {
-        canRelink: true,
-      },
-      selectedData: null,
-      skipsDiagramUpdate: false,
-    };
-  }, []);
+    if (__debugUseDemoData) {
+      return getGojsSampleData();
+    }
+    try {
+      // let gojsData = getGojsSampleData();
+      const fullDataSet = getFullDataSet({
+        // prettier-ignore
+        edgesData,
+        flowsData,
+        graphsData,
+        nodesData,
+      });
+      // prettier-ignore
+      const nodeDataArray = constructNodeDataArray(fullDataSet);
+      const linkDataArray = constructLinkDataArray(fullDataSet);
+      // const modelData = go.Model.fromJson(gojsData);
+      const gojsData = {
+        // class: 'go.GraphLinksModel',
+        nodeDataArray,
+        linkDataArray,
+      };
+      console.log('[SankeyGoJSDemo:gojsData] start', {
+        edgesData: edgesData?.map((it) => ({ ...it })),
+        flowsData: flowsData?.map((it) => ({ ...it })),
+        graphsData: graphsData?.map((it) => ({ ...it })),
+        nodesData: nodesData?.map((it) => ({ ...it })),
+        fullDataSet,
+        nodeDataArray,
+        linkDataArray,
+        // gojsData,
+      });
+      // debugger;
+      return gojsData;
+    } catch (error) {
+      const errMsg = [
+        // prettier-ignore
+        'Cannot costruct chart data',
+        getErrorText(error),
+      ]
+        .filter(Boolean)
+        .join(': ');
+      const resultError = new Error(errMsg);
+      // eslint-disable-next-line no-console
+      console.error('[SankeyGoJSDemo:gojsData] error', {
+        // error,
+        resultError,
+        edgesData,
+        flowsData,
+        graphsData,
+        nodesData,
+      });
+      debugger; // eslint-disable-line no-debugger
+      setErrorText(errMsg);
+    }
+  }, [
+    // prettier-ignore
+    edgesData,
+    flowsData,
+    graphsData,
+    nodesData,
+  ]);
+
+  const fullGojsData = React.useMemo(() => {
+    if (gojsData) {
+      // const gojsData = getGojsSampleData();
+      return {
+        ...gojsData,
+        modelData: {
+          canRelink: true,
+        },
+        selectedData: null,
+        skipsDiagramUpdate: false,
+      };
+    }
+  }, [gojsData]);
 
   return (
     <Box className={classNames(className, styles.root)}>
@@ -378,12 +393,12 @@ export const SankeyGoJSDemo: React.FC<TSankeyGoJSDemoProps> = observer((props) =
       </Box>
       */}
       {!!errorText && <Box className={styles.errorBox}>{errorText}</Box>}
-      {!!gojsData && (
+      {!!fullGojsData && (
         <DiagramWrapper
-          nodeDataArray={gojsData.nodeDataArray}
-          linkDataArray={gojsData.linkDataArray}
-          modelData={gojsData.modelData}
-          skipsDiagramUpdate={gojsData.skipsDiagramUpdate}
+          nodeDataArray={fullGojsData.nodeDataArray}
+          linkDataArray={fullGojsData.linkDataArray}
+          modelData={fullGojsData.modelData}
+          skipsDiagramUpdate={fullGojsData.skipsDiagramUpdate}
           // onDiagramEvent={this.handleDiagramEvent}
           // onModelChange={this.handleModelChange}
         />
