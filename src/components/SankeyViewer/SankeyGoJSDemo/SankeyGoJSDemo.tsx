@@ -4,6 +4,7 @@ import { Box } from '@mui/material';
 import classNames from 'classnames';
 import * as go from 'gojs';
 
+import { TPropsWithClassName } from 'src/core/types';
 import { isDevBrowser } from 'src/config/build';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 // @ts-ignore
@@ -254,6 +255,8 @@ interface TSankeyGoJSDemoProps {
 type TGojsNodeDataArray = Array<go.ObjectData>;
 type TGojsLinkDataArray = Array<go.ObjectData>;
 
+const useNodeName = true;
+
 function constructNodeDataArray(fullDataSet: TFullChartDataSet): TGojsNodeDataArray {
   const {
     // edgesData,
@@ -276,7 +279,7 @@ function constructNodeDataArray(fullDataSet: TFullChartDataSet): TGojsNodeDataAr
     return {
       // prettier-ignore
       key: id,
-      text: String(id), // name,
+      text: useNodeName && name ? name : String(id),
       color,
     };
   });
@@ -287,6 +290,9 @@ function constructNodeDataArray(fullDataSet: TFullChartDataSet): TGojsNodeDataAr
   */
   return nodeDataArray;
 }
+
+const minLineWidth = 1;
+const lineWidthFactor = 200;
 
 function constructLinkDataArray(fullDataSet: TFullChartDataSet): TGojsLinkDataArray {
   const {
@@ -306,12 +312,11 @@ function constructLinkDataArray(fullDataSet: TFullChartDataSet): TGojsLinkDataAr
       consumer_graph_id: fromId, // 0,
       amount, // 0.0016624585259705782
     } = edge;
-    const multipy = 10;
     return {
       // prettier-ignore
       from: fromId,
       to: toId,
-      width: multipy * amount,
+      width: Math.max(minLineWidth, lineWidthFactor * amount),
     };
   });
   /* // Data sample:
@@ -322,7 +327,7 @@ function constructLinkDataArray(fullDataSet: TFullChartDataSet): TGojsLinkDataAr
   return linkDataArray;
 }
 
-export const SankeyGoJSDemo: React.FC<TSankeyGoJSDemoProps> = observer((props) => {
+export const SankeyGoJSDemo: React.FC<TPropsWithClassName> = observer((props) => {
   const { className } = props;
   const sankeyAppDataStore = useSankeyAppDataStore();
   const [errorText, setErrorText] = React.useState<string | undefined>();
@@ -369,18 +374,10 @@ export const SankeyGoJSDemo: React.FC<TSankeyGoJSDemoProps> = observer((props) =
         linkDataArray,
       });
       const gojsData = {
-        // class: 'go.GraphLinksModel',
         nodeDataArray,
         linkDataArray,
       };
       console.log('[SankeyGoJSDemo:gojsData] done', {
-        // edgesData: edgesData?.map((it) => ({ ...it })),
-        // flowsData: flowsData?.map((it) => ({ ...it })),
-        // graphsData: graphsData?.map((it) => ({ ...it })),
-        // nodesData: nodesData?.map((it) => ({ ...it })),
-        // fullDataSet,
-        // nodeDataArray,
-        // linkDataArray,
         gojsData,
         gojsDataSample,
       });

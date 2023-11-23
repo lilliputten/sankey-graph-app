@@ -6,7 +6,7 @@ export function getNodeForId(nodesHash: TNodeHash, id: TNodeId): TNodeItem {
     if (id === -1) {
       const error = new Error('Constructing stub root node for absent id = -1');
       // eslint-disable-next-line no-console
-      console.warn('[getNodeForId]', error.message);
+      console.log('[getNodeForId]', error.message);
       return {
         id,
         name: 'Root node',
@@ -15,7 +15,7 @@ export function getNodeForId(nodesHash: TNodeHash, id: TNodeId): TNodeItem {
     } else {
       const error = new Error('Cannot find node for id ' + id + ' (creating default node stub)');
       // eslint-disable-next-line no-console
-      console.warn('[getNodeForId]', error.message);
+      console.log('[getNodeForId]', error.message);
       return {
         id,
         name: 'Node ' + id,

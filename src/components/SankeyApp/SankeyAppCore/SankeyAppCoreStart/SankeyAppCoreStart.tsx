@@ -6,7 +6,7 @@ import classNames from 'classnames';
 // import { isDevBrowser } from 'src/config/build';
 import { autoLoadUrls } from 'src/core/constants/Sankey';
 import {
-  PropsWithClassName,
+  TPropsWithClassName,
   TEdgesData,
   TFlowsData,
   TGraphsData,
@@ -21,7 +21,7 @@ import { InfoContent } from './InfoContent';
 
 import styles from './SankeyAppCoreStart.module.scss';
 
-type TSankeyAppCoreStartProps = PropsWithClassName;
+type TSankeyAppCoreStartProps = TPropsWithClassName;
 
 // const __debugDoAutoLoadData = true && isDevBrowser;
 

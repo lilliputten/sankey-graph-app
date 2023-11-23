@@ -10,7 +10,7 @@ import 'src/core/global/global-styles.scss';
 const rootNode = document.getElementById('root') as HTMLElement;
 const root = ReactDOM.createRoot(rootNode);
 
-const __debugUseStrictMode = true;
+const __debugUseStrictMode = false;
 
 let RootNode = <App />;
 

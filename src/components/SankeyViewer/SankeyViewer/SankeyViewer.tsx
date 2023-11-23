@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import classNames from 'classnames';
 
 // import { isDevBrowser } from 'src/config/build';
-// import { SankeyAnychartDemo } from 'src/components/SankeyViewer/SankeyAnychartDemo';
+import { SankeyAnychartDemo } from 'src/components/SankeyViewer/SankeyAnychartDemo';
 import { SankeyGoJSDemo } from 'src/components/SankeyViewer/SankeyGoJSDemo';
 
 import styles from './SankeyViewer.module.scss';

@@ -2,12 +2,12 @@ import React from 'react';
 import { Box, Typography } from '@mui/material';
 import classNames from 'classnames';
 
-import { PropsWithClassName } from 'src/core/types';
+import { TPropsWithClassName } from 'src/core/types';
 import { defaultDataFiles } from 'src/core/constants/Sankey';
 
 import styles from './InfoContent.module.scss';
 
-export const InfoContent: React.FC = ({ className }: PropsWithClassName) => (
+export const InfoContent: React.FC = ({ className }: TPropsWithClassName) => (
   <Box className={classNames(className, styles.root)}>
     <Typography variant="h3" gutterBottom>
       Load data

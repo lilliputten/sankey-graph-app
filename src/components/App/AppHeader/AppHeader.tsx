@@ -17,7 +17,7 @@ import {
 import { Menu } from '@mui/icons-material';
 import classNames from 'classnames';
 
-import { PropsWithClassName } from 'src/core/types';
+import { TPropsWithClassName } from 'src/core/types';
 import { appTitle } from 'src/config/app';
 import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 
@@ -30,7 +30,7 @@ interface TNavItem {
   text: string;
 }
 
-export const AppHeader: React.FC<PropsWithClassName> = observer((props) => {
+export const AppHeader: React.FC<TPropsWithClassName> = observer((props) => {
   const { className } = props;
   const container = document.body;
   const sankeyAppSessionStore = useSankeyAppSessionStore();

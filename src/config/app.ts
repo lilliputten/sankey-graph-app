@@ -6,7 +6,7 @@ export const defaultMuiThemeMode: TMuiThemeMode = useDarkTheme ? 'dark' : 'light
 
 export const defaultToastDelay = isDev ? 1500 : 1000;
 
-const useTestData = true;
+const useTestData = false;
 const useMinimalTestData = false;
 export const sampleDataUrlPrefix = useTestData
   ? useMinimalTestData

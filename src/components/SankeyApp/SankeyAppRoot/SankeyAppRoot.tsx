@@ -5,7 +5,7 @@ import classNames from 'classnames';
 
 // import { isDevBrowser } from 'src/config/build';
 import { defaultMuiThemeMode } from 'src/config/app';
-import { PropsWithClassName, TMuiThemeMode } from 'src/core/types';
+import { TPropsWithClassName, TMuiThemeMode } from 'src/core/types';
 import {
   SankeyAppSessionStore,
   SankeyAppSessionStoreProvider,
@@ -81,7 +81,7 @@ const RenderLayout: React.FC = observer(() => {
   );
 });
 
-type TSankeyAppRootProps = PropsWithClassName;
+type TSankeyAppRootProps = TPropsWithClassName;
 
 export const SankeyAppRoot: React.FC<TSankeyAppRootProps> = (props) => {
   const { className } = props;

@@ -13,20 +13,5 @@
     "producer_graph_id": 2,
     "consumer_graph_id": 0,
     "amount": 0.0016624585259705782
-  },
-  {
-    "producer_graph_id": 3,
-    "consumer_graph_id": 0,
-    "amount": -0.1758139580488205
-  },
-  {
-    "producer_graph_id": 4,
-    "consumer_graph_id": 0,
-    "amount": 0.04309999942779541
-  },
-  {
-    "producer_graph_id": 5,
-    "consumer_graph_id": 0,
-    "amount": 1.2797342538833618
   }
 ]

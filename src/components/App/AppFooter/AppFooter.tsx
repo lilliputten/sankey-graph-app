@@ -3,13 +3,13 @@ import { BottomNavigation, BottomNavigationAction } from '@mui/material';
 import { Favorite, LocationOn, Restore } from '@mui/icons-material';
 import classNames from 'classnames';
 
-import { PropsWithClassName } from 'src/core/types';
+import { TPropsWithClassName } from 'src/core/types';
 // import { ThemeWrapper } from 'src/ui/wrappers/ThemeWrapper';
 // import { TMuiThemeMode } from 'src/core/types';
 
 import styles from './AppFooter.module.scss';
 
-export const AppFooter: React.FC<PropsWithClassName> = (props) => {
+export const AppFooter: React.FC<TPropsWithClassName> = (props) => {
   const { className } = props;
   const [value, setValue] = React.useState('Recents');
   const handleValue = (event: React.SyntheticEvent<Element, Event>, value: string) => {

@@ -2,10 +2,10 @@ import React from 'react';
 import { Box } from '@mui/material';
 import classNames from 'classnames';
 
-import { PropsWithClassName } from 'src/core/types';
+import { TPropsWithClassName } from 'src/core/types';
 import { LoaderSplash } from 'src/ui/Basic';
 
-type TSankeyAppRootWaiterProps = PropsWithClassName;
+type TSankeyAppRootWaiterProps = TPropsWithClassName;
 
 export const SankeyAppRootWaiter: React.FC<TSankeyAppRootWaiterProps> = (props) => {
   const { className } = props;

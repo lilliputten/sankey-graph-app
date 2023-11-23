@@ -2,12 +2,12 @@ import React from 'react';
 import { Box, Button, Container, Typography } from '@mui/material';
 import classNames from 'classnames';
 
-import { PropsWithClassName } from 'src/core/types';
+import { TPropsWithClassName } from 'src/core/types';
 
 import styles from './SankeyAppRootWelcome.module.scss';
 import { useSankeyAppSessionStore } from '../../SankeyAppSessionStore';
 
-type TSankeyAppRootWelcomeProps = PropsWithClassName;
+type TSankeyAppRootWelcomeProps = TPropsWithClassName;
 
 export const SankeyAppRootWelcome: React.FC<TSankeyAppRootWelcomeProps> = (props) => {
   const { className } = props;

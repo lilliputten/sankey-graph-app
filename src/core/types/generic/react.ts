@@ -1,4 +1,4 @@
-export interface PropsWithClassName {
+export interface TPropsWithClassName {
   className?: string;
 }
-export type PropsWithChildrenAndClassName = React.PropsWithChildren & PropsWithClassName;
+export type TPropsWithChildrenAndClassName = React.PropsWithChildren & TPropsWithClassName;

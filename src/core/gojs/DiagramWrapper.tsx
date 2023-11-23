@@ -1,19 +1,17 @@
-/*
- *  Copyright (C) 1998-2023 by Northwoods Software Corporation. All Rights Reserved.
- */
-
 import * as React from 'react';
-
 import * as go from 'gojs';
+import classNames from 'classnames';
 
 import { ReactDiagram } from 'src/core/gojs';
 
 // import { GuidedDraggingTool } from './GuidedDraggingTool';
 import { SankeyLayout } from './SankeyLayout';
 
-import './Diagram.css';
+// import './Diagram.css';
+import styles from './DiagramWrapper.module.scss';
 
 interface DiagramProps {
+  className?: string;
   nodeDataArray: Array<go.ObjectData>;
   linkDataArray?: Array<go.ObjectData>;
   modelData?: go.ObjectData;
@@ -22,13 +20,16 @@ interface DiagramProps {
   onModelChange?: (e: go.IncrementalData) => void;
 }
 
+const backgroundColor = '#fff';
+const defaultFillColor = '#2e8def';
+
 export class DiagramWrapper extends React.Component<DiagramProps, {}> {
   /**
    * Ref to keep a reference to the Diagram component, which provides access to the GoJS diagram via getDiagram().
    */
   private diagramRef: React.RefObject<ReactDiagram>;
 
-  private diagramStyle = { backgroundColor: '#eee' };
+  private diagramStyle = { backgroundColor };
 
   /** @internal */
   constructor(props: DiagramProps) {
@@ -139,7 +140,7 @@ export class DiagramWrapper extends React.Component<DiagramProps, {}> {
 
     // this function provides a common style for the TextBlocks
     function textStyle() {
-      return { font: 'bold 12pt Segoe UI, sans-serif', stroke: 'black', margin: 5 };
+      return { font: 'sans-serif', stroke: 'black', margin: 5 };
     }
 
     // define the Node template
@@ -156,7 +157,7 @@ export class DiagramWrapper extends React.Component<DiagramProps, {}> {
         go.Shape,
         {
           name: 'SHAPE',
-          fill: '#2E8DEF', // default fill color
+          fill: defaultFillColor, // default fill color
           strokeWidth: 0,
           portId: '',
           fromSpot: go.Spot.RightSide,
@@ -228,17 +229,26 @@ export class DiagramWrapper extends React.Component<DiagramProps, {}> {
   }
 
   public render() {
+    const {
+      className,
+      nodeDataArray,
+      linkDataArray,
+      modelData,
+      skipsDiagramUpdate,
+      // onDiagramEvent,
+      onModelChange,
+    } = this.props;
     return (
       <ReactDiagram
         ref={this.diagramRef}
-        divClassName="diagram-component"
+        divClassName={classNames(className, styles.root)}
         style={this.diagramStyle}
         initDiagram={this.initDiagram}
-        nodeDataArray={this.props.nodeDataArray}
-        linkDataArray={this.props.linkDataArray}
-        modelData={this.props.modelData}
-        onModelChange={this.props.onModelChange}
-        skipsDiagramUpdate={this.props.skipsDiagramUpdate}
+        nodeDataArray={nodeDataArray}
+        linkDataArray={linkDataArray}
+        modelData={modelData}
+        onModelChange={onModelChange}
+        skipsDiagramUpdate={skipsDiagramUpdate}
       />
     );
   }

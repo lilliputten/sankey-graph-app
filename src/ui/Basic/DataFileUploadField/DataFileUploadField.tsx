@@ -3,7 +3,7 @@ import { Box, Button, ButtonOwnProps, CircularProgress } from '@mui/material';
 import { Check, CloudUpload } from '@mui/icons-material';
 import classNames from 'classnames';
 
-import { PropsWithClassName } from 'src/core/types';
+import { TPropsWithClassName } from 'src/core/types';
 import * as toasts from 'src/ui/Basic/Toasts';
 
 import styles from './DataFileUploadField.module.scss';
@@ -15,7 +15,7 @@ export interface TDataFileUploadInfo {
   fileSize: number;
 }
 
-interface TDataFileUploadFieldProps<T = unknown> extends PropsWithClassName {
+interface TDataFileUploadFieldProps<T = unknown> extends TPropsWithClassName {
   id: string;
   /** Text string to show in file upload button */
   text?: string;
