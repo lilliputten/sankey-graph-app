@@ -9,10 +9,6 @@ import { useChartComponent } from 'src/components/SankeyHooks';
 
 import styles from './SankeyViewer.module.scss';
 
-/* [>* DEBUG: Don't wait for user action <]
- * const __debugEmulateData = false && isDevBrowser;
- */
-
 interface TSankeyViewerProps extends TPropsWithClassName {
   useLeftPanel?: boolean;
   defaultShowLeftPanel?: boolean;

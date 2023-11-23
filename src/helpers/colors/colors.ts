@@ -1,0 +1,44 @@
+function getColorsList() {
+  return [
+    '#2dc3d2',
+    '#3483ba',
+    '#40a840',
+    '#556171',
+    '#5c5c10',
+    '#681313',
+    '#6b6b45',
+    '#6f3a5f',
+    '#7c3e06',
+    '#868686',
+    '#8b8b8b',
+    '#96665c',
+    '#9d75c2',
+    '#a1e194',
+    '#a6dce6',
+    '#b5cbe9',
+    '#c7a39b',
+    '#c9a59d',
+    '#c9b7d8',
+    '#cbcbcb',
+    '#d93c3c',
+    '#e483c7',
+    '#f6bcd5',
+    '#fe8b25',
+    '#fea19f',
+    '#fec184',
+    'yellow',
+  ];
+}
+
+export function getColorForIndex(idx: number) {
+  const colors = getColorsList();
+  const colorIdx = idx % colors.length;
+  return colors[colorIdx];
+}
+
+export function getRandomColor() {
+  const colors = getColorsList();
+  const maxColor = colors.length - 1;
+  const randomIdx = Math.round(Math.random() * maxColor);
+  return colors[randomIdx];
+}

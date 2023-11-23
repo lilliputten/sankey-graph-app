@@ -34,7 +34,8 @@
 
 .header {
   background-color: color.change($neutralColor, $alpha: .25);
-  padding: 4px 16px;
-  padding-top: 8px;
+  $vPadding: 8px;
+  padding: $vPadding 16px;
+  padding-top: $vPadding + 4px;
   box-shadow: 0px 2px 4px color.change(black, $alpha: .2);
 }

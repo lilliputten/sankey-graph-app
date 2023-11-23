@@ -33,20 +33,12 @@ export const SankeySettingsPanel: React.FC<TPropsWithClassName> = observer((prop
   } = sankeyAppSessionStore;
   const setLineWidthFactor: React.ChangeEventHandler<HTMLInputElement> = (ev) => {
     const lineWidthFactor = Number(ev.target.value);
-    /* console.log('setLineWidthFactor', {
-     *   lineWidthFactor,
-     * });
-     */
     runInAction(() => {
       sankeyAppSessionStore.lineWidthFactor = lineWidthFactor;
     });
   };
   const setChartLibrary: React.ChangeEventHandler<HTMLInputElement> = (ev) => {
     const chartLibrary = ev.target.value as TChartLibraries;
-    /* console.log('setChartLibrary', {
-     *   chartLibrary,
-     * });
-     */
     runInAction(() => {
       sankeyAppSessionStore.chartLibrary = chartLibrary;
     });

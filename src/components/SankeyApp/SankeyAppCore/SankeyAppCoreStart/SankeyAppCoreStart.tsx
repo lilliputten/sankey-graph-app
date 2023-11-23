@@ -42,7 +42,6 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
   /** Start core application if all the data is ready... */
   const doVisualize = React.useCallback(() => {
     // All data is ready
-    console.log('[SankeyAppCoreStart:doVisualize]', {});
     sankeyAppDataStore.setReady(true);
   }, [sankeyAppDataStore]);
   /** Handle loaded edges data... */
