@@ -3,18 +3,19 @@ import { observer } from 'mobx-react-lite';
 import { Box } from '@mui/material';
 import classNames from 'classnames';
 
-import { isDevBrowser } from 'src/config/build';
-import { TAnyChartData } from 'src/core/types/anychart';
-import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 // @ts-ignore
 import AnyChart from 'anychart-react';
 
-import styles from './SankeyAnychartDemo.module.scss';
+import { isDevBrowser } from 'src/config/build';
 import * as toasts from 'src/ui/Basic/Toasts';
+import { getErrorText } from 'src/helpers';
+import { TAnyChartData } from 'src/core/types/anychart';
+import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 import { constructEdgesData } from 'src/helpers/anychart';
 import { constructGraphsHashGraphsData, constructNodesHashFromData } from 'src/helpers/Sankey';
-import { TChartDataSet, TFullChartDataSet } from 'src/core/types';
-import { getErrorText } from 'src/helpers';
+import { TChartComponentProps, TChartDataSet, TFullChartDataSet } from 'src/core/types';
+
+import styles from './SankeyAnychartDemo.module.scss';
 
 /** DEBUG: Don't wait for user action */
 const __debugUseDemoData = false && isDevBrowser;
@@ -38,11 +39,7 @@ const demoChartData: TAnyChartData = [
   { from: 'Male', to: 'Perished', value: 1364 },
 ];
 
-interface TSankeyAnychartDemoProps {
-  className?: string;
-}
-
-export const SankeyAnychartDemo: React.FC<TSankeyAnychartDemoProps> = observer((props) => {
+export const SankeyAnychartDemo: React.FC<TChartComponentProps> = observer((props) => {
   const { className } = props;
   const sankeyAppDataStore = useSankeyAppDataStore();
   const [errorText, setErrorText] = React.useState<string | undefined>();

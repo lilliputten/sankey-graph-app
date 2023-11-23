@@ -4,10 +4,13 @@ import { Box } from '@mui/material';
 import classNames from 'classnames';
 import * as go from 'gojs';
 
-import { TPropsWithClassName } from 'src/core/types';
+import { TChartComponentProps } from 'src/core/types';
 import { isDevBrowser } from 'src/config/build';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
-import { SankeyAppSessionStore, useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
+import {
+  SankeyAppSessionStore,
+  useSankeyAppSessionStore,
+} from 'src/components/SankeyApp/SankeyAppSessionStore';
 import * as toasts from 'src/ui/Basic/Toasts';
 import { getFullDataSet, getNodeForId } from 'src/helpers/Sankey';
 import { TEdgeItem, TFullChartDataSet, TGraphItem, TNodeItem } from 'src/core/types';
@@ -327,7 +330,7 @@ function constructLinkDataArray(
   return linkDataArray;
 }
 
-export const SankeyGoJSDemo: React.FC<TPropsWithClassName> = observer((props) => {
+export const SankeyGoJSDemo: React.FC<TChartComponentProps> = observer((props) => {
   const { className } = props;
   const sankeyAppDataStore = useSankeyAppDataStore();
   const sankeyAppSessionStore = useSankeyAppSessionStore();

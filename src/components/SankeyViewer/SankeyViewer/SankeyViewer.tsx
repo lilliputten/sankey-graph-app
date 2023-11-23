@@ -1,12 +1,11 @@
 import React from 'react';
+import { observer } from 'mobx-react-lite';
 import classNames from 'classnames';
 
-// import { isDevBrowser } from 'src/config/build';
-import { SankeyAnychartDemo } from 'src/components/SankeyViewer/SankeyAnychartDemo';
-import { SankeyGoJSDemo } from 'src/components/SankeyViewer/SankeyGoJSDemo';
 import { TPropsWithClassName } from 'src/core/types';
 import { TPanelParams, WithSidePanels } from 'src/components/ui/WithSidePanels';
 import { SankeySettingsPanel } from 'src/components/SankeyMisc/SankeySettingsPanel';
+import { useChartComponent } from 'src/components/SankeyHooks';
 
 import styles from './SankeyViewer.module.scss';
 
@@ -19,7 +18,7 @@ interface TSankeyViewerProps extends TPropsWithClassName {
   defaultShowLeftPanel?: boolean;
 }
 
-export const SankeyViewer: React.FC<TSankeyViewerProps> = (props) => {
+export const SankeyViewer: React.FC<TSankeyViewerProps> = observer((props) => {
   const {
     // prettier-ignore
     className,
@@ -41,6 +40,7 @@ export const SankeyViewer: React.FC<TSankeyViewerProps> = (props) => {
       };
     }
   }, [useLeftPanel, leftPanelContent, defaultShowLeftPanel]);
+  const ChartComponent = useChartComponent();
   return (
     <WithSidePanels
       className={classNames(className, styles.root)}
@@ -48,7 +48,7 @@ export const SankeyViewer: React.FC<TSankeyViewerProps> = (props) => {
       leftPanel={leftPanelParams}
       // rightPanel={rightPanelParams} // TODO?
     >
-      <SankeyGoJSDemo />
+      <ChartComponent className={styles.chartArea} />
     </WithSidePanels>
   );
-};
+});

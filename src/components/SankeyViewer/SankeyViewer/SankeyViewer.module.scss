@@ -4,15 +4,11 @@
   justify-content: stretch;
   align-items: stretch;
 }
-.sidePanel,
-.sidePanelLeft,
-.sidePanelRight,
 .chartArea,
 .root {
   /*!KEEP*/
 }
 
-.sidePanel,
 .chartArea {
   // @include clippingFullSizeContainer
   display: flex;
@@ -21,64 +17,3 @@
   position: relative;
 }
 
-.sidePanel,
-.chartArea {
-  &:not(:last-child) {
-    resize: horizontal;
-    border-right: 1px solid $borderColor; // color.mix(white, $neutralColor, 75%);
-    // border-right: 1px solid color.change($neutralColor, $whiteness: 50%);
-  }
-}
-
-$defaultSidePanelWidth: 20%;
-
-.sidePanel {
-  width: $defaultSidePanelWidth;
-  min-width: 200px;
-}
-.chartArea {
-  // flex: 1;
-  width: 100%;
-  min-width: 300px;
-}
-
-// Panels controlling icons...
-.panelIcon {
-  &:global(.MuiButton-root) {
-    z-index: 10;
-    position: absolute;
-    $offset: 8px;
-    &.panelIconLeft {
-      left: $offset;
-    }
-    &.panelIconRight {
-      right: $offset;
-    }
-    top: $offset;
-    min-width: auto;
-    padding: 6px;
-    border-radius: 50%;
-    transition: all $animationTimeMs;
-    opacity: .5;
-    & {
-      box-shadow: 2px 4px 5px color.change(black, $alpha: .2);
-    }
-    &:hover {
-      box-shadow: 1px 2px 3px color.change(black, $alpha: .2);
-      opacity: .75;
-    }
-    > :global(.MuiTouchRipple-root) {
-      min-width: auto;
-      width: 36px;
-    }
-    > :global(.MuiSvgIcon-root) {
-      transition: all $animationTimeMs;
-    }
-    // &.panelIconRight:not(.activated),
-    &.activated {
-      > :global(.MuiSvgIcon-root) {
-        transform: rotate(180deg);
-      }
-    }
-  }
-}

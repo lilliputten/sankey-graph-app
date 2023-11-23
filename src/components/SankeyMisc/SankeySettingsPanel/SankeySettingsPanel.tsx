@@ -10,7 +10,6 @@ import {
   InputLabel,
   Radio,
   RadioGroup,
-  // TextField,
 } from '@mui/material';
 import classNames from 'classnames';
 
@@ -19,6 +18,8 @@ import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSess
 
 import styles from './SankeySettingsPanel.module.scss';
 import { runInAction } from 'mobx';
+
+/* TODO 2023.11.24, 02:09 -- To initialize the settings from the url query. */
 
 const radioControl = <Radio size="small" />;
 

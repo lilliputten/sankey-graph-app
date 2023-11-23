@@ -1,3 +1,4 @@
+export * from './TChartComponent';
 export * from './TChartDataSet';
 export * from './TChartLibraries';
 export * from './TEdgesData';
