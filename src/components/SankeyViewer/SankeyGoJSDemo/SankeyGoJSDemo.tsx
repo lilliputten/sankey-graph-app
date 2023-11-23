@@ -7,15 +7,14 @@ import * as go from 'gojs';
 import { TPropsWithClassName } from 'src/core/types';
 import { isDevBrowser } from 'src/config/build';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
-// @ts-ignore
-// import AnyChart from 'anychart-react';
-
-import styles from './SankeyGoJSDemo.module.scss';
+import { SankeyAppSessionStore, useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 import * as toasts from 'src/ui/Basic/Toasts';
 import { getFullDataSet, getNodeForId } from 'src/helpers/Sankey';
 import { TEdgeItem, TFullChartDataSet, TGraphItem, TNodeItem } from 'src/core/types';
 import { getErrorText } from 'src/helpers';
 import { DiagramWrapper } from 'src/core/gojs';
+
+import styles from './SankeyGoJSDemo.module.scss';
 
 /** DEBUG: Don't wait for user action */
 const __debugUseDemoData = false && isDevBrowser;
@@ -248,16 +247,16 @@ function getGojsSampleMinimalData(): TGojsData {
   return gojsData;
 }
 
-interface TSankeyGoJSDemoProps {
-  className?: string;
-}
-
 type TGojsNodeDataArray = Array<go.ObjectData>;
 type TGojsLinkDataArray = Array<go.ObjectData>;
 
 const useNodeName = true;
+const minLineWidth = 1;
+// const lineWidthFactor = 200;
 
-function constructNodeDataArray(fullDataSet: TFullChartDataSet): TGojsNodeDataArray {
+function constructNodeDataArray(
+  fullDataSet: TFullChartDataSet,
+): TGojsNodeDataArray {
   const {
     // edgesData,
     // flowsData,
@@ -276,6 +275,7 @@ function constructNodeDataArray(fullDataSet: TFullChartDataSet): TGojsNodeDataAr
     const { id, name } = node;
     // const color = getRandomColor();
     const color = getColorForIndex(idx);
+    // TODO: Get colors for object (id, name?) hash?
     return {
       // prettier-ignore
       key: id,
@@ -291,10 +291,10 @@ function constructNodeDataArray(fullDataSet: TFullChartDataSet): TGojsNodeDataAr
   return nodeDataArray;
 }
 
-const minLineWidth = 1;
-const lineWidthFactor = 200;
-
-function constructLinkDataArray(fullDataSet: TFullChartDataSet): TGojsLinkDataArray {
+function constructLinkDataArray(
+  fullDataSet: TFullChartDataSet,
+  { lineWidthFactor }: Pick<SankeyAppSessionStore, 'lineWidthFactor'>,
+): TGojsLinkDataArray {
   const {
     edgesData,
     // flowsData,
@@ -330,6 +330,8 @@ function constructLinkDataArray(fullDataSet: TFullChartDataSet): TGojsLinkDataAr
 export const SankeyGoJSDemo: React.FC<TPropsWithClassName> = observer((props) => {
   const { className } = props;
   const sankeyAppDataStore = useSankeyAppDataStore();
+  const sankeyAppSessionStore = useSankeyAppSessionStore();
+  const { lineWidthFactor } = sankeyAppSessionStore;
   const [errorText, setErrorText] = React.useState<string | undefined>();
   React.useEffect(() => {
     if (errorText) {
@@ -349,7 +351,7 @@ export const SankeyGoJSDemo: React.FC<TPropsWithClassName> = observer((props) =>
       // return getGojsSampleData();
       return getGojsSampleMinimalData();
     }
-    const gojsDataSample =  getGojsSampleMinimalData();
+    const gojsDataSample = getGojsSampleMinimalData();
     try {
       const fullDataSet = getFullDataSet({
         // prettier-ignore
@@ -366,7 +368,7 @@ export const SankeyGoJSDemo: React.FC<TPropsWithClassName> = observer((props) =>
       });
       // prettier-ignore
       const nodeDataArray = constructNodeDataArray(fullDataSet);
-      const linkDataArray = constructLinkDataArray(fullDataSet);
+      const linkDataArray = constructLinkDataArray(fullDataSet, { lineWidthFactor });
       // const modelData = go.Model.fromJson(gojsData);
       console.log('[SankeyGoJSDemo:gojsData] data', {
         fullDataSet,
@@ -410,6 +412,7 @@ export const SankeyGoJSDemo: React.FC<TPropsWithClassName> = observer((props) =>
     flowsData,
     graphsData,
     nodesData,
+    lineWidthFactor,
   ]);
 
   const fullGojsData = React.useMemo(() => {

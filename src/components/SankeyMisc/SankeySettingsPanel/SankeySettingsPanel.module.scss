@@ -1,0 +1,11 @@
+.root {
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+// Decrease space between radio elements
+.MuiFormControlLabel-root + .MuiFormControlLabel-root {
+  margin-top: -10px;
+}

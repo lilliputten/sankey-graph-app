@@ -1,5 +1,6 @@
 import { makeObservable, observable, action, computed, when } from 'mobx';
 import bound from 'bind-decorator';
+import { TChartLibraries } from 'src/core/types';
 
 export type TSankeyAppSessionStoreStatus = undefined | 'dataLoaded' | 'finished';
 
@@ -14,7 +15,16 @@ export class SankeyAppSessionStore {
   @observable error?: Error = undefined;
   // @observable settingsDone: boolean = false; // ???
 
+  /** Callback to go to load new data page */
   @observable loadNewDataCb?: () => void | undefined;
+
+  // Settings...
+
+  /** Coefficient for multiplying the width of connecting lines between nodes (GoJS only) */
+  @observable lineWidthFactor: number = 200;
+
+  /** Library used to display data */
+  @observable chartLibrary: TChartLibraries = 'gojs';
 
   // Lifecycle...
 
@@ -96,9 +106,23 @@ export class SankeyAppSessionStore {
     this.status = undefined;
     this.error = undefined;
     // this.settingsDone = false;
+
+    // TODO: Reset settings?
   }
 
-  // Other...
+  // Settings setters...
+
+  @action setLineWidthFactor(
+    lineWidthFactor: typeof SankeyAppSessionStore.prototype.lineWidthFactor,
+  ) {
+    this.lineWidthFactor = lineWidthFactor;
+  }
+
+  @action setChartLibrary(chartLibrary: typeof SankeyAppSessionStore.prototype.chartLibrary) {
+    this.chartLibrary = chartLibrary;
+  }
+
+  // Other setters...
 
   @action setLoadNewDataCb(loadNewDataCb: typeof SankeyAppSessionStore.prototype.loadNewDataCb) {
     this.loadNewDataCb = loadNewDataCb;
