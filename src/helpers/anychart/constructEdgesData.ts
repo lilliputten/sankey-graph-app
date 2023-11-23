@@ -1,7 +1,5 @@
 import { TFullChartDataSet } from 'src/core/types';
-// import { getGraphForId } from './getGraphForId';
-// import { getNodeForId } from './getNodeForId';
-import { TAnyChartRecord } from 'src/core/types/anychart';
+import { TAnyChartData, TAnyChartRecord } from 'src/core/types/anychart';
 import { getGraphForId, getNodeForId } from 'src/helpers/Sankey/data';
 
 /** Create chart data from the data set */
@@ -20,8 +18,7 @@ export function constructEdgesData(fullDataSet: TFullChartDataSet) {
     graphsData,
     // nodesData,
   });
-  /** @type {TAnyChartData} */
-  const chartData = edgesData.map(
+  const chartData: TAnyChartData = edgesData.map(
     ({
       producer_graph_id: toId, // 2,
       consumer_graph_id: fromId, // 0,
@@ -34,18 +31,17 @@ export function constructEdgesData(fullDataSet: TFullChartDataSet) {
       const toNode = getNodeForId(nodesHash, toGraph.id_in_database);
       const fromName = fromNode.name;
       const toName = toNode.name;
-      /* console.log('[constructEdgesData] item', {
-       *   toName,
-       *   fromName,
-       *   toId,
-       *   fromId,
-       *   amount,
-       *   fromGraph,
-       *   toGraph,
-       *   fromNode,
-       *   toNode,
-       * });
-       */
+      console.log('[constructEdgesData] item', {
+        toName,
+        fromName,
+        toId,
+        fromId,
+        amount,
+        fromGraph,
+        toGraph,
+        fromNode,
+        toNode,
+      });
       const chartDataItem: TAnyChartRecord = {
         from: fromName,
         to: toName,

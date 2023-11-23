@@ -5,7 +5,9 @@ import { getColorForIndex } from 'src/helpers/colors';
 
 const useNodeName = true;
 
-export function constructNodeDataArray(fullDataSet: TFullChartDataSet): TGojsNodeDataArray {
+export function constructNodeDataArrayFromGraphs(
+  fullDataSet: TFullChartDataSet,
+): TGojsNodeDataArray {
   const {
     // edgesData,
     // flowsData,
@@ -14,21 +16,23 @@ export function constructNodeDataArray(fullDataSet: TFullChartDataSet): TGojsNod
     nodesHash,
     // graphsHash,
   } = fullDataSet;
+  // Construct from edges data, as in anychart's `constructEdgesData`?
   const nodeDataArray: TGojsNodeDataArray = graphsData.map((graph: TGraphItem, idx) => {
     const {
-      // prettier-ignore
-      id_in_graph: nodeId,
-      // id_in_database: nodeId,
+      id_in_graph: id, // Self index
+      id_in_database: nodeId,
     } = graph;
     const node: TNodeItem = getNodeForId(nodesHash, nodeId);
-    const { id, name } = node;
-    // const color = getRandomColor();
     const color = getColorForIndex(idx);
     // TODO: Get colors for object (id, name?) hash?
+    let text = String(id);
+    if (useNodeName) {
+      text = node.name;
+    }
     return {
       // prettier-ignore
       key: id,
-      text: useNodeName && name ? name : String(id),
+      text,
       color,
     };
   });

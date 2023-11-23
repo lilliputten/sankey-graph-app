@@ -4,7 +4,7 @@ import { TGojsLinkDataArray } from 'src/core/types/gojs';
 
 const minLineWidth = 1;
 
-export function constructLinkDataArray(
+export function constructLinkDataArrayFromEdges(
   fullDataSet: TFullChartDataSet,
   { lineWidthFactor }: Pick<SankeyAppSessionStore, 'lineWidthFactor'>,
 ): TGojsLinkDataArray {
@@ -19,8 +19,6 @@ export function constructLinkDataArray(
   const linkDataArray: TGojsLinkDataArray = edgesData.map((edge: TEdgeItem) => {
     const {
       // prettier-ignore
-      // consumer_graph_id: toId, // 2,
-      // producer_graph_id: fromId, // 0,
       producer_graph_id: toId, // 2,
       consumer_graph_id: fromId, // 0,
       amount, // 0.0016624585259705782
