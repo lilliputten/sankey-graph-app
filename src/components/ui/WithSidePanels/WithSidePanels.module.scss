@@ -55,13 +55,13 @@ $defaultSidePanelWidth: 25%;
     padding: 6px;
     border-radius: 50%;
     transition: all $animationTimeMs;
-    opacity: .5;
+    opacity: 0.5;
     & {
-      box-shadow: 2px 4px 5px color.change(black, $alpha: .2);
+      box-shadow: 2px 4px 5px color.change(black, $alpha: 0.2);
     }
     &:hover {
-      box-shadow: 1px 2px 3px color.change(black, $alpha: .2);
-      opacity: .75;
+      box-shadow: 1px 2px 3px color.change(black, $alpha: 0.2);
+      opacity: 0.75;
     }
     > :global(.MuiTouchRipple-root) {
       min-width: auto;
@@ -78,4 +78,3 @@ $defaultSidePanelWidth: 25%;
     }
   }
 }
-
