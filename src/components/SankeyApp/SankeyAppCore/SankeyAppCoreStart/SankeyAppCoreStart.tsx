@@ -135,7 +135,7 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
           // prettier-ignore
           variant="contained"
           onClick={() => setAutoLoad(true)}
-          color="warning"
+          color="secondary"
           disabled={isAllDataLoaded}
         >
           Load demo data

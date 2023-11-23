@@ -1,0 +1,40 @@
+.content,
+.header,
+.headerTitle,
+.content,
+.contentScrollable,
+.DEBUG {
+  /*!KEEP*/
+}
+
+.root,
+.container,
+.content {
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  position: relative;
+  justify-content: stretch;
+  align-items: stretch;
+}
+.root {
+  &.hidden {
+    display: none;
+  }
+}
+.container {
+  flex: 1;
+}
+.content {
+  flex: 1;
+}
+.contentScrollable {
+  overflow: auto;
+}
+
+.header {
+  background-color: color.change($neutralColor, $alpha: .25);
+  padding: 4px 16px;
+  padding-top: 8px;
+  box-shadow: 0px 2px 4px color.change(black, $alpha: .2);
+}
