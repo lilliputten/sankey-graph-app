@@ -27,7 +27,7 @@ export function constructNodeDataArrayFromGraphs(
     // TODO: Get colors for object (id, name?) hash?
     let text = String(id);
     if (useNodeName) {
-      text = node.name;
+      text += ' ' + node.name;
     }
     return {
       // prettier-ignore
