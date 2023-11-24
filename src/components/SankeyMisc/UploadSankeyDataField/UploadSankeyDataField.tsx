@@ -83,11 +83,12 @@ export const UploadSankeyDataField = <T extends unknown>(props: TUploadSankeyDat
     autoLoadUrl,
   } = props;
   const [fileInfo, setFileInfo] = React.useState<TDataFileUploadInfo | undefined>();
-  const [isLoaded, setLoaded] = React.useState(!!defaultLoaded);
+  // const [isLoaded, setLoaded] = React.useState(!!defaultLoaded);
+  const isLoaded = !!defaultLoaded;
   const handleFileInfo = React.useCallback(
     (fileInfo: TDataFileUploadInfo | undefined) => {
       setFileInfo(fileInfo);
-      setLoaded(!!fileInfo);
+      // setLoaded(!!fileInfo);
       if (setParentFileInfo) {
         setParentFileInfo(fileInfo);
       }

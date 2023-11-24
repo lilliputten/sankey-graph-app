@@ -12,7 +12,7 @@ type TSankeyAppRootWelcomeProps = TPropsWithClassName;
 export const SankeyAppRootWelcome: React.FC<TSankeyAppRootWelcomeProps> = (props) => {
   const { className } = props;
   const sankeyAppSessionStore = useSankeyAppSessionStore();
-  const doStart = React.useCallback(() => {
+  const doLoadData = React.useCallback(() => {
     sankeyAppSessionStore.setReady(true);
   }, [sankeyAppSessionStore]);
   return (
@@ -37,7 +37,7 @@ export const SankeyAppRootWelcome: React.FC<TSankeyAppRootWelcomeProps> = (props
         </Typography>
       </Box>
       <Box className={classNames(styles.section, styles.actions)}>
-        <Button variant="contained" onClick={doStart}>
+        <Button variant="contained" onClick={doLoadData}>
           Load data
         </Button>
       </Box>
