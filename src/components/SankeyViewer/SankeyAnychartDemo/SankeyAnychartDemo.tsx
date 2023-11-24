@@ -1,7 +1,11 @@
+/// <reference types="anychart" />
+
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { Box } from '@mui/material';
 import classNames from 'classnames';
+
+import 'anychart';
 
 // @ts-ignore
 import AnyChart from 'anychart-react';
@@ -152,6 +156,44 @@ export const SankeyAnychartDemo: React.FC<TChartComponentProps> = observer((prop
     getFullDataSet,
   ]);
 
+  /** TODO:
+   * Set node labels, like this:
+   *
+   * ```
+   * chart.node().labels().useHtml(true);
+   * chart.node().labels().format(
+   *   "<span style='font-weight:bold'>{%name}</span><br>{%value}"
+   * );
+   * ```
+   *
+   * @see https://docs.anychart.com/Basic_Charts/Sankey_Diagram#labels_and_tooltips
+   */
+
+  // Use preconfigured instance
+  // @see https://github.com/AnyChart/AnyChart-React#usage
+  const chart = React.useMemo(() => {
+    const chart = anychart.sankey();
+    // @see https://docs.anychart.com/Basic_Charts/Sankey_Diagram#labels_and_tooltips
+    // @see https://github.com/AnyChart/AnyChart/issues/14#issuecomment-306144110
+    // Configure labels
+    // TODO: Use custom fields like 'fromName'?
+    // TODO: Correct typing errors?
+    // @ts-ignore
+    chart.node().labels().useHtml(true);
+    // @ts-ignore
+    chart.node().labels().format('<span>{%name}</span><br>{%value}');
+    chart.flow().hovered().labels().enabled(true);
+    chart.dropoff().normal().labels().enabled(true);
+    // @ts-ignore
+    chart.dropoff().labels().padding(10);
+
+    // configure tooltips
+    chart.node().tooltip().format('value: {%value}');
+    chart.flow().tooltip().format('value: {%value}\n\n{%toName}');
+    chart.dropoff().tooltip().format('value: {%value}\n\n{%fromName}');
+    return chart;
+  }, []);
+
   return (
     <Box className={classNames(className, styles.root)}>
       {/* // Debug: show some small stats...
@@ -165,9 +207,11 @@ export const SankeyAnychartDemo: React.FC<TChartComponentProps> = observer((prop
       {!!errorText && <Box className={styles.errorBox}>{errorText}</Box>}
       {!!chartData && (
         <AnyChart
+          instance={chart}
           className={styles.chart}
           type="sankey"
           data={chartData}
+          // label
           // title="Simple chart"
         />
       )}
