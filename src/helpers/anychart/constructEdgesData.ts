@@ -34,28 +34,30 @@ export function constructEdgesData(fullDataSet: TFullChartDataSet) {
       const toNode = getNodeForId(nodesHash, toNodeId);
       const fromName = fromNode.name;
       const toName = toNode.name;
-      console.log('[constructEdgesData] item', {
-        toName,
-        fromName,
-        toId,
-        fromId,
-        amount,
-        fromGraph,
-        toGraph,
-        fromNodeId,
-        toNodeId,
-        fromNode,
-        toNode,
-        // 'fromNode.name': fromNode.name,
-        // 'toNode.name': toNode.name,
-        edgeNode,
-      });
+      /* console.log('[constructEdgesData] item', {
+       *   toName,
+       *   fromName,
+       *   toId,
+       *   fromId,
+       *   amount,
+       *   fromGraph,
+       *   toGraph,
+       *   fromNodeId,
+       *   toNodeId,
+       *   fromNode,
+       *   toNode,
+       *   // 'fromNode.name': fromNode.name,
+       *   // 'toNode.name': toNode.name,
+       *   edgeNode,
+       * });
+       */
       // TODO: Use identifiers instead names! Got cyclic loops while using names as identifiers.
       const chartDataItem: TAnyChartRecord = {
-        from: String(fromId),
-        to: String(toId),
+        from: `[${fromId}] ${fromName}`,
+        to: `[${toId}] ${toName}`,
         // value: amount,
         weight: amount,
+        // TODO: To get this data in anychart to construct labels (see preconfigured instance in `SankeyAnychartDemo`).
         toName,
         fromName,
       };

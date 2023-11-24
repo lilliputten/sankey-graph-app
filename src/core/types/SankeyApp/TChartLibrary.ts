@@ -4,6 +4,13 @@ export const validChartLibraries = [
   'anychart',
   'gojs',
 ] as const;
+
 export type TChartLibrary = (typeof validChartLibraries)[number];
+
 /** Default chart engine */
 export const defaultChartLibrary: TChartLibrary = validChartLibraries[0];
+
+export const chartLibraryNames: Record<TChartLibrary, string> = {
+  anychart: 'Anychart',
+  gojs: 'GoJS',
+};

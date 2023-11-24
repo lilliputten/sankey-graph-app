@@ -13,7 +13,14 @@ import {
 } from '@mui/material';
 import classNames from 'classnames';
 
-import { TChartLibrary, TPropsWithClassName } from 'src/core/types';
+import {
+  TPropsWithClassName,
+} from 'src/core/types';
+import {
+  chartLibraryNames,
+  TChartLibrary,
+  validChartLibraries,
+} from 'src/core/types/SankeyApp';
 import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 
 import styles from './SankeySettingsPanel.module.scss';
@@ -72,8 +79,14 @@ export const SankeySettingsPanel: React.FC<TPropsWithClassName> = observer((prop
           onChange={setChartLibrary}
           value={chartLibrary}
         >
-          <FormControlLabel value="gojs" control={radioControl} label="GoJS" />
-          <FormControlLabel value="anychart" control={radioControl} label="Anychart" />
+          {validChartLibraries.map((id) => (
+            <FormControlLabel
+              key={id}
+              value={id}
+              control={radioControl}
+              label={chartLibraryNames[id]}
+            />
+          ))}
         </RadioGroup>
         <FormHelperText id="chartLibraryText">Library used to display data</FormHelperText>
       </FormControl>
