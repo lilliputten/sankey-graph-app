@@ -39,6 +39,7 @@ export const AppHeader: React.FC<TPropsWithClassName> = observer((props) => {
     return [
       { id: 'home', text: 'Home' },
       loadNewDataCb && { id: 'loadNewData', text: 'Load new data' },
+      !loadNewDataCb && { id: 'loadData', text: 'Load data' },
     ].filter(Boolean) as TNavItem[];
   }, [loadNewDataCb]);
 
@@ -63,6 +64,10 @@ export const AppHeader: React.FC<TPropsWithClassName> = observer((props) => {
       switch (id) {
         case 'home': {
           sankeyAppSessionStore.setReady(false);
+          break;
+        }
+        case 'loadData': {
+          sankeyAppSessionStore.setReady(true);
           break;
         }
         case 'loadNewData': {

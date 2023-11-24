@@ -117,7 +117,9 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
   );
 
   const layout: Partial<Plotly.Layout> = {
-    title: 'Test',
+    // title: 'Test',
+    // width: '100%',
+    // height: '100%',
   };
 
   return (

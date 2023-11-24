@@ -37,12 +37,22 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
     graphsData,
     nodesData,
   } = sankeyAppDataStore;
+  const [doAutoLoad, setAutoLoad] = React.useState(false); // __debugDoAutoLoadData
   /** If data has already loaded then it's possible to go to core visualizer/editor */
   const [isAllDataLoaded, setAllDataLoaded] = React.useState(false);
+  const [isSomeDataLoaded, setSomeDataLoaded] = React.useState(false);
   /** Start core application if all the data is ready... */
   const doVisualize = React.useCallback(() => {
     // All data is ready
     sankeyAppDataStore.setReady(true);
+  }, [sankeyAppDataStore]);
+  const doResetData = React.useCallback(() => {
+    // Clear all the data...
+    setAutoLoad(false);
+    sankeyAppDataStore.setEdgesData(undefined);
+    sankeyAppDataStore.setFlowsData(undefined);
+    sankeyAppDataStore.setGraphsData(undefined);
+    sankeyAppDataStore.setNodesData(undefined);
   }, [sankeyAppDataStore]);
   /** Handle loaded edges data... */
   const handleEdgesData = React.useCallback(
@@ -75,9 +85,10 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
   // Calculate overall loading status depending on all data loading status
   React.useEffect(() => {
     const isAllDataLoaded = !!(edgesData && flowsData && graphsData && nodesData);
+    const isSomeDataLoaded = !!(edgesData || flowsData || graphsData || nodesData);
     setAllDataLoaded(isAllDataLoaded);
+    setSomeDataLoaded(isSomeDataLoaded);
   }, [edgesData, flowsData, graphsData, nodesData]);
-  const [doAutoLoad, setAutoLoad] = React.useState(false); // __debugDoAutoLoadData
   return (
     <Container className={classNames(className, styles.root)} maxWidth="md">
       <Box className={classNames(styles.section, styles.content)}>
@@ -138,6 +149,15 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
           disabled={isAllDataLoaded}
         >
           Load demo data
+        </Button>
+        <Button
+          // prettier-ignore
+          variant="contained"
+          onClick={doResetData}
+          color="error"
+          disabled={!isSomeDataLoaded}
+        >
+          Reset loaded data
         </Button>
       </Box>
     </Container>
