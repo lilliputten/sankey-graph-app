@@ -1,6 +1,6 @@
 import { SankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 import { TEdgeItem, TFullChartDataSet } from 'src/core/types';
-import { TGojsLinkDataArray } from 'src/core/types/gojs';
+import { TGojsLinkDataArray } from 'src/libs/gojs/types';
 
 const minLineWidth = 1;
 

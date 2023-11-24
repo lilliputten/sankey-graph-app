@@ -13,9 +13,9 @@ import AnyChart from 'anychart-react';
 import { isDevBrowser } from 'src/config/build';
 import * as toasts from 'src/ui/Basic/Toasts';
 import { getErrorText } from 'src/helpers';
-import { TAnyChartData } from 'src/core/types/anychart';
+import { TAnyChartData } from 'src/libs/anychart/types';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
-import { constructEdgesData } from 'src/helpers/anychart';
+import { constructEdgesData } from 'src/libs/anychart/helpers';
 import { constructGraphsHashGraphsData, constructNodesHashFromData } from 'src/helpers/Sankey';
 import { TChartComponentProps, TChartDataSet, TFullChartDataSet } from 'src/core/types';
 

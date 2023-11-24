@@ -13,14 +13,8 @@ import {
 } from '@mui/material';
 import classNames from 'classnames';
 
-import {
-  TPropsWithClassName,
-} from 'src/core/types';
-import {
-  chartLibraryNames,
-  TChartLibrary,
-  validChartLibraries,
-} from 'src/core/types/SankeyApp';
+import { TPropsWithClassName } from 'src/core/types';
+import { chartLibraryNames, TChartLibrary, validChartLibraries } from 'src/core/types/SankeyApp';
 import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 
 import styles from './SankeySettingsPanel.module.scss';

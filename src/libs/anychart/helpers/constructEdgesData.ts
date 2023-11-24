@@ -1,5 +1,5 @@
 import { TFullChartDataSet } from 'src/core/types';
-import { TAnyChartData, TAnyChartRecord } from 'src/core/types/anychart';
+import { TAnyChartData, TAnyChartRecord } from 'src/libs/anychart/types';
 import { getGraphForId, getNodeForId } from 'src/helpers/Sankey/data';
 
 /** Create chart data from the data set */

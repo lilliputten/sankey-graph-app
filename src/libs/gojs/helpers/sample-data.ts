@@ -1,4 +1,4 @@
-import { TGojsData, TGojsLinkDataArray, TGojsNodeDataArray } from 'src/core/types/gojs';
+import { TGojsData, TGojsLinkDataArray, TGojsNodeDataArray } from 'src/libs/gojs/types';
 
 export function getGojsSampleData(): TGojsData {
   // prettier-ignore

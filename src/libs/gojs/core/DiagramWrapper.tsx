@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as go from 'gojs';
 import classNames from 'classnames';
 
-import { ReactDiagram } from 'src/core/gojs';
+import { ReactDiagram } from './gojs-react';
 
 // import { GuidedDraggingTool } from './GuidedDraggingTool';
 import { SankeyLayout } from './SankeyLayout';

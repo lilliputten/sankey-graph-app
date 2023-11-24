@@ -10,13 +10,13 @@ import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSess
 import * as toasts from 'src/ui/Basic/Toasts';
 import { getFullDataSet } from 'src/helpers/Sankey';
 import { getErrorText } from 'src/helpers';
-import { DiagramWrapper } from 'src/core/gojs';
+import { DiagramWrapper } from 'src/libs/gojs/core';
 import {
   constructNodeDataArrayFromGraphs,
   constructLinkDataArrayFromEdges,
   getGojsSampleMinimalData,
   // getGojsSampleData,
-} from 'src/helpers/gojs';
+} from 'src/libs/gojs/helpers';
 
 import styles from './SankeyGoJSDemo.module.scss';
 

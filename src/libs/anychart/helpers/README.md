@@ -8,7 +8,6 @@
 
 - [Sankey Diagram | Basic Charts | AnyChart Documentation](https://docs.anychart.com/Basic_Charts/Sankey_Diagram#labels_and_tooltips)
 
-
 ```
 chart.node().labels().useHtml(true);
 chart.node().labels().format(

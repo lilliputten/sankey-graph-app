@@ -11,9 +11,10 @@ import {
 } from 'src/components/SankeyApp/SankeyAppDataStore';
 import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 
+import { SankeyViewer } from 'src/components/SankeyViewer';
+
 import { SankeyAppCoreWaiter } from './SankeyAppCoreWaiter';
 import { SankeyAppCoreStart } from './SankeyAppCoreStart';
-import { SankeyViewer } from 'src/components/SankeyViewer/SankeyViewer';
 
 import styles from './SankeyAppCore.module.scss';
 
@@ -71,7 +72,7 @@ const RenderLayout: React.FC<TSankeyAppCoreProps> = observer((props) => {
   const sankeyAppSessionStore = useSankeyAppSessionStore();
   const sankeyAppDataStore = useSankeyAppDataStore();
   const loadNewData = React.useCallback(() => {
-    console.log('[SankeyAppCore:loadNewData]');
+    // console.log('[SankeyAppCore:loadNewData]');
     sankeyAppDataStore.setReady(false);
   }, [sankeyAppDataStore]);
   React.useEffect(() => {

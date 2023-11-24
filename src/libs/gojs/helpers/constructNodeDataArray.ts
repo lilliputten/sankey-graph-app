@@ -1,6 +1,6 @@
 import { getNodeForId } from 'src/helpers/Sankey';
 import { TFullChartDataSet, TGraphItem, TNodeItem } from 'src/core/types';
-import { TGojsNodeDataArray } from 'src/core/types/gojs';
+import { TGojsNodeDataArray } from 'src/libs/gojs/types';
 import { getColorForIndex } from 'src/helpers/colors';
 
 const useNodeName = true;
