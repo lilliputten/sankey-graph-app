@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import classNames from 'classnames';
 
-import { TChartLibraries, TPropsWithClassName } from 'src/core/types';
+import { TChartLibrary, TPropsWithClassName } from 'src/core/types';
 import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 
 import styles from './SankeySettingsPanel.module.scss';
@@ -38,7 +38,7 @@ export const SankeySettingsPanel: React.FC<TPropsWithClassName> = observer((prop
     });
   };
   const setChartLibrary: React.ChangeEventHandler<HTMLInputElement> = (ev) => {
-    const chartLibrary = ev.target.value as TChartLibraries;
+    const chartLibrary = ev.target.value as TChartLibrary;
     runInAction(() => {
       sankeyAppSessionStore.chartLibrary = chartLibrary;
     });

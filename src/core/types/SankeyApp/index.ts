@@ -1,6 +1,6 @@
 export * from './TChartComponent';
 export * from './TChartDataSet';
-export * from './TChartLibraries';
+export * from './TChartLibrary';
 export * from './TEdgesData';
 export * from './TFlowsData';
 export * from './TGraphsData';
