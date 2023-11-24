@@ -63,9 +63,11 @@ export function constructEdgesData(fullDataSet: TFullChartDataSet) {
       };
       return chartDataItem;
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('[constructEdgesData] item error', {
         edgeNode,
       });
+      // eslint-disable-next-line no-debugger
       debugger;
       throw error;
     }
