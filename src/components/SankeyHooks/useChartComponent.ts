@@ -1,7 +1,10 @@
 import { TChartComponent } from 'src/core/types';
 import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
+
+// Library components...
 import { SankeyAnychartDemo } from 'src/libs/anychart/components/SankeyAnychartDemo';
 import { SankeyGoJSDemo } from 'src/libs/gojs/components/SankeyGoJSDemo';
+import { SankeyPlotlyDemo } from 'src/libs/plotty/components/SankeyPlotlyDemo';
 
 /* TODO 2023.11.24, 02:07 -- Load libraries dynamically? (Needs to be ensured
  * that it works in the embedding browser. And to preserve the way to use old
@@ -13,10 +16,21 @@ export const useChartComponent = (): TChartComponent => {
   const sankeyAppSessionStore = useSankeyAppSessionStore();
   const { chartLibrary } = sankeyAppSessionStore;
   switch (chartLibrary) {
+    case 'plotly':
+      return SankeyPlotlyDemo;
     case 'anychart':
       return SankeyAnychartDemo;
     case 'gojs':
-    default:
       return SankeyGoJSDemo;
+    default:
+      const errMsg = 'Not found chart library component "' + chartLibrary + '"';
+      const error = new Error(errMsg);
+      // eslint-disable-next-line no-console
+      console.error('[useChartComponent]', errMsg, {
+        error,
+      });
+      // eslint-disable-next-line no-debugger
+      debugger;
+      throw error;
   }
 };
