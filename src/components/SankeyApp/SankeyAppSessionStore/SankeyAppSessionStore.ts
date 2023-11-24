@@ -1,6 +1,6 @@
 import { makeObservable, observable, action, computed, when } from 'mobx';
 import bound from 'bind-decorator';
-import { TChartLibraries } from 'src/core/types';
+import { defaultChartLibrary, TChartLibrary } from 'src/core/types/SankeyApp';
 
 export type TSankeyAppSessionStoreStatus = undefined | 'dataLoaded' | 'finished';
 
@@ -24,7 +24,7 @@ export class SankeyAppSessionStore {
   @observable lineWidthFactor: number = 200;
 
   /** Library used to display data */
-  @observable chartLibrary: TChartLibraries = 'gojs';
+  @observable chartLibrary: TChartLibrary = defaultChartLibrary;
 
   // Lifecycle...
 
@@ -108,18 +108,6 @@ export class SankeyAppSessionStore {
     // this.settingsDone = false;
 
     // TODO: Reset settings?
-  }
-
-  // Settings setters...
-
-  @action setLineWidthFactor(
-    lineWidthFactor: typeof SankeyAppSessionStore.prototype.lineWidthFactor,
-  ) {
-    this.lineWidthFactor = lineWidthFactor;
-  }
-
-  @action setChartLibrary(chartLibrary: typeof SankeyAppSessionStore.prototype.chartLibrary) {
-    this.chartLibrary = chartLibrary;
   }
 
   // Other setters...
