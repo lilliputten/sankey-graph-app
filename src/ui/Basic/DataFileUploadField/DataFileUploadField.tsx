@@ -120,10 +120,12 @@ export const DataFileUploadField = <T extends unknown>(props: TDataFileUploadFie
       })
         .then((data) => {
           console.log('[DataFileUploadField:loadDataFromFile] loadDataFile success', {
+            id,
+            fileName,
             data,
             fileInfo,
           });
-          toasts.showSuccess('File successfully loaded!');
+          toasts.showSuccess('File "' + fileName + '" (for ' + id + ' slot) successfully loaded!');
           setLoaded(true);
           if (setData) {
             setData(data as T);
@@ -141,7 +143,7 @@ export const DataFileUploadField = <T extends unknown>(props: TDataFileUploadFie
           setLoadingProgress(undefined);
         });
     },
-    [handleLoadingProgress, setData, setFileInfo, setError, processError],
+    [handleLoadingProgress, processError, id, setData, setFileInfo],
   );
   const loadDataFromUrl = React.useCallback(
     (url: string) => {
