@@ -18,17 +18,20 @@ export function constructEdgesData(fullDataSet: TFullChartDataSet) {
     graphsData,
     // nodesData,
   });
-  const chartData: TAnyChartData = edgesData.map(
-    ({
+  const chartData: TAnyChartData = edgesData.map((edgeNode) => {
+    const {
       producer_graph_id: toId, // 2,
       consumer_graph_id: fromId, // 0,
       amount, // 0.0016624585259705782
-    }) => {
-      // TODO: Check data and throw errors?
+    } = edgeNode;
+    // TODO: Check data and throw errors?
+    try {
       const fromGraph = getGraphForId(graphsHash, fromId);
       const toGraph = getGraphForId(graphsHash, toId);
-      const fromNode = getNodeForId(nodesHash, fromGraph.id_in_database);
-      const toNode = getNodeForId(nodesHash, toGraph.id_in_database);
+      const fromNodeId = fromGraph.id_in_database;
+      const toNodeId = toGraph.id_in_database;
+      const fromNode = getNodeForId(nodesHash, fromNodeId);
+      const toNode = getNodeForId(nodesHash, toNodeId);
       const fromName = fromNode.name;
       const toName = toNode.name;
       console.log('[constructEdgesData] item', {
@@ -39,17 +42,32 @@ export function constructEdgesData(fullDataSet: TFullChartDataSet) {
         amount,
         fromGraph,
         toGraph,
+        fromNodeId,
+        toNodeId,
         fromNode,
         toNode,
+        // 'fromNode.name': fromNode.name,
+        // 'toNode.name': toNode.name,
+        edgeNode,
       });
+      // TODO: Use identifiers instead names! Got cyclic loops while using names as identifiers.
       const chartDataItem: TAnyChartRecord = {
-        from: fromName,
-        to: toName,
-        value: amount,
+        from: String(fromId),
+        to: String(toId),
+        // value: amount,
+        weight: amount,
+        toName,
+        fromName,
       };
       return chartDataItem;
-    },
-  );
+    } catch (error) {
+      console.error('[constructEdgesData] item error', {
+        edgeNode,
+      });
+      debugger;
+      throw error;
+    }
+  });
   console.log('[constructEdgesData] finish', {
     chartData,
   });
