@@ -10,7 +10,9 @@ import { useChartComponent } from 'src/components/SankeyHooks';
 import styles from './SankeyViewer.module.scss';
 
 interface TSankeyViewerProps extends TPropsWithClassName {
+  /** Use left panel in layout */
   useLeftPanel?: boolean;
+  /** Show left panel by default */
   defaultShowLeftPanel?: boolean;
 }
 
@@ -19,7 +21,7 @@ export const SankeyViewer: React.FC<TSankeyViewerProps> = observer((props) => {
     // prettier-ignore
     className,
     useLeftPanel = true,
-    defaultShowLeftPanel = true,
+    defaultShowLeftPanel = false,
   } = props;
   const leftPanelContent = React.useMemo(
     () => useLeftPanel && <SankeySettingsPanel />,

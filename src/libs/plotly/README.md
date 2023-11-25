@@ -16,3 +16,7 @@
 
 - [plotly/plotly.js](https://github.com/plotly/plotly.js)
 - [plotly/react-plotly.js](https://github.com/plotly/react-plotly.js)
+
+## Event handlers
+
+- [Event handler props](https://github.com/plotly/react-plotly.js#event-handler-props)
