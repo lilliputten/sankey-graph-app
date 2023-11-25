@@ -1,12 +1,10 @@
 import Plotly from 'plotly.js';
-import {
-  // SankeyNode,
-  SankeyLink,
-} from 'plotly.js/lib/traces/sankey';
+import { SankeyNode, SankeyLink } from 'plotly.js/lib/traces/sankey';
 
 import { isDevBrowser } from 'src/config/build';
 
 import { TFullChartDataSet } from 'src/core/types';
+import { getColorForIndex } from 'src/helpers/colors';
 import { getNodeForId } from 'src/helpers/Sankey/data';
 
 import { TPlotlyData } from 'src/libs/plotly/types';
@@ -14,6 +12,12 @@ import { TPlotlyData } from 'src/libs/plotly/types';
 /** DEBUG: Don't wait for user action */
 const __debugUseDemoData = false && isDevBrowser;
 
+/** Show debug data in the node name */
+const __showDebugInName = true && isDevBrowser;
+
+/** Demo data
+ * @see https://plotly.com/javascript/sankey-diagram/
+ */
 export const demoPlotlySankeyData: TPlotlyData = [
   /** @type {Partial<Plotly.SankeyData>} */
   {
@@ -53,16 +57,9 @@ function getGraphLabelsList(fullDataSet: TFullChartDataSet): Plotly.Datum[] {
     // graphsMap,
     // nodesMap,
   } = fullDataSet;
-  /* console.log('[getGraphLabelsList] start', {
-   *   // edgesData,
-   *   // flowsData,
-   *   graphsData,
-   *   // nodesData,
-   * });
-   */
-  const labels: Plotly.Datum[] = graphsData.map((graph) => {
+  const labels: Plotly.Datum[] = graphsData.map((graph, idx) => {
     const {
-      // id_in_graph: id, // -1, self index
+      id_in_graph: graphId, // -1, self index
       id_in_database: nodeId, // -1, node id
       // product_id_in_database, // -1
       // product_scaling_amount, // 1.0
@@ -71,15 +68,41 @@ function getGraphLabelsList(fullDataSet: TFullChartDataSet): Plotly.Datum[] {
       // score_of_node, // 0.0
     } = graph;
     const node = getNodeForId(nodesHash, nodeId);
-    const name = node.name;
-    return name;
+    return [
+      __showDebugInName && `[graphIdx: ${idx}, graphId: ${graphId}, nodeId: ${nodeId}]`,
+      node.name,
+    ]
+      .filter(Boolean)
+      .join(' ');
   });
-  /* console.log('[getGraphLabelsList] done', {
-   *   labels,
-   *   graphsData,
-   * });
-   */
   return labels;
+}
+
+function getGraphColorsList(fullDataSet: TFullChartDataSet): SankeyNode['color'] {
+  const {
+    // edgesData, // TEdgesData;
+    // flowsData, // TFlowsData;
+    graphsData, // TGraphsData;
+    // nodesData, // TNodesData;
+    // graphsHash,
+    // nodesHash,
+    // graphsMap,
+    // nodesMap,
+  } = fullDataSet;
+  const colors = graphsData.map((graph) => {
+    const {
+      id_in_graph: id, // -1, self index
+      // id_in_database: nodeId, // -1, node id
+      // product_id_in_database, // -1
+      // product_scaling_amount, // 1.0
+      // process_amount, // 1.0
+      // score_through_supply_chain, // 9.981936043202016e-9
+      // score_of_node, // 0.0
+    } = graph;
+    const color = getColorForIndex(id);
+    return color;
+  });
+  return colors;
 }
 
 function getLinkData(fullDataSet: TFullChartDataSet): Partial<SankeyLink> {
@@ -93,11 +116,6 @@ function getLinkData(fullDataSet: TFullChartDataSet): Partial<SankeyLink> {
     graphsMap,
     // nodesMap,
   } = fullDataSet;
-  /* console.log('[getLinkData] start', {
-   *   edgesData,
-   *   graphsMap,
-   * });
-   */
   // @see https://plotly.com/javascript/sankey-diagram/
   // @see https://raw.githubusercontent.com/plotly/plotly.js/master/test/image/mocks/sankey_energy_dark.json
   const linkData /* : Partial<SankeyLink> */ = {
@@ -125,10 +143,6 @@ function getLinkData(fullDataSet: TFullChartDataSet): Partial<SankeyLink> {
      * linkData.label.push('Link ' + n);
      */
   });
-  /* console.log('[getLinkData] done', {
-   *   linkData,
-   * });
-   */
   return linkData;
 }
 
@@ -153,15 +167,11 @@ export function constructChartData(fullDataSet: TFullChartDataSet): TPlotlyData 
         width: 0,
       },
       label: getGraphLabelsList(fullDataSet),
-      // color: ['blue', 'blue', 'blue', 'blue', 'blue', 'blue'],
+      color: getGraphColorsList(fullDataSet),
     },
     /** @type {Partial<SankeyLink>} */
     link: getLinkData(fullDataSet),
   };
   const chartData: TPlotlyData = [sankeyData];
-  /* console.log('[constructChartData:getSankeyData]', {
-   *   sankeyData,
-   * });
-   */
   return chartData;
 }
