@@ -10,7 +10,10 @@ import { isDevBrowser } from 'src/config/build';
 import * as toasts from 'src/ui/Basic/Toasts';
 import { getErrorText } from 'src/helpers';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
-import { constructGraphsHashGraphsData, constructNodesHashFromData } from 'src/helpers/Sankey';
+import {
+  constructGraphsHashFromGraphsData,
+  constructNodesHashFromNodesData,
+} from 'src/helpers/Sankey';
 import { TChartComponentProps, TChartDataSet, TFullChartDataSet } from 'src/core/types';
 import { useContainerSize } from 'src/ui/hooks';
 
@@ -88,8 +91,8 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
         const error = new Error(errMsg);
         throw error;
       }
-      const graphsHash = constructGraphsHashGraphsData(graphsData);
-      const nodesHash = constructNodesHashFromData(nodesData);
+      const graphsHash = constructGraphsHashFromGraphsData(graphsData);
+      const nodesHash = constructNodesHashFromNodesData(nodesData);
       const fullDataSet: TFullChartDataSet = {
         edgesData,
         flowsData,

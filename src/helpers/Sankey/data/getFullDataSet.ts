@@ -1,8 +1,8 @@
 import { TChartDataSet, TFullChartDataSet } from 'src/core/types';
 import { getErrorText } from 'src/helpers';
 
-import { constructGraphsHashGraphsData } from './constructGraphsHashGraphsData';
-import { constructNodesHashFromData } from './constructNodesHashFromData';
+import { constructGraphsHashFromGraphsData } from './constructGraphsHashFromGraphsData';
+import { constructNodesHashFromNodesData } from './constructNodesHashFromNodesData';
 
 export function getFullDataSet(dataSet: Partial<TChartDataSet>) {
   const {
@@ -18,8 +18,8 @@ export function getFullDataSet(dataSet: Partial<TChartDataSet>) {
       const error = new Error(errMsg);
       throw error;
     }
-    const graphsHash = constructGraphsHashGraphsData(graphsData);
-    const nodesHash = constructNodesHashFromData(nodesData);
+    const graphsHash = constructGraphsHashFromGraphsData(graphsData);
+    const nodesHash = constructNodesHashFromNodesData(nodesData);
     const fullDataSet: TFullChartDataSet = {
       edgesData,
       flowsData,
@@ -49,6 +49,5 @@ export function getFullDataSet(dataSet: Partial<TChartDataSet>) {
     });
     debugger; // eslint-disable-line no-debugger
     throw resultError;
-    // setErrorText(getErrorText(resultError));
   }
 }
