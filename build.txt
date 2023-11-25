@@ -1,6 +1,6 @@
 Project: sankey-graph-app
-Version: 0.0.7
-Branch: dev-231124-issue-3-libs-plotly
-Commit: 2fafcaa
-Fixed: 2023.11.25, 21:00 GMT+7
-Built: 2023.11.25, 21:06 GMT+7
+Version: 0.0.8
+Branch: dev-231125-issue-5-plotly-customize
+Commit: c24f80d
+Fixed: 2023.11.26, 03:02 GMT+7
+Built: 2023.11.26, 03:05 GMT+7
