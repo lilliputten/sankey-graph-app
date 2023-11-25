@@ -15,3 +15,4 @@
 ## Repositories
 
 - [plotly/plotly.js](https://github.com/plotly/plotly.js)
+- [plotly/react-plotly.js](https://github.com/plotly/react-plotly.js)
