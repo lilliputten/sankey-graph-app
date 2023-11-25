@@ -130,7 +130,7 @@ export const DataFileUploadField = <T extends unknown>(props: TDataFileUploadFie
            *   fileInfo,
            * });
            */
-          toasts.showSuccess('File "' + fileName + '" (for ' + id + ' slot) successfully loaded!');
+          toasts.showSuccess('File "' + fileName + '" successfully loaded in slot "' + id + '"!');
           // setLoaded(true);
           if (setData) {
             setData(data as T);
