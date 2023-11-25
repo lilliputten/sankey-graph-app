@@ -56,30 +56,32 @@ export const SankeyGoJSDemo: React.FC<TChartComponentProps> = observer((props) =
         graphsData,
         nodesData,
       });
-      console.log('[SankeyGoJSDemo:gojsData] start', {
-        edgesData: edgesData?.map((it) => ({ ...it })),
-        flowsData: flowsData?.map((it) => ({ ...it })),
-        graphsData: graphsData?.map((it) => ({ ...it })),
-        nodesData: nodesData?.map((it) => ({ ...it })),
-      });
+      /* console.log('[SankeyGoJSDemo:gojsData] start', {
+       *   edgesData: edgesData?.map((it) => ({ ...it })),
+       *   flowsData: flowsData?.map((it) => ({ ...it })),
+       *   graphsData: graphsData?.map((it) => ({ ...it })),
+       *   nodesData: nodesData?.map((it) => ({ ...it })),
+       * });
+       */
       // prettier-ignore
       const nodeDataArray = constructNodeDataArrayFromGraphs(fullDataSet);
       const linkDataArray = constructLinkDataArrayFromEdges(fullDataSet, { lineWidthFactor });
       // const modelData = go.Model.fromJson(gojsData);
-      console.log('[SankeyGoJSDemo:gojsData] data', {
-        fullDataSet,
-        nodeDataArray,
-        linkDataArray,
-      });
+      /* console.log('[SankeyGoJSDemo:gojsData] data', {
+       *   fullDataSet,
+       *   nodeDataArray,
+       *   linkDataArray,
+       * });
+       */
       const gojsData = {
         nodeDataArray,
         linkDataArray,
       };
-      console.log('[SankeyGoJSDemo:gojsData] done', {
-        gojsData,
-        // gojsDataSample,
-      });
-      // debugger;
+      /* console.log('[SankeyGoJSDemo:gojsData] done', {
+       *   gojsData,
+       *   // gojsDataSample,
+       * });
+       */
       return gojsData;
     } catch (error) {
       const errMsg = [

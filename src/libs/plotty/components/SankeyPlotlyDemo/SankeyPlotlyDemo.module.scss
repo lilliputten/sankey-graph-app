@@ -4,9 +4,9 @@
   display: flex;
   align-items: stretch;
   justify-content: stretch;
-  padding: 20px;
   overflow: hidden;
-  gap: 20px;
+  // padding: 20px;
+  // gap: 20px;
 }
 
 .chart {
@@ -16,6 +16,7 @@
   align-items: stretch;
   justify-content: stretch;
   overflow: hidden;
+  /* // UNUSED: Attemtps to make full-size chart area
   > :global(.plot-container) {
     flex: 1;
     > :global(.svg-container) {
@@ -26,6 +27,7 @@
       }
     }
   }
+  */
 }
 
 .errorBox {

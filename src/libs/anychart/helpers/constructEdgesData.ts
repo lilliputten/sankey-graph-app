@@ -6,18 +6,19 @@ import { getGraphForId, getNodeForId } from 'src/helpers/Sankey/data';
 export function constructEdgesData(fullDataSet: TFullChartDataSet) {
   const {
     edgesData, // TEdgesData;
-    flowsData, // TFlowsData;
-    graphsData, // TGraphsData;
+    // flowsData, // TFlowsData;
+    // graphsData, // TGraphsData;
     // nodesData, // TNodesData;
     graphsHash, // TGraphHash;
     nodesHash, // TNodeHash;
   } = fullDataSet;
-  console.log('[constructEdgesData] start', {
-    edgesData,
-    flowsData,
-    graphsData,
-    // nodesData,
-  });
+  /* console.log('[constructEdgesData] start', {
+   *   edgesData,
+   *   // flowsData,
+   *   // graphsData,
+   *   // nodesData,
+   * });
+   */
   const chartData: TAnyChartData = edgesData.map((edgeNode) => {
     const {
       producer_graph_id: toId, // 2,
@@ -72,8 +73,9 @@ export function constructEdgesData(fullDataSet: TFullChartDataSet) {
       throw error;
     }
   });
-  console.log('[constructEdgesData] finish', {
-    chartData,
-  });
+  /* console.log('[constructEdgesData] finish', {
+   *   chartData,
+   * });
+   */
   return chartData;
 }
