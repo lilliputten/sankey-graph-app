@@ -11,13 +11,13 @@ import * as toasts from 'src/ui/Basic/Toasts';
 import { getErrorText } from 'src/helpers';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 import { getFullDataSet, getNodeForId } from 'src/helpers/Sankey';
-import { TChartComponentProps, TFullChartDataSet } from 'src/core/types';
+import { TChartComponentProps, TFullChartDataSet, TGraphId } from 'src/core/types';
 import { useContainerSize } from 'src/ui/hooks';
 
 import { TPlotlyData } from 'src/libs/plotly/types';
 import { constructChartData } from 'src/libs/plotly/helpers';
 
-// import { constructEdgesData } from 'src/libs/plotly/helpers';
+import { EditSankeyNodeDialog } from 'src/components/SankeyEditor/EditSankeyNodeDialog';
 
 import styles from './SankeyPlotlyDemo.module.scss';
 
@@ -31,7 +31,6 @@ interface TMemo {
 
 export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props) => {
   const { className } = props;
-  const memo = React.useMemo<TMemo>(() => ({}), []);
   // const [currentNodePoint, setCurrentNodePoint] = React.useState<PlotDatum | undefined>();
   const sankeyAppDataStore = useSankeyAppDataStore();
   const [errorText, setErrorText] = React.useState<string | undefined>();
@@ -125,6 +124,22 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
     [],
   );
 
+  // Interactive: edit node dialog...
+
+  const [currentGraphId, setCurrentGraphId] = React.useState<TGraphId | undefined>();
+
+  const [openEditSankeyNodeDialog, setOpenEditSankeyNodeDialog] = React.useState(false);
+  const handleOpenEditSankeyNodeDialog = () => {
+    setOpenEditSankeyNodeDialog(true);
+  };
+  const handleCloseEditSankeyNodeDialog = () => {
+    setOpenEditSankeyNodeDialog(false);
+  };
+
+  // Interactive: user handlers...
+
+  const memo = React.useMemo<TMemo>(() => ({}), []);
+
   const handleHover = React.useCallback(
     (ev: Readonly<Plotly.PlotMouseEvent>) => {
       const {
@@ -137,7 +152,6 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
     },
     [memo],
   );
-
   const handleSankeyNodeClick = React.useCallback(
     ([update, indices]: readonly [Plotly.PlotRestyleEventUpdate, number[]]) => {
       const { currentNodePoint } = memo;
@@ -178,9 +192,8 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
           debugger; // eslint-disable-line no-debugger
           throw error;
         }
-        const graphId = graph.id_in_graph;
         const {
-          // id_in_graph: id, // -1, self index
+          id_in_graph: graphId, // -1, self index
           id_in_database: nodeId, // -1, node id
           // product_id_in_database, // -1
           // product_scaling_amount, // 1.0
@@ -188,6 +201,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
           // score_through_supply_chain, // 9.981936043202016e-9
           // score_of_node, // 0.0
         } = graph;
+        // TODO: Check if not graphId is defined?
         const node = getNodeForId(nodesHash, nodeId);
         const { name: nodeName } = node;
         // NOTE: Unhover events invokes before sankey node click, so we mustn't to use it
@@ -202,7 +216,9 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
           currentNodePoint,
           fullDataSet,
         });
-        // TODO: Start node editor
+        // Start node editor dialog: save graph id, open dialog...
+        setCurrentGraphId(graphId);
+        handleOpenEditSankeyNodeDialog();
       }
     },
     [
@@ -238,6 +254,11 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
           // onUnhover={handleUnhover}
         />
       )}
+      <EditSankeyNodeDialog
+        open={openEditSankeyNodeDialog}
+        handleClose={handleCloseEditSankeyNodeDialog}
+        graphId={currentGraphId}
+      />
     </Box>
   );
 });

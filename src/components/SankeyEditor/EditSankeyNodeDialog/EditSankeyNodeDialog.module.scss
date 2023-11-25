@@ -1,0 +1,10 @@
+.root,
+.DEBUG {
+  /*!KEEP*/
+}
+
+.root {
+  :global(.MuiDialog-paper) {
+    min-width: 300px;
+  }
+}
