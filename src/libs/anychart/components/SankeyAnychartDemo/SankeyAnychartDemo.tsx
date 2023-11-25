@@ -16,7 +16,10 @@ import { getErrorText } from 'src/helpers';
 import { TAnyChartData } from 'src/libs/anychart/types';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 import { constructEdgesData } from 'src/libs/anychart/helpers';
-import { constructGraphsHashGraphsData, constructNodesHashFromData } from 'src/helpers/Sankey';
+import {
+  constructGraphsHashFromGraphsData,
+  constructNodesHashFromNodesData,
+} from 'src/helpers/Sankey';
 import { TChartComponentProps, TChartDataSet, TFullChartDataSet } from 'src/core/types';
 
 import styles from './SankeyAnychartDemo.module.scss';
@@ -73,8 +76,8 @@ export const SankeyAnychartDemo: React.FC<TChartComponentProps> = observer((prop
         const error = new Error(errMsg);
         throw error;
       }
-      const graphsHash = constructGraphsHashGraphsData(graphsData);
-      const nodesHash = constructNodesHashFromData(nodesData);
+      const graphsHash = constructGraphsHashFromGraphsData(graphsData);
+      const nodesHash = constructNodesHashFromNodesData(nodesData);
       const fullDataSet: TFullChartDataSet = {
         edgesData,
         flowsData,
