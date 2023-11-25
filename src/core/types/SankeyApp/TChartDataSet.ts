@@ -1,7 +1,7 @@
 import { TEdgesData } from './TEdgesData';
 import { TFlowsData } from './TFlowsData';
-import { TGraphsData, TGraphHash } from './TGraphsData';
-import { TNodesData, TNodeHash } from './TNodesData';
+import { TGraphsData, TGraphHash, TGraphMap } from './TGraphsData';
+import { TNodesData, TNodeHash, TNodeMap } from './TNodesData';
 
 export interface TChartDataSet {
   edgesData: TEdgesData;
@@ -13,4 +13,6 @@ export interface TChartDataSet {
 export interface TFullChartDataSet extends TChartDataSet {
   graphsHash: TGraphHash;
   nodesHash: TNodeHash;
+  graphsMap: TGraphMap;
+  nodesMap: TNodeMap;
 }

@@ -2,7 +2,7 @@ export type TGraphId = number;
 
 export interface TGraphItem {
   /** Self index */
-  id_in_graph: number; // -1
+  id_in_graph: TGraphId; // -1, self index
   id_in_database: number; // -1, node id
   product_id_in_database: number; // -1
   product_scaling_amount: number; // 1.0
@@ -14,3 +14,4 @@ export interface TGraphItem {
 export type TGraphsData = TGraphItem[];
 
 export type TGraphHash = Record<TGraphId, TGraphItem>;
+export type TGraphMap = Record<TGraphId, number>;
