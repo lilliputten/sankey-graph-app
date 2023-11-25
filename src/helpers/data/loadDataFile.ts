@@ -19,17 +19,22 @@ export interface TLoadDataFileOptions<T> {
 // TODO: Add possibility to cancel the loading for user?
 
 export function loadDataFile<T = unknown>(file: File, opts: TLoadDataFileOptions<T> = {}) {
-  const { name: fileName, type: fileType, size: fileSize } = file;
+  const {
+    name: fileName,
+    // type: fileType,
+    // size: fileSize,
+  } = file;
   const { onProgress, onLoaded, onError, timeout } = opts;
   return new Promise(function loadDataFile_promise(resolve, reject) {
     const fileReader = new FileReader();
-    console.log('[loadDataFile:onloadend] start', {
-      fileReader,
-      // file,
-      fileName,
-      fileType,
-      fileSize,
-    });
+    /* console.log('[loadDataFile:onloadend] start', {
+     *   fileReader,
+     *   // file,
+     *   fileName,
+     *   // fileType,
+     *   // fileSize,
+     * });
+     */
     // Set load timeout (if specified)...
     let timeoutHandler: NodeJS.Timeout | undefined = !!timeout
       ? setTimeout(function loadDataFile_timeout() {
@@ -82,21 +87,22 @@ export function loadDataFile<T = unknown>(file: File, opts: TLoadDataFileOptions
           loaded, // 5878
           // returnValue, // true
           // srcElement, // FileReader {readyState: 2, result: '[\n  {\n    "producer_graph_id": 0,\n    "consumer_gr…_id": 53,\n    "amount": 0.07788214412864229\n  }\n]', error: null, onloadstart: null, onprogress: null, …}
-          target, // FileReader {readyState: 2, result: '[\n  {\n    "producer_graph_id": 0,\n    "consumer_gr…_id": 53,\n    "amount": 0.07788214412864229\n  }\n]', error: null, onloadstart: null, onprogress: null, …}
+          // target, // FileReader {readyState: 2, result: '[\n  {\n    "producer_graph_id": 0,\n    "consumer_gr…_id": 53,\n    "amount": 0.07788214412864229\n  }\n]', error: null, onloadstart: null, onprogress: null, …}
           // timeStamp, // 25930.29999998212
           total, // 5878
         } = ev;
         const progress = lengthComputable && total ? Math.round((loaded * 100) / total) : undefined;
-        console.log('[loadDataFile] progress', {
-          progress,
-          fileName,
-          lengthComputable, // true
-          loaded, // 5878
-          target, // FileReader {readyState: 2, result: '[\n  {\n    "producer_graph_id": 0,\n    "consumer_gr…_id": 53,\n    "amount": 0.07788214412864229\n  }\n]', error: null, onloadstart: null, onprogress: null, …}
-          total, // 5878
-          ev,
-          fileReader,
-        });
+        /* console.log('[loadDataFile] progress', {
+         *   progress,
+         *   fileName,
+         *   lengthComputable, // true
+         *   loaded, // 5878
+         *   // target, // FileReader {readyState: 2, result: '[\n  {\n    "producer_graph_id": 0,\n    "consumer_gr…_id": 53,\n    "amount": 0.07788214412864229\n  }\n]', error: null, onloadstart: null, onprogress: null, …}
+         *   total, // 5878
+         *   ev,
+         *   fileReader,
+         * });
+         */
         onProgress({ progress, loaded, total, fileReader });
       };
     }
@@ -112,27 +118,28 @@ export function loadDataFile<T = unknown>(file: File, opts: TLoadDataFileOptions
         // defaultPrevented, // false
         // eventPhase, // 2
         // lengthComputable, // true
-        loaded, // 5878
+        // loaded, // 5878
         // returnValue, // true
         // srcElement, // FileReader {readyState: 2, result: '[\n  {\n    "producer_graph_id": 0,\n    "consumer_gr…_id": 53,\n    "amount": 0.07788214412864229\n  }\n]', error: null, onloadstart: null, onprogress: null, …}
         target, // FileReader {readyState: 2, result: '[\n  {\n    "producer_graph_id": 0,\n    "consumer_gr…_id": 53,\n    "amount": 0.07788214412864229\n  }\n]', error: null, onloadstart: null, onprogress: null, …}
         // timeStamp, // 25930.29999998212
-        total, // 5878
+        // total, // 5878
       } = ev;
       try {
         const rawResult = target?.result as string;
         // TODO: Catch parse errors...
         const data = rawResult && JSON.parse(rawResult);
-        console.log('[loadDataFile] onloadend', {
-          data,
-          rawResult,
-          loaded, // 5878
-          target, // FileReader {readyState: 2, result: '[\n  {\n    "producer_graph_id": 0,\n    "consumer_gr…_id": 53,\n    "amount": 0.07788214412864229\n  }\n]', error: null, onloadstart: null, onprogress: null, …}
-          total, // 5878
-          ev,
-          fileReader,
-          fileName,
-        });
+        /* console.log('[loadDataFile] onloadend', {
+         *   data,
+         *   rawResult,
+         *   // loaded, // 5878
+         *   target, // FileReader {readyState: 2, result: '[\n  {\n    "producer_graph_id": 0,\n    "consumer_gr…_id": 53,\n    "amount": 0.07788214412864229\n  }\n]', error: null, onloadstart: null, onprogress: null, …}
+         *   // total, // 5878
+         *   ev,
+         *   fileReader,
+         *   fileName,
+         * });
+         */
         // TODO: Get and return file info also?
         if (onLoaded) {
           onLoaded({ data, fileReader });

@@ -12,6 +12,7 @@ import { getErrorText } from 'src/helpers';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 import { constructGraphsHashGraphsData, constructNodesHashFromData } from 'src/helpers/Sankey';
 import { TChartComponentProps, TChartDataSet, TFullChartDataSet } from 'src/core/types';
+import { useContainerSize } from 'src/ui/hooks';
 
 // import { TPlotlyData } from 'src/libs/plotly/types';
 // import { constructEdgesData } from 'src/libs/plotly/helpers';
@@ -71,6 +72,8 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
     graphsData,
     nodesData,
   } = sankeyAppDataStore;
+  // Handle wrapper container size...
+  const { ref: resizeRef, width, height } = useContainerSize();
   const getFullDataSet = React.useCallback((dataSet: Partial<TChartDataSet>) => {
     const {
       // prettier-ignore
@@ -137,14 +140,20 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
   ],
   );
 
-  const layout: Partial<Plotly.Layout> = {
-    // title: 'Test',
-    // width: '100%',
-    // height: '100%',
-  };
+  const layout = React.useMemo<Partial<Plotly.Layout>>(
+    () => ({
+      // title: 'Test',
+      width,
+      height,
+    }),
+    [width, height],
+  );
 
   return (
-    <Box className={classNames(className, styles.root)}>
+    <Box
+      ref={resizeRef} // Handle node resize...
+      className={classNames(className, styles.root)}
+    >
       {/* // Debug: show some small stats...
       <Box>
         <Typography>Edges: {getSankeyDataInfo(edgesData)}</Typography>
