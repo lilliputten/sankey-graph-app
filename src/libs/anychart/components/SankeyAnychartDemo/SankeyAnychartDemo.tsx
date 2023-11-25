@@ -17,10 +17,15 @@ import { TAnyChartData } from 'src/libs/anychart/types';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 import { constructEdgesData } from 'src/libs/anychart/helpers';
 import {
-  constructGraphsHashFromGraphsData,
-  constructNodesHashFromNodesData,
+  // constructGraphHashFromGraphsData,
+  // constructNodeHashFromNodesData,
+  getFullDataSet,
 } from 'src/helpers/Sankey';
-import { TChartComponentProps, TChartDataSet, TFullChartDataSet } from 'src/core/types';
+import {
+  TChartComponentProps,
+  // TChartDataSet,
+  // TFullChartDataSet,
+} from 'src/core/types';
 
 import styles from './SankeyAnychartDemo.module.scss';
 
@@ -62,53 +67,55 @@ export const SankeyAnychartDemo: React.FC<TChartComponentProps> = observer((prop
     graphsData,
     nodesData,
   } = sankeyAppDataStore;
-  const getFullDataSet = React.useCallback((dataSet: Partial<TChartDataSet>) => {
-    const {
-      // prettier-ignore
-      edgesData,
-      flowsData,
-      graphsData,
-      nodesData,
-    } = dataSet;
-    try {
-      if (!edgesData || !flowsData || !graphsData || !nodesData) {
-        const errMsg = 'Some of required data is undefined';
-        const error = new Error(errMsg);
-        throw error;
-      }
-      const graphsHash = constructGraphsHashFromGraphsData(graphsData);
-      const nodesHash = constructNodesHashFromNodesData(nodesData);
-      const fullDataSet: TFullChartDataSet = {
-        edgesData,
-        flowsData,
-        graphsData,
-        nodesData,
-        graphsHash,
-        nodesHash,
-      };
-      return fullDataSet;
-    } catch (error) {
-      const errMsg = [
-        // prettier-ignore
-        'Cannot costruct full data set',
-        getErrorText(error),
-      ]
-        .filter(Boolean)
-        .join(': ');
-      const resultError = new Error(errMsg);
-      // eslint-disable-next-line no-console
-      console.error('[SankeyAnychartDemo:getFullDataSet] error', {
-        // error,
-        resultError,
-        edgesData,
-        flowsData,
-        graphsData,
-        nodesData,
-      });
-      debugger; // eslint-disable-line no-debugger
-      setErrorText(getErrorText(resultError));
-    }
-  }, []);
+  /* // UNUSED: getFullDataSet
+   * const getFullDataSet = React.useCallback((dataSet: Partial<TChartDataSet>) => {
+   *   const {
+   *     // prettier-ignore
+   *     edgesData,
+   *     flowsData,
+   *     graphsData,
+   *     nodesData,
+   *   } = dataSet;
+   *   try {
+   *     if (!edgesData || !flowsData || !graphsData || !nodesData) {
+   *       const errMsg = 'Some of required data is undefined';
+   *       const error = new Error(errMsg);
+   *       throw error;
+   *     }
+   *     const graphsHash = constructGraphHashFromGraphsData(graphsData);
+   *     const nodesHash = constructNodeHashFromNodesData(nodesData);
+   *     const fullDataSet: TFullChartDataSet = {
+   *       edgesData,
+   *       flowsData,
+   *       graphsData,
+   *       nodesData,
+   *       graphsHash,
+   *       nodesHash,
+   *     };
+   *     return fullDataSet;
+   *   } catch (error) {
+   *     const errMsg = [
+   *       // prettier-ignore
+   *       'Cannot costruct full data set',
+   *       getErrorText(error),
+   *     ]
+   *       .filter(Boolean)
+   *       .join(': ');
+   *     const resultError = new Error(errMsg);
+   *     // eslint-disable-next-line no-console
+   *     console.error('[SankeyAnychartDemo:getFullDataSet] error', {
+   *       // error,
+   *       resultError,
+   *       edgesData,
+   *       flowsData,
+   *       graphsData,
+   *       nodesData,
+   *     });
+   *     debugger; // eslint-disable-line no-debugger
+   *     setErrorText(getErrorText(resultError));
+   *   }
+   * }, []);
+   */
   const chartData = React.useMemo<TAnyChartData | undefined>(() => {
     if (__debugUseDemoData) {
       return demoChartData;
@@ -156,7 +163,6 @@ export const SankeyAnychartDemo: React.FC<TChartComponentProps> = observer((prop
     flowsData,
     graphsData,
     nodesData,
-    getFullDataSet,
   ]);
 
   // Use preconfigured instance
