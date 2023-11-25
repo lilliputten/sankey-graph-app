@@ -23,7 +23,7 @@ const __debugUseDemoData = false && isDevBrowser;
 
 type TPlotlyData = Plotly.Data[];
 
-const demoChartData: TPlotlyData = [
+const demoSimpleChartData: TPlotlyData = [
   {
     x: [1, 2, 3],
     y: [2, 6, 3],
@@ -32,6 +32,27 @@ const demoChartData: TPlotlyData = [
     marker: { color: 'red' },
   },
   { type: 'bar', x: [1, 2, 3], y: [2, 5, 3] },
+];
+const demoSankeyData: TPlotlyData = [
+  {
+    type: 'sankey',
+    orientation: 'h',
+    node: {
+      pad: 15,
+      thickness: 30,
+      line: {
+        color: 'black',
+        width: 0.5,
+      },
+      label: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'],
+      color: ['blue', 'blue', 'blue', 'blue', 'blue', 'blue'],
+    },
+    link: {
+      source: [0, 1, 0, 2, 3, 3],
+      target: [2, 3, 3, 4, 4, 5],
+      value: [8, 4, 2, 8, 4, 2],
+    },
+  },
 ];
 
 export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props) => {
@@ -99,7 +120,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
   }, []);
   const chartData = React.useMemo<TPlotlyData | undefined>(
     () => {
-      return demoChartData;
+      return demoSankeyData;
       /*
        * if (__debugUseDemoData) {
        *   return demoChartData;
