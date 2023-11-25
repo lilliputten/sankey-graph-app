@@ -4,7 +4,7 @@ import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSess
 // Library components...
 import { SankeyAnychartDemo } from 'src/libs/anychart/components/SankeyAnychartDemo';
 import { SankeyGoJSDemo } from 'src/libs/gojs/components/SankeyGoJSDemo';
-import { SankeyPlotlyDemo } from 'src/libs/plotty/components/SankeyPlotlyDemo';
+import { SankeyPlotlyDemo } from 'src/libs/plotly/components/SankeyPlotlyDemo';
 
 /* TODO 2023.11.24, 02:07 -- Load libraries dynamically? (Needs to be ensured
  * that it works in the embedding browser. And to preserve the way to use old

@@ -9,7 +9,7 @@ import { isDevBrowser } from 'src/config/build';
 import { TFullChartDataSet } from 'src/core/types';
 import { getNodeForId } from 'src/helpers/Sankey/data';
 
-import { TPlotlyData } from 'src/libs/plotty/types';
+import { TPlotlyData } from 'src/libs/plotly/types';
 
 /** DEBUG: Don't wait for user action */
 const __debugUseDemoData = false && isDevBrowser;

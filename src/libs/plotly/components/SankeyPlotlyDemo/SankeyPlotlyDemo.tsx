@@ -14,8 +14,8 @@ import { getFullDataSet } from 'src/helpers/Sankey';
 import { TChartComponentProps } from 'src/core/types';
 import { useContainerSize } from 'src/ui/hooks';
 
-import { TPlotlyData } from 'src/libs/plotty/types';
-import { constructChartData } from 'src/libs/plotty/helpers';
+import { TPlotlyData } from 'src/libs/plotly/types';
+import { constructChartData } from 'src/libs/plotly/helpers';
 
 // import { constructEdgesData } from 'src/libs/plotly/helpers';
 
