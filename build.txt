@@ -3,4 +3,4 @@ Version: 0.0.9
 Branch: dev-231125-issue-5-plotly-customize
 Commit: ff787eb
 Fixed: 2023.11.27, 00:51 GMT+7
-Built: 2023.11.27, 01:10 GMT+7
+Built: 2023.11.27, 01:15 GMT+7
