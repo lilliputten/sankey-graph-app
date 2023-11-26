@@ -33,8 +33,7 @@ export const EditSankeyNodeDialog: React.FC<TEditSankeyNodeDialogProps> = (props
   } = props;
   // TODO: Fetch & store graph data from and to `SankeyAppDataStore` with `graphId`
   const handleSave = () => {
-    console.log('[EditSankeyNodeDialog:handleSave]');
-    debugger;
+    // console.log('[EditSankeyNodeDialog:handleSave]');
     handleClose();
   };
   return (

@@ -7,7 +7,7 @@ import {
 } from 'mobx';
 import bound from 'bind-decorator';
 
-import { TEdgesData, TFlowsData, TGraphsData, TNodesData } from 'src/core/types';
+import { TEdgesData, TFlowsData, TGraphId, TGraphsData, TNodeId, TNodesData } from 'src/core/types';
 
 // const defaultEdgesData: TEdgesData = [{ x: 1 }];
 
@@ -26,6 +26,20 @@ export class SankeyAppDataStore {
   @observable flowsData?: TFlowsData;
   @observable graphsData?: TGraphsData;
   @observable nodesData?: TNodesData;
+
+  // Selected data...
+
+  /** Currently selected graph id */
+  @observable selectedGraphId?: TGraphId;
+
+  // Changeable data...
+
+  /** Changed or overriding (changeable) node names */
+  @observable nodeNames: Record<TNodeId, string> = {
+    [-1]: 'Root', // Default name for root node
+  };
+  /** Changed node colors */
+  @observable nodeColors: Record<TNodeId, string> = {};
 
   // Lifecycle...
 
@@ -79,6 +93,8 @@ export class SankeyAppDataStore {
     this.flowsData = undefined;
     this.graphsData = undefined;
     this.nodesData = undefined;
+    // Current...
+    this.selectedGraphId = undefined;
   }
 
   // Data setters...
@@ -94,5 +110,11 @@ export class SankeyAppDataStore {
   }
   @action setNodesData(nodesData: typeof SankeyAppDataStore.prototype.nodesData) {
     this.nodesData = nodesData;
+  }
+
+  // Current setters...
+
+  @action setSelectedGraphId(selectedGraphId: typeof SankeyAppDataStore.prototype.selectedGraphId) {
+    this.selectedGraphId = selectedGraphId;
   }
 }
