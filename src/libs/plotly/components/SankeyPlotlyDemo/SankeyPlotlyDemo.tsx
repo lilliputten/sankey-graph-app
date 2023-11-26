@@ -10,6 +10,7 @@ import Plotly, { PlotDatum } from 'plotly.js';
 import * as toasts from 'src/ui/Basic/Toasts';
 import { getErrorText } from 'src/helpers';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
+import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 import { getFullDataSet, getNodeForId } from 'src/helpers/Sankey';
 import { TChartComponentProps, TFullChartDataSet, TGraphId } from 'src/core/types';
 import { useContainerSize } from 'src/ui/hooks';
@@ -33,6 +34,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
   const { className } = props;
   // const [currentNodePoint, setCurrentNodePoint] = React.useState<PlotDatum | undefined>();
   const sankeyAppDataStore = useSankeyAppDataStore();
+  const sankeyAppSessionStore = useSankeyAppSessionStore();
   const [errorText, setErrorText] = React.useState<string | undefined>();
   React.useEffect(() => {
     if (errorText) {
@@ -100,41 +102,133 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
       // title: 'Test',
       width,
       height,
+      /* modebar: {
+       *   add: [
+       *     'lasso2d',
+       *     'select2d',
+       *     'sendDataToCloud',
+       *     'zoom2d',
+       *     'pan2d',
+       *     'zoomIn2d',
+       *     'zoomOut2d',
+       *     'autoScale2d',
+       *     'resetScale2d',
+       *     // 'hoverClosestCartesian',
+       *     // 'hoverCompareCartesian',
+       *     'zoom3d',
+       *     'pan3d',
+       *     // 'orbitRotation',
+       *     // 'tableRotation',
+       *     // 'handleDrag3d',
+       *     // 'resetCameraDefault3d',
+       *     // 'resetCameraLastSave3d',
+       *     // 'hoverClosest3d',
+       *     // 'zoomInGeo',
+       *     // 'zoomOutGeo',
+       *     // 'resetGeo',
+       *     // 'hoverClosestGeo',
+       *     // 'hoverClosestGl2d',
+       *     // 'hoverClosestPie',
+       *     // 'toggleHover',
+       *     'toImage',
+       *     'resetViews',
+       *     'toggleSpikelines',
+       *     'zoomInMapbox',
+       *     'zoomOutMapbox',
+       *     'resetViewMapbox',
+       *     'togglespikelines',
+       *     'togglehover',
+       *     'hovercompare',
+       *     'hoverclosest',
+       *     'v1hovermode',
+       *   ],
+       * },
+       */
     }),
     [width, height],
   );
 
   const config = React.useMemo<Partial<Plotly.Config>>(
     () => ({
+      // NOTE: Sankey diagrams can't be zoomed?
+      scrollZoom: true,
+      displaylogo: false,
+      responsive: true,
+      displayModeBar: true,
       // displayModeBar: false,
-      // editable: true,
-      // edits: {
-      //   annotationPosition: false,
-      //   annotationTail: false,
-      //   annotationText: false,
-      //   axisTitleText: false,
-      //   colorbarPosition: false,
-      //   colorbarTitleText: false,
-      //   legendPosition: false,
-      //   legendText: false,
-      //   shapePosition: false,
-      //   titleText: false,
-      // },
+      modeBarButtonsToRemove: [
+        // prettier-ignore
+        'lasso2d',
+        'select2d',
+      ],
+      /* modeBarButtonsToAdd: [
+       *   'lasso2d',
+       *   'select2d',
+       *   'sendDataToCloud',
+       *   'zoom2d',
+       *   'pan2d',
+       *   'zoomIn2d',
+       *   'zoomOut2d',
+       *   'autoScale2d',
+       *   'resetScale2d',
+       *   // 'hoverClosestCartesian',
+       *   // 'hoverCompareCartesian',
+       *   'zoom3d',
+       *   'pan3d',
+       *   // 'orbitRotation',
+       *   // 'tableRotation',
+       *   // 'handleDrag3d',
+       *   // 'resetCameraDefault3d',
+       *   // 'resetCameraLastSave3d',
+       *   // 'hoverClosest3d',
+       *   // 'zoomInGeo',
+       *   // 'zoomOutGeo',
+       *   // 'resetGeo',
+       *   // 'hoverClosestGeo',
+       *   // 'hoverClosestGl2d',
+       *   // 'hoverClosestPie',
+       *   // 'toggleHover',
+       *   'toImage',
+       *   'resetViews',
+       *   'toggleSpikelines',
+       *   'zoomInMapbox',
+       *   'zoomOutMapbox',
+       *   'resetViewMapbox',
+       *   'togglespikelines',
+       *   'togglehover',
+       *   'hovercompare',
+       *   'hoverclosest',
+       *   'v1hovermode',
+       * ],
+       */
+      /* editable: true,
+       * edits: {
+       *   annotationPosition: true,
+       *   annotationTail: true,
+       *   annotationText: true,
+       *   axisTitleText: true,
+       *   colorbarPosition: true,
+       *   colorbarTitleText: true,
+       *   legendPosition: true,
+       *   legendText: true,
+       *   shapePosition: true,
+       *   titleText: true,
+       * },
+       */
     }),
     [],
   );
 
-  // Interactive: edit node dialog...
-
-  const [currentGraphId, setCurrentGraphId] = React.useState<TGraphId | undefined>();
-
-  const [openEditSankeyNodeDialog, setOpenEditSankeyNodeDialog] = React.useState(false);
-  const handleOpenEditSankeyNodeDialog = () => {
-    setOpenEditSankeyNodeDialog(true);
-  };
-  const handleCloseEditSankeyNodeDialog = () => {
-    setOpenEditSankeyNodeDialog(false);
-  };
+  /* // UNUSED: Interactive: edit node dialog...
+   * // const [currentGraphId, setCurrentGraphId] = React.useState<TGraphId | undefined>();
+   * const [openEditSankeyNodeDialog, setOpenEditSankeyNodeDialog] = React.useState(false);
+   * const handleOpenEditSankeyNodeDialog = () => {
+   *   setOpenEditSankeyNodeDialog(true);
+   * };
+   * const handleCloseEditSankeyNodeDialog = () => {
+   *   setOpenEditSankeyNodeDialog(false);
+   * };
+   */
 
   // Interactive: user handlers...
 
@@ -217,16 +311,23 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
           fullDataSet,
         });
         // Start node editor dialog: save graph id, open dialog...
-        setCurrentGraphId(graphId);
-        handleOpenEditSankeyNodeDialog();
+        // setCurrentGraphId(graphId);
+        // handleOpenEditSankeyNodeDialog();
+        sankeyAppSessionStore.setSelectedGraphId(graphId);
       }
     },
     [
       // prettier-ignore
       memo,
       fullDataSet,
+      sankeyAppSessionStore,
     ],
   );
+
+  // TODO 2023.11.26, 17:39 Don't auto open properties panel if it had hidden manually?
+  // TODO 2023.11.26, 17:34 -- Adjust plotly toolbar to not overcased by toggle button
+  // TODO 2023.11.26, 17:27 -- Reset selected graph id on click outside the node
+  // TODO 2023.11.26, 17:25 -- Don't react to node dragging?
 
   return (
     <Box
@@ -254,11 +355,13 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
           // onUnhover={handleUnhover}
         />
       )}
+      {/* // Use modal dialog to edit current graph node (TODO?)
       <EditSankeyNodeDialog
         open={openEditSankeyNodeDialog}
         handleClose={handleCloseEditSankeyNodeDialog}
         graphId={currentGraphId}
       />
+      */}
     </Box>
   );
 });

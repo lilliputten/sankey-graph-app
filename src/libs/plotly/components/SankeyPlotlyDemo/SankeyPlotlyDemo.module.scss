@@ -28,6 +28,13 @@
     }
   }
   */
+  :global(.plotly .modebar) {
+    // Center toolbar
+    right: auto;
+    left: 50%;
+    top: 12px;
+    transform: translate(-50%);
+  }
 }
 
 .errorBox {
