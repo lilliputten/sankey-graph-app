@@ -13,7 +13,7 @@ import { TPlotlyData } from 'src/libs/plotly/types';
 const __debugUseDemoData = false && isDevBrowser;
 
 /** Show debug data in the node name */
-const __showDebugInName = true && isDevBrowser;
+const __showDebugInName = false && isDevBrowser;
 
 /** Demo data
  * @see https://plotly.com/javascript/sankey-diagram/

@@ -105,51 +105,9 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
       width,
       height,
       font: {
-        color: isDarkTheme ? 'white' : 'black',
+        color: isDarkTheme ? '#ddd' : '#333',
       },
       paper_bgcolor: isDarkTheme ? 'black' : 'white',
-      /* modebar: {
-       *   add: [
-       *     'lasso2d',
-       *     'select2d',
-       *     'sendDataToCloud',
-       *     'zoom2d',
-       *     'pan2d',
-       *     'zoomIn2d',
-       *     'zoomOut2d',
-       *     'autoScale2d',
-       *     'resetScale2d',
-       *     // 'hoverClosestCartesian',
-       *     // 'hoverCompareCartesian',
-       *     'zoom3d',
-       *     'pan3d',
-       *     // 'orbitRotation',
-       *     // 'tableRotation',
-       *     // 'handleDrag3d',
-       *     // 'resetCameraDefault3d',
-       *     // 'resetCameraLastSave3d',
-       *     // 'hoverClosest3d',
-       *     // 'zoomInGeo',
-       *     // 'zoomOutGeo',
-       *     // 'resetGeo',
-       *     // 'hoverClosestGeo',
-       *     // 'hoverClosestGl2d',
-       *     // 'hoverClosestPie',
-       *     // 'toggleHover',
-       *     'toImage',
-       *     'resetViews',
-       *     'toggleSpikelines',
-       *     'zoomInMapbox',
-       *     'zoomOutMapbox',
-       *     'resetViewMapbox',
-       *     'togglespikelines',
-       *     'togglehover',
-       *     'hovercompare',
-       *     'hoverclosest',
-       *     'v1hovermode',
-       *   ],
-       * },
-       */
     }),
     [width, height, isDarkTheme],
   );
@@ -330,7 +288,8 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
     ],
   );
 
-  // TODO 2023.11.26, 17:39 Don't auto open properties panel if it had hidden manually?
+  // TODO 2023.11.26, 22:39 -- Fix overcasting labels (`node-label`) by node bars (`node-rect`)
+  // TODO 2023.11.26, 17:39 -- Don't auto open properties panel if it had hidden manually?
   // TODO 2023.11.26, 17:34 -- Adjust plotly toolbar to not overcased by toggle button
   // TODO 2023.11.26, 17:27 -- Reset selected graph id on click outside the node
   // TODO 2023.11.26, 17:25 -- Don't react to node dragging?
