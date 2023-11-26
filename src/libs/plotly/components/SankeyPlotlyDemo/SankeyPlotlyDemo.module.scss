@@ -35,6 +35,26 @@
     top: 12px;
     transform: translate(-50%);
   }
+  :global(.sankey-link) {
+    opacity: .5 !important;
+    transition: all $animationTimeMs;
+  }
+  :global(.sankey-node) {
+    position: absolute;
+  }
+  :global(.node-rect) {
+    position: absolute;
+    opacity: .8;
+    transition: all $animationTimeMs;
+    &:hover {
+      opacity: 1;
+    }
+    z-index: 1;
+  }
+  :global(.node-label) {
+    position: absolute;
+    z-index: 100;
+  }
 }
 
 .errorBox {
