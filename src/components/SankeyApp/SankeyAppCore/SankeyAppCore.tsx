@@ -75,6 +75,7 @@ const RenderLayout: React.FC<TSankeyAppCoreProps> = observer((props) => {
     // console.log('[SankeyAppCore:loadNewData]');
     sankeyAppDataStore.setReady(false);
   }, [sankeyAppDataStore]);
+  // Init data store and set data store to session...
   React.useEffect(() => {
     /* // NOTE: It's already inited in `SankeyAppDataStoreProvider`
      * sankeyAppDataStore.setInited(true);
@@ -84,6 +85,13 @@ const RenderLayout: React.FC<TSankeyAppCoreProps> = observer((props) => {
       // TODO: Set demo data
       sankeyAppDataStore.setReady(true);
     }
+    sankeyAppSessionStore.setSankeyAppDataStore(sankeyAppDataStore);
+    return () => {
+      sankeyAppSessionStore.setSankeyAppDataStore(undefined);
+    };
+  }, [sankeyAppDataStore, sankeyAppSessionStore]);
+  // Set load new data callback into the session store...
+  React.useEffect(() => {
     // Set (and reset) handler for navigate to data load page...
     sankeyAppSessionStore.setLoadNewDataCb(loadNewData);
     return () => {
