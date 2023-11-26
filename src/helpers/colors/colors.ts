@@ -26,13 +26,16 @@ function getColorsList() {
     '#fe8b25',
     '#fea19f',
     '#fec184',
-    'yellow',
+    // 'yellow',
   ];
 }
 
 export function getColorForIndex(idx: number) {
   const colors = getColorsList();
-  const colorIdx = idx % colors.length;
+  let colorIdx = idx % colors.length;
+  if (colorIdx < 0) {
+    colorIdx = colors.length + colorIdx;
+  }
   return colors[colorIdx];
 }
 

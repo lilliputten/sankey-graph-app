@@ -35,6 +35,8 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
   // const [currentNodePoint, setCurrentNodePoint] = React.useState<PlotDatum | undefined>();
   const sankeyAppDataStore = useSankeyAppDataStore();
   const sankeyAppSessionStore = useSankeyAppSessionStore();
+  const { themeMode } = sankeyAppSessionStore;
+  const isDarkTheme = themeMode === 'dark';
   const [errorText, setErrorText] = React.useState<string | undefined>();
   React.useEffect(() => {
     if (errorText) {
@@ -97,11 +99,15 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
     fullDataSet,
   ]);
 
-  const layout = React.useMemo<Partial<Plotly.Layout>>(
+  const chartLayout = React.useMemo<Partial<Plotly.Layout>>(
     () => ({
       // title: 'Test',
       width,
       height,
+      font: {
+        color: isDarkTheme ? 'white' : 'black',
+      },
+      paper_bgcolor: isDarkTheme ? 'black' : 'white',
       /* modebar: {
        *   add: [
        *     'lasso2d',
@@ -145,10 +151,10 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
        * },
        */
     }),
-    [width, height],
+    [width, height, isDarkTheme],
   );
 
-  const config = React.useMemo<Partial<Plotly.Config>>(
+  const chartConfig = React.useMemo<Partial<Plotly.Config>>(
     () => ({
       // NOTE: Sankey diagrams can't be zoomed?
       scrollZoom: true,
@@ -340,8 +346,8 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
           // prettier-ignore
           className={styles.chart}
           data={chartData}
-          config={config}
-          layout={layout}
+          config={chartConfig}
+          layout={chartLayout}
           // NOTE: 'onClick' event works only for flow elements in sankey data mode
           // onClick={handleClick}
           // NOTE: For sankey nodes click events changes into a restyle ones
