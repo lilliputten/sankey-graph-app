@@ -3,7 +3,8 @@ import { observer } from 'mobx-react-lite';
 import classNames from 'classnames';
 
 import { TPropsWithClassName } from 'src/core/types';
-import { useSankeyAppSessionStore } from '../SankeyApp/SankeyAppSessionStore';
+// import { useSankeyAppSessionStore } from '../SankeyApp/SankeyAppSessionStore';
+import { useSankeyAppDataStore } from '../SankeyApp/SankeyAppDataStore';
 import { TPanelParams, WithSidePanels } from 'src/components/ui/WithSidePanels';
 import { SankeySettingsPanel } from 'src/components/SankeyMisc/SankeySettingsPanel';
 import { SankeyPropertiesPanel } from 'src/components/SankeyMisc/SankeyPropertiesPanel';
@@ -21,6 +22,7 @@ interface TSankeyViewerProps extends TPropsWithClassName {
 }
 
 const autoOpenPropertiesPanel = true;
+const useRightPanel = true;
 
 export const SankeyViewer: React.FC<TSankeyViewerProps> = observer((props) => {
   const {
@@ -30,22 +32,19 @@ export const SankeyViewer: React.FC<TSankeyViewerProps> = observer((props) => {
     defaultShowLeftPanel = false,
     defaultShowRightPanel = false,
   } = props;
-  const sankeyAppSessionStore = useSankeyAppSessionStore();
-  const { selectedGraphId } = sankeyAppSessionStore;
-  const [useRightPanel, setUseRightPanel] = React.useState(false);
+  const sankeyAppDataStore = useSankeyAppDataStore();
+  const { selectedGraphId } = sankeyAppDataStore;
+  // const [useRightPanel, setUseRightPanel] = React.useState(false);
   const leftPanelContent = React.useMemo(
     () => useLeftPanel && <SankeySettingsPanel />,
     [useLeftPanel],
   );
-  const rightPanelContent = React.useMemo(
-    () => useRightPanel && <SankeyPropertiesPanel />,
-    [useRightPanel],
-  );
+  const rightPanelContent = React.useMemo(() => useRightPanel && <SankeyPropertiesPanel />, []);
   // const [showLeftPanel, setShowLeftPanel] = React.useState(defaultShowLeftPanel); // TDO: If we nned controlled left panel
   const [showRightPanel, setShowRightPanel] = React.useState(defaultShowRightPanel);
   React.useEffect(() => {
     const showRightPanel = selectedGraphId !== undefined;
-    setUseRightPanel(showRightPanel);
+    // setUseRightPanel(showRightPanel);
     if (autoOpenPropertiesPanel) {
       setShowRightPanel(showRightPanel);
     }
@@ -82,7 +81,7 @@ export const SankeyViewer: React.FC<TSankeyViewerProps> = observer((props) => {
         setShow: setShowRightPanel,
       };
     }
-  }, [useRightPanel, rightPanelContent, defaultShowRightPanel, showRightPanel]);
+  }, [rightPanelContent, defaultShowRightPanel, showRightPanel]);
   const ChartComponent = useChartComponent();
   return (
     <WithSidePanels

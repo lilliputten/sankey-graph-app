@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 import classNames from 'classnames';
 
 // import { isDevBrowser } from 'src/config/build';
-import { TPropsWithClassName, defaultMuiThemeMode, TMuiThemeMode } from 'src/core/types';
+import { TPropsWithClassName, TMuiThemeMode } from 'src/core/types';
 import {
   SankeyAppSessionStore,
   SankeyAppSessionStoreProvider,

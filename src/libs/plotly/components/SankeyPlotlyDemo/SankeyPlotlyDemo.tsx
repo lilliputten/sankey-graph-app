@@ -4,21 +4,16 @@ import { Box } from '@mui/material';
 import classNames from 'classnames';
 
 import ReactPlotty from 'react-plotly.js';
-import Plotly, { PlotDatum } from 'plotly.js';
+import Plotly from 'plotly.js';
 
 // import { isDevBrowser } from 'src/config/build';
 import * as toasts from 'src/ui/Basic/Toasts';
-import { getErrorText } from 'src/helpers';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
-import { getFullDataSet, getNodeForId } from 'src/helpers/Sankey';
-import { TChartComponentProps, TFullChartDataSet, TGraphId } from 'src/core/types';
+import { TChartComponentProps } from 'src/core/types';
 import { useContainerSize } from 'src/ui/hooks';
 
-import { TPlotlyData } from 'src/libs/plotly/types';
-import { constructChartData } from 'src/libs/plotly/helpers';
-
-import { EditSankeyNodeDialog } from 'src/components/SankeyEditor/EditSankeyNodeDialog';
+import { useChartData } from 'src/libs/plotly/hooks';
 
 import styles from './SankeyPlotlyDemo.module.scss';
 
@@ -37,67 +32,15 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
   const sankeyAppSessionStore = useSankeyAppSessionStore();
   const { themeMode } = sankeyAppSessionStore;
   const isDarkTheme = themeMode === 'dark';
-  const [errorText, setErrorText] = React.useState<string | undefined>();
+  const [errorText /* , setErrorText */] = React.useState<string | undefined>();
+  // Effect: Show an error...
   React.useEffect(() => {
     if (errorText) {
       toasts.showError(errorText);
     }
   }, [errorText]);
-  const {
-    // prettier-ignore
-    edgesData,
-    flowsData,
-    graphsData,
-    nodesData,
-  } = sankeyAppDataStore;
-  // Handle wrapper container size...
   const { ref: resizeRef, width, height } = useContainerSize();
-  /** Full sankey data set */
-  const fullDataSet = React.useMemo<TFullChartDataSet>(
-    () =>
-      getFullDataSet({
-        // prettier-ignore
-        edgesData,
-        flowsData,
-        graphsData,
-        nodesData,
-      }),
-    [
-      // prettier-ignore
-      edgesData,
-      flowsData,
-      graphsData,
-      nodesData,
-    ],
-  );
-  /** Composite plotly chart data */
-  const chartData = React.useMemo<TPlotlyData | undefined>(() => {
-    try {
-      const chartData = constructChartData(fullDataSet);
-      setErrorText(undefined);
-      return chartData;
-    } catch (error) {
-      const errMsg = [
-        // prettier-ignore
-        'Cannot costruct chart data',
-        getErrorText(error),
-      ]
-        .filter(Boolean)
-        .join(': ');
-      const resultError = new Error(errMsg);
-      // eslint-disable-next-line no-console
-      console.error('[SankeyPlotlyDemo:chartData] error', {
-        // error,
-        resultError,
-        fullDataSet,
-      });
-      debugger; // eslint-disable-line no-debugger
-      setErrorText(getErrorText(resultError));
-    }
-  }, [
-    // prettier-ignore
-    fullDataSet,
-  ]);
+  const chartData = useChartData();
 
   const chartLayout = React.useMemo<Partial<Plotly.Layout>>(
     () => ({
@@ -105,7 +48,8 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
       width,
       height,
       font: {
-        color: isDarkTheme ? '#ddd' : '#333',
+        // TODO: store colors in config/storage?
+        color: isDarkTheme ? '#ccc' : '#333',
       },
       paper_bgcolor: isDarkTheme ? 'black' : 'white',
     }),
@@ -183,7 +127,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
     [],
   );
 
-  /* // UNUSED: Interactive: edit node dialog...
+  /* // UNUSED (?): Interactive: edit node dialog...
    * // const [currentGraphId, setCurrentGraphId] = React.useState<TGraphId | undefined>();
    * const [openEditSankeyNodeDialog, setOpenEditSankeyNodeDialog] = React.useState(false);
    * const handleOpenEditSankeyNodeDialog = () => {
@@ -213,25 +157,12 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
   const handleSankeyNodeClick = React.useCallback(
     ([update, indices]: readonly [Plotly.PlotRestyleEventUpdate, number[]]) => {
       const { currentNodePoint } = memo;
-      /* console.log('[SankeyPlotlyDemo:handleSankeyNodeClick] start', currentNodePoint, {
-       *   // 'memo.currentNodePoint': memo.currentNodePoint,
-       * });
-       */
-      if (currentNodePoint) {
+      const { graphsData } = sankeyAppDataStore;
+      if (currentNodePoint && graphsData) {
         const {
           // Destructure node point data...
           pointNumber,
         } = currentNodePoint;
-        const {
-          // edgesData, // TEdgesData;
-          // flowsData, // TFlowsData;
-          graphsData, // TGraphsData;
-          // nodesData, // TNodesData;
-          // graphsHash,
-          nodesHash,
-          // graphsMap,
-          // nodesMap,
-        } = fullDataSet;
         const graphIdx = pointNumber; // Use `pointNumber` instead of forbidden `index`
         const graph = graphsData[graphIdx]; // graphsHash[graphId];
         if (!graph) {
@@ -245,14 +176,13 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
             update,
             indices,
             currentNodePoint,
-            fullDataSet,
           });
           debugger; // eslint-disable-line no-debugger
           throw error;
         }
         const {
           id_in_graph: graphId, // -1, self index
-          id_in_database: nodeId, // -1, node id
+          // id_in_database: nodeId, // -1, node id
           // product_id_in_database, // -1
           // product_scaling_amount, // 1.0
           // process_amount, // 1.0
@@ -260,11 +190,8 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
           // score_of_node, // 0.0
         } = graph;
         // TODO: Check if not graphId is defined?
-        const node = getNodeForId(nodesHash, nodeId);
-        const { name: nodeName } = node;
         // NOTE: Unhover events invokes before sankey node click, so we mustn't to use it
         console.log('[SankeyPlotlyDemo:handleSankeyNodeClick]', {
-          nodeName,
           graph: { ...graph },
           graphIdx,
           graphId,
@@ -272,19 +199,18 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
           update,
           indices,
           currentNodePoint,
-          fullDataSet,
         });
-        // Start node editor dialog: save graph id, open dialog...
-        // setCurrentGraphId(graphId);
-        // handleOpenEditSankeyNodeDialog();
-        sankeyAppSessionStore.setSelectedGraphId(graphId);
+        /* // UNUSED (?): Start node editor dialog: save graph id, open dialog...
+         * setCurrentGraphId(graphId);
+         * handleOpenEditSankeyNodeDialog();
+         */
+        sankeyAppDataStore.setSelectedGraphId(graphId);
       }
     },
     [
       // prettier-ignore
       memo,
-      fullDataSet,
-      sankeyAppSessionStore,
+      sankeyAppDataStore,
     ],
   );
 

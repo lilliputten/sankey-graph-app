@@ -36,7 +36,7 @@
     transform: translate(-50%);
   }
   :global(.sankey-link) {
-    opacity: .5 !important;
+    opacity: 0.5 !important;
     transition: all $animationTimeMs;
   }
   :global(.sankey-node) {
@@ -44,7 +44,7 @@
   }
   :global(.node-rect) {
     position: absolute;
-    opacity: .8;
+    opacity: 0.8;
     transition: all $animationTimeMs;
     &:hover {
       opacity: 1;
