@@ -1,5 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
+import { runInAction } from 'mobx';
 import {
   Box,
   FormControl,
@@ -13,12 +14,16 @@ import {
 } from '@mui/material';
 import classNames from 'classnames';
 
-import { TPropsWithClassName } from 'src/core/types';
+import {
+  muiThemeModeNames,
+  TMuiThemeMode,
+  TPropsWithClassName,
+  validMuiThemeModes,
+} from 'src/core/types';
 import { chartLibraryNames, TChartLibrary, validChartLibraries } from 'src/core/types/SankeyApp';
 import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 
 import styles from './SankeySettingsPanel.module.scss';
-import { runInAction } from 'mobx';
 
 /* TODO 2023.11.24, 02:09 -- To initialize the settings from the url query. */
 
@@ -30,6 +35,7 @@ export const SankeySettingsPanel: React.FC<TPropsWithClassName> = observer((prop
   const {
     // prettier-ignore
     lineWidthFactor,
+    themeMode,
     chartLibrary,
   } = sankeyAppSessionStore;
   const setLineWidthFactor: React.ChangeEventHandler<HTMLInputElement> = (ev) => {
@@ -42,6 +48,12 @@ export const SankeySettingsPanel: React.FC<TPropsWithClassName> = observer((prop
     const chartLibrary = ev.target.value as TChartLibrary;
     runInAction(() => {
       sankeyAppSessionStore.chartLibrary = chartLibrary;
+    });
+  };
+  const setMuiThemeMode: React.ChangeEventHandler<HTMLInputElement> = (ev) => {
+    const themeMode = ev.target.value as TMuiThemeMode;
+    runInAction(() => {
+      sankeyAppSessionStore.themeMode = themeMode;
     });
   };
   return (
@@ -60,6 +72,29 @@ export const SankeySettingsPanel: React.FC<TPropsWithClassName> = observer((prop
         <FormHelperText id="lineWidthFactorText">
           Coefficient for multiplying the width of connecting lines between nodes (GoJS only)
         </FormHelperText>
+      </FormControl>
+
+      <FormControl>
+        <FormLabel id="themeMode">Theme</FormLabel>
+        <RadioGroup
+          aria-labelledby="themeMode"
+          aria-describedby="muiThemeModeText"
+          // id="themeMode"
+          name="themeMode"
+          sx={{ marginTop: 1 }}
+          onChange={setMuiThemeMode}
+          value={themeMode}
+        >
+          {validMuiThemeModes.map((id) => (
+            <FormControlLabel
+              key={id}
+              value={id}
+              control={radioControl}
+              label={muiThemeModeNames[id]}
+            />
+          ))}
+        </RadioGroup>
+        <FormHelperText id="muiThemeModeText">Application theme</FormHelperText>
       </FormControl>
 
       <FormControl>

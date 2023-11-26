@@ -1,5 +1,7 @@
 import { makeObservable, observable, action, computed, when } from 'mobx';
 import bound from 'bind-decorator';
+
+import { TMuiThemeMode, defaultMuiThemeMode } from 'src/core/types';
 import { defaultChartLibrary, TChartLibrary } from 'src/core/types/SankeyApp';
 
 export type TSankeyAppSessionStoreStatus = undefined | 'dataLoaded' | 'finished';
@@ -19,6 +21,9 @@ export class SankeyAppSessionStore {
   @observable loadNewDataCb?: () => void | undefined;
 
   // Settings...
+
+  /** Application theme */
+  @observable themeMode: TMuiThemeMode = defaultMuiThemeMode;
 
   /** Coefficient for multiplying the width of connecting lines between nodes (GoJS only) */
   @observable lineWidthFactor: number = 200;
@@ -108,6 +113,12 @@ export class SankeyAppSessionStore {
     // this.settingsDone = false;
 
     // TODO: Reset settings?
+  }
+
+  // Settings...
+
+  @action setThemeMode(themeMode: typeof SankeyAppSessionStore.prototype.themeMode) {
+    this.themeMode = themeMode;
   }
 
   // Other setters...

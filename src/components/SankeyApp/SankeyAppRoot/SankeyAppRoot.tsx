@@ -4,8 +4,7 @@ import { Box } from '@mui/material';
 import classNames from 'classnames';
 
 // import { isDevBrowser } from 'src/config/build';
-import { defaultMuiThemeMode } from 'src/config/app';
-import { TPropsWithClassName, TMuiThemeMode } from 'src/core/types';
+import { TPropsWithClassName, defaultMuiThemeMode, TMuiThemeMode } from 'src/core/types';
 import {
   SankeyAppSessionStore,
   SankeyAppSessionStoreProvider,
@@ -68,7 +67,8 @@ const RenderLayout: React.FC = observer(() => {
   }, [sankeyAppSessionStore]);
   const { rootState } = sankeyAppSessionStore;
   // TODO: Get theme mode from config, session or the local storage?
-  const themeMode: TMuiThemeMode = defaultMuiThemeMode;
+  const { themeMode } = sankeyAppSessionStore;
+  // const themeMode: TMuiThemeMode = defaultMuiThemeMode;
   // TODO: Wrap with error & loader splash renderer?
   return (
     <FullScreenPageLayout className={classNames(styles.layout)} themeMode={themeMode}>

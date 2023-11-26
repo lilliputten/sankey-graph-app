@@ -2,8 +2,7 @@ import React from 'react';
 import { Paper } from '@mui/material';
 import classnames from 'classnames';
 
-import { defaultMuiThemeMode } from 'src/config/app';
-import { TMuiThemeMode } from 'src/core/types';
+import { TMuiThemeMode, defaultMuiThemeMode } from 'src/core/types';
 import { createCustomizedMuiTheme, ThemeProvider } from 'src/core/global/mui-theme';
 
 import styles from './ThemeWrapper.module.scss';
