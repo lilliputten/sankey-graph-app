@@ -2,8 +2,7 @@ import { ThemeProvider, createTheme, ThemeOptions, PaletteOptions } from '@mui/m
 import { TypographyOptions } from '@mui/material/styles/createTypography';
 // import { lightBlue } from '@mui/material/colors';
 
-import { TMuiThemeMode } from 'src/core/types';
-import { defaultMuiThemeMode } from 'src/config/app';
+import { TMuiThemeMode, defaultMuiThemeMode } from 'src/core/types';
 
 import scssVariables from 'src/core/assets/scss/variables.module.scss';
 

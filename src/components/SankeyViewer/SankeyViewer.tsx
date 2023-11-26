@@ -21,12 +21,13 @@ export const SankeyViewer: React.FC<TSankeyViewerProps> = observer((props) => {
     // prettier-ignore
     className,
     useLeftPanel = true,
-    defaultShowLeftPanel = false,
+    defaultShowLeftPanel = true,
   } = props;
   const leftPanelContent = React.useMemo(
     () => useLeftPanel && <SankeySettingsPanel />,
     [useLeftPanel],
   );
+  const [showLeftPanel, setShowLeftPanel] = React.useState(defaultShowLeftPanel);
   const leftPanelParams = React.useMemo<TPanelParams | undefined>(() => {
     if (useLeftPanel) {
       return {
@@ -35,9 +36,11 @@ export const SankeyViewer: React.FC<TSankeyViewerProps> = observer((props) => {
         withHeader: true,
         headerTitle: 'Settings',
         scrollableContent: true,
+        show: showLeftPanel,
+        setShow: setShowLeftPanel,
       };
     }
-  }, [useLeftPanel, leftPanelContent, defaultShowLeftPanel]);
+  }, [useLeftPanel, leftPanelContent, defaultShowLeftPanel, showLeftPanel]);
   const ChartComponent = useChartComponent();
   return (
     <WithSidePanels

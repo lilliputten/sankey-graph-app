@@ -15,7 +15,10 @@ export interface TPanelParams {
   headerTitle?: TSidePanelProps['headerTitle'];
   scrollableContent?: TSidePanelProps['scrollableContent'];
   withHeader?: TSidePanelProps['withHeader'];
-  // usePanel?: boolean;
+  /** Controlled panel: visible state */
+  show?: boolean;
+  /** Controlled panel: set visible state */
+  setShow?: (show: boolean) => void;
 }
 
 export interface TWithSidePanelsProps extends TPropsWithChildrenAndClassName {
@@ -55,22 +58,16 @@ const ToggleButton: React.FC<TToggleButtonProps> = ({
 };
 
 interface TShowPanelProps {
-  // children?: React.ReactNode;
   hidden?: boolean;
   panelClassName?: string;
   params?: TPanelParams;
-  // usePanel?: boolean;
 }
 
 const ShowPanel: React.FC<TShowPanelProps> = ({
   // prettier-ignore
-  // children,
   panelClassName,
   hidden,
   params,
-  // withHeader,
-  // headerTitle,
-  // usePanel,
 }) => {
   if (!params) {
     return null;
@@ -81,6 +78,8 @@ const ShowPanel: React.FC<TShowPanelProps> = ({
     headerTitle,
     scrollableContent,
     withHeader,
+    // open,
+    // setOpen,
   } = params;
   return (
     <SidePanel
@@ -107,11 +106,27 @@ export const WithSidePanels: React.FC<TWithSidePanelsProps> = (props) => {
   } = props;
   const useLeftPanel = !!leftPanel;
   const useRightPanel = !!rightPanel;
-  const [showLeftPanel, setShowLeftPanel] = React.useState(!!leftPanel?.defaultShow);
-  const [showRightPanel, setShowRightPanel] = React.useState(!!rightPanel?.defaultShow);
+  const [showLeftPanel, setShowLeftPanel] = React.useState(
+    !!(leftPanel?.show != null ? leftPanel.show : leftPanel?.defaultShow),
+  );
+  const [showRightPanel, setShowRightPanel] = React.useState(
+    !!(rightPanel?.show != null ? rightPanel.show : rightPanel?.defaultShow),
+  );
   const toggleLeftPanel = () => {
-    setShowLeftPanel((show) => !show);
+    const show = !showLeftPanel;
+    if (leftPanel?.setShow) {
+      // Controlled?
+      leftPanel.setShow(show);
+    } else {
+      // Use internal state
+      setShowLeftPanel((show) => !show);
+    }
   };
+  React.useEffect(() => {
+    if (leftPanel?.show != null) {
+      setShowLeftPanel(leftPanel.show);
+    }
+  }, [leftPanel?.show]);
   const toggleRightPanel = () => {
     setShowRightPanel((show) => !show);
   };
