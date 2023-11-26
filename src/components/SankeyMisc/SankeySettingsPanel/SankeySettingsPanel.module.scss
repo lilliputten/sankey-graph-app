@@ -3,9 +3,9 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  // Decrease space between radio elements
+  :global(.MuiFormControlLabel-root + .MuiFormControlLabel-root) {
+    margin-top: -10px;
+  }
 }
 
-// Decrease space between radio elements
-.MuiFormControlLabel-root + .MuiFormControlLabel-root {
-  margin-top: -10px;
-}
