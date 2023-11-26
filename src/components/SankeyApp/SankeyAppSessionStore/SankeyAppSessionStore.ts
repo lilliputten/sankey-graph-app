@@ -2,9 +2,12 @@ import { makeObservable, observable, action, computed, when } from 'mobx';
 import bound from 'bind-decorator';
 
 import { TMuiThemeMode, defaultMuiThemeMode } from 'src/core/types';
-import { defaultChartLibrary, TChartLibrary } from 'src/core/types/SankeyApp';
+import { defaultChartLibrary, TChartLibrary, TGraphId } from 'src/core/types/SankeyApp';
+import { SankeyAppDataStore } from '../SankeyAppDataStore';
 
 export type TSankeyAppSessionStoreStatus = undefined | 'dataLoaded' | 'finished';
+
+const defaultLineWidthFactor = 200;
 
 export class SankeyAppSessionStore {
   // NOTE: remember to clean/reset properties in `clearData`
@@ -20,13 +23,18 @@ export class SankeyAppSessionStore {
   /** Callback to go to load new data page */
   @observable loadNewDataCb?: () => void | undefined;
 
+  @observable sankeyAppDataStore?: SankeyAppDataStore;
+
   // Settings...
+
+  /** Currently selected graph id */
+  @observable selectedGraphId?: TGraphId;
 
   /** Application theme */
   @observable themeMode: TMuiThemeMode = defaultMuiThemeMode;
 
   /** Coefficient for multiplying the width of connecting lines between nodes (GoJS only) */
-  @observable lineWidthFactor: number = 200;
+  @observable lineWidthFactor: number = defaultLineWidthFactor;
 
   /** Library used to display data */
   @observable chartLibrary: TChartLibrary = defaultChartLibrary;
@@ -112,16 +120,34 @@ export class SankeyAppSessionStore {
     this.error = undefined;
     // this.settingsDone = false;
 
-    // TODO: Reset settings?
+    // Reset settings?
+    this.clearSettings();
   }
 
   // Settings...
+
+  @action clearSettings() {
+    this.selectedGraphId = undefined;
+    this.themeMode = defaultMuiThemeMode;
+    this.lineWidthFactor = defaultLineWidthFactor;
+    this.chartLibrary = defaultChartLibrary;
+  }
+
+  @action setSelectedGraphId(
+    selectedGraphId: typeof SankeyAppSessionStore.prototype.selectedGraphId,
+  ) {
+    this.selectedGraphId = selectedGraphId;
+  }
 
   @action setThemeMode(themeMode: typeof SankeyAppSessionStore.prototype.themeMode) {
     this.themeMode = themeMode;
   }
 
   // Other setters...
+
+  @action setSankeyAppDataStore(sankeyAppDataStore?: SankeyAppDataStore) {
+    this.sankeyAppDataStore = sankeyAppDataStore;
+  }
 
   @action setLoadNewDataCb(loadNewDataCb: typeof SankeyAppSessionStore.prototype.loadNewDataCb) {
     this.loadNewDataCb = loadNewDataCb;

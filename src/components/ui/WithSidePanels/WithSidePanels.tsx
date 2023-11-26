@@ -13,6 +13,8 @@ export interface TPanelParams {
   defaultShow?: boolean;
   content?: React.ReactNode;
   headerTitle?: TSidePanelProps['headerTitle'];
+  /** Toggle button text hint */
+  toggleTitle?: string;
   scrollableContent?: TSidePanelProps['scrollableContent'];
   withHeader?: TSidePanelProps['withHeader'];
   /** Controlled panel: visible state */
@@ -32,6 +34,7 @@ interface TToggleButtonProps {
   handleToggle: () => void;
   panelHidden?: boolean;
   showButton?: boolean;
+  title?: string;
 }
 
 const ToggleButton: React.FC<TToggleButtonProps> = ({
@@ -39,6 +42,7 @@ const ToggleButton: React.FC<TToggleButtonProps> = ({
   handleToggle,
   panelHidden,
   showButton,
+  title = 'Toggle side panel',
 }) => {
   if (!showButton) {
     return null;
@@ -48,7 +52,7 @@ const ToggleButton: React.FC<TToggleButtonProps> = ({
       // prettier-ignore
       className={classNames(styles.panelIcon, iconClassName, panelHidden && styles.activated)}
       variant="contained"
-      title="Toggle side panel"
+      title={title}
       size="small"
       onClick={handleToggle}
     >
@@ -128,8 +132,20 @@ export const WithSidePanels: React.FC<TWithSidePanelsProps> = (props) => {
     }
   }, [leftPanel?.show]);
   const toggleRightPanel = () => {
-    setShowRightPanel((show) => !show);
+    const show = !showRightPanel;
+    if (rightPanel?.setShow) {
+      // Controlled?
+      rightPanel.setShow(show);
+    } else {
+      // Use internal state
+      setShowRightPanel((show) => !show);
+    }
   };
+  React.useEffect(() => {
+    if (rightPanel?.show != null) {
+      setShowRightPanel(rightPanel.show);
+    }
+  }, [rightPanel?.show]);
   return (
     <Box className={classNames(className, styles.root)}>
       <ShowPanel
@@ -145,12 +161,14 @@ export const WithSidePanels: React.FC<TWithSidePanelsProps> = (props) => {
           handleToggle={toggleLeftPanel}
           panelHidden={!showLeftPanel}
           showButton={useLeftPanel}
+          title={leftPanel?.toggleTitle}
         />
         <ToggleButton
           iconClassName={styles.panelIconRight}
           handleToggle={toggleRightPanel}
           panelHidden={!showRightPanel}
           showButton={useRightPanel}
+          title={rightPanel?.toggleTitle}
         />
       </Box>
       <ShowPanel
