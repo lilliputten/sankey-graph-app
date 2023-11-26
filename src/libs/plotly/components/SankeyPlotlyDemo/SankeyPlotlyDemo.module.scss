@@ -1,16 +1,13 @@
 .root {
-  // @include singleFullSizeContainer;
   flex: 1;
   display: flex;
   align-items: stretch;
   justify-content: stretch;
   overflow: hidden;
-  // padding: 20px;
-  // gap: 20px;
 }
 
-.chart {
-  /*!KEEP*/
+// NOTE: ATTENTION: Required to override plotly styles in production
+.chart:global(.js-plotly-plot) {
   flex: 1;
   display: flex !important;
   align-items: stretch;
