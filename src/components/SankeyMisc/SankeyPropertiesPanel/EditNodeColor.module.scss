@@ -1,0 +1,12 @@
+.root {
+  /*!KEEP*/
+  // display: flex;
+  // flex-direction: column;
+}
+.colorInput:global(.MuiFormControl-root) {
+  // display: block;
+  /*!KEEP*/
+}
+.colorInputLabel {
+  // position: relative;
+}

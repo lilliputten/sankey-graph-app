@@ -191,15 +191,16 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
         } = graph;
         // TODO: Check if not graphId is defined?
         // NOTE: Unhover events invokes before sankey node click, so we mustn't to use it
-        console.log('[SankeyPlotlyDemo:handleSankeyNodeClick]', {
-          graph: { ...graph },
-          graphIdx,
-          graphId,
-          pointNumber,
-          update,
-          indices,
-          currentNodePoint,
-        });
+        /* console.log('[SankeyPlotlyDemo:handleSankeyNodeClick]', {
+         *   graph: { ...graph },
+         *   graphIdx,
+         *   graphId,
+         *   pointNumber,
+         *   update,
+         *   indices,
+         *   currentNodePoint,
+         * });
+         */
         /* // UNUSED (?): Start node editor dialog: save graph id, open dialog...
          * setCurrentGraphId(graphId);
          * handleOpenEditSankeyNodeDialog();
