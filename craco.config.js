@@ -16,7 +16,7 @@ module.exports = {
   webpack: {
     plugins: {
       add: [
-        // Enable core nodejs polyfills (like 'buffer' etc) for webpack 5 
+        // Enable core nodejs polyfills (like 'buffer' etc) for webpack 5
         new NodePolyfillPlugin(),
       ],
     },
