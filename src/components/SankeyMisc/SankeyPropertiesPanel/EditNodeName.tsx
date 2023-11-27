@@ -14,22 +14,46 @@ interface TEditNodeNameProps extends TPropsWithClassName {
   nodeId: TNodeId | undefined;
 }
 
+interface TMemo {
+  nodeId?: TNodeId;
+}
+
 export const EditNodeName: React.FC<TEditNodeNameProps> = observer((props) => {
   const { className, nodeId } = props;
+
+  /** Memo is used to detect changed node id */
+  const memo = React.useMemo<TMemo>(() => ({}), []);
+
   const sankeyAppDataStore = useSankeyAppDataStore();
+
+  /** Node name from store */
   const nodeName = useNodeName(nodeId);
-  const handleEditNodeName: React.ChangeEventHandler<HTMLInputElement> = (ev) => {
-    const name = ev.target.value;
-    if (nodeId !== undefined) {
+  // Store name locally first
+  const [name, setName] = React.useState<string | undefined>(nodeName);
+
+  // TODO: To throttle/debounce external handler (with local state)?
+  React.useEffect(() => {
+    /* console.log('[EditNodeName:handleEditNodeName] before', {
+     *   nodeId,
+     *   'memo.nodeId': memo.nodeId,
+     *   nodeName,
+     *   name,
+     * });
+     */
+    if (nodeId !== memo.nodeId) {
+      // Another node id: update local name
+      /* console.log('[EditNodeName:handleEditNodeName] set local name for new id', {
+       *   name,
+       *   nodeId,
+       *   'memo.nodeId': memo.nodeId,
+       * });
+       */
+      setName(nodeName);
+      memo.nodeId = nodeId;
+    } else if (name && name !== nodeName && nodeId !== undefined) {
+      // Update name in storage...
       runInAction(() => {
         const { nodeNames, changedNodes } = sankeyAppDataStore;
-        sankeyAppDataStore.nodeNames = {
-          ...nodeNames,
-          [nodeId]: name,
-        };
-        if (!changedNodes.includes(nodeId)) {
-          sankeyAppDataStore.changedNodes = changedNodes.concat(nodeId);
-        }
         /* console.log('[EditNodeName:handleEditNodeName:runInAction]', {
          *   name,
          *   nodeId,
@@ -37,9 +61,22 @@ export const EditNodeName: React.FC<TEditNodeNameProps> = observer((props) => {
          *   changedNodes: { ...changedNodes },
          * });
          */
+        sankeyAppDataStore.nodeNames = {
+          ...nodeNames,
+          [nodeId]: name,
+        };
+        if (!changedNodes.includes(nodeId)) {
+          sankeyAppDataStore.changedNodes = changedNodes.concat(nodeId);
+        }
       });
     }
+  }, [memo, nodeId, name, nodeName, sankeyAppDataStore]);
+
+  const handleEditNodeName: React.ChangeEventHandler<HTMLInputElement> = (ev) => {
+    const name = ev.target.value;
+    setName(name);
   };
+
   return (
     <FormControl className={classNames(className, 'EditNodeName')}>
       <InputLabel htmlFor="nodeNameInput">Graph node name</InputLabel>
