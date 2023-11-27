@@ -5,6 +5,15 @@
   "timestamp": "2023.11.27, 16:48 GMT+7",
   "changed": "2023.11.13, 00:02",
   "private": true,
+  "eslint-unused-rules": {
+    "no-unused-vars": [
+      "warn",
+      {
+        "varsIgnorePattern": "^_",
+        "argsIgnorePattern": "^_"
+      }
+    ]
+  },
   "eslintConfig": {
     "extends": [
       "plugin:prettier/recommended",
@@ -14,6 +23,13 @@
     "rules": {
       "no-console": "warn",
       "no-debugger": "warn",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          "varsIgnorePattern": "^_",
+          "argsIgnorePattern": "^_"
+        }
+      ],
       "prettier/prettier": [
         "warn",
         {
@@ -71,6 +87,7 @@
     "mobx": "^6.11.0",
     "mobx-react-lite": "^4.0.5",
     "mui-color-input": "^2.0.1",
+    "node-polyfill-webpack-plugin": "^2.0.1",
     "npm-package-user-scripts-list": "^0.1.10",
     "npm-run-all": "^4.1.5",
     "patch-package": "^8.0.0",

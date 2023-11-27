@@ -4,6 +4,15 @@
 
 - Disable console log cleanings (`react-dev-utils`, `react-scripts`).
 - Remove extra deprecation warnings (`webpack-dev-server`).
+- Issueas checking on webpack build (`fork-ts-checker-webpack-plugin`)
+
+## To create patch for a package name 'NAME':
+
+```
+npx patch-package NAME
+```
+
+(Check for wrongly included swap files.)
 
 ## To apply all the patches:
 
