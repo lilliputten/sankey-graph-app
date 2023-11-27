@@ -1,7 +1,3 @@
-diff --git a/node_modules/webpack-dev-server/lib/.Server.js.swp b/node_modules/webpack-dev-server/lib/.Server.js.swp
-new file mode 100644
-index 0000000..dd8d2a5
-Binary files /dev/null and b/node_modules/webpack-dev-server/lib/.Server.js.swp differ
 diff --git a/node_modules/webpack-dev-server/lib/Server.js b/node_modules/webpack-dev-server/lib/Server.js
 index 79e6fc7..5a976ef 100644
 --- a/node_modules/webpack-dev-server/lib/Server.js
