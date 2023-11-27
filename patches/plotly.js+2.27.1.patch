@@ -1,0 +1,225 @@
+diff --git a/node_modules/plotly.js/src/.editorconfig b/node_modules/plotly.js/src/.editorconfig
+new file mode 100644
+index 0000000..930c491
+--- /dev/null
++++ b/node_modules/plotly.js/src/.editorconfig
+@@ -0,0 +1,2 @@
++[*]
++indent_size = 4
+diff --git a/node_modules/plotly.js/src/lib/events.js b/node_modules/plotly.js/src/lib/events.js
+index 3ec7f87..d28be65 100644
+--- a/node_modules/plotly.js/src/lib/events.js
++++ b/node_modules/plotly.js/src/lib/events.js
+@@ -67,6 +67,7 @@ var Events = {
+                 jQuery(plotObj).trigger(event, data);
+             }
+ 
++            window.__DEBUG_PLOTLY && console.log('[plotly:events:plotObj.emit]', event, data);
+             ev.emit(event, data);
+             internalEv.emit(event, data);
+         };
+diff --git a/node_modules/plotly.js/src/plot_api/plot_api.js b/node_modules/plotly.js/src/plot_api/plot_api.js
+index a104e88..71aa421 100644
+--- a/node_modules/plotly.js/src/plot_api/plot_api.js
++++ b/node_modules/plotly.js/src/plot_api/plot_api.js
+@@ -57,6 +57,7 @@ var numericNameWarningCountLimit = 5;
+  *
+  */
+ function _doPlot(gd, data, layout, config) {
++  window.__DEBUG_PLOTLY && console.log('[plotly:plot_api:_doPlot]', { gd, data, layout, config });
+     var frames;
+ 
+     gd = Lib.getGraphDiv(gd);
+@@ -533,6 +534,7 @@ function setPlotContext(gd, config) {
+ 
+ // convenience function to force a full redraw, mostly for use by plotly.js
+ function redraw(gd) {
++    window.__DEBUG_PLOTLY && console.log('[plotly:plot_api:redraw]', gd);
+     gd = Lib.getGraphDiv(gd);
+ 
+     if(!Lib.isPlotDiv(gd)) {
+@@ -558,6 +560,7 @@ function redraw(gd) {
+  * @param {Object} config
+  */
+ function newPlot(gd, data, layout, config) {
++    window.__DEBUG_PLOTLY && console.log('[plotly:plot_api:newPlot]', { gd, data, layout, config });
+     gd = Lib.getGraphDiv(gd);
+ 
+     // remove gl contexts
+@@ -1010,6 +1013,7 @@ function prependTraces(gd, update, indices, maxPoints) {
+  *
+  */
+ function addTraces(gd, traces, newIndices) {
++    window.__DEBUG_PLOTLY && console.log('[plotly:plot_api:addTraces]', { gd, traces, newIndices });
+     gd = Lib.getGraphDiv(gd);
+ 
+     var currentIndices = [];
+@@ -1150,6 +1154,7 @@ function deleteTraces(gd, indices) {
+  *      Plotly.moveTraces(gd, [b, d, e, a, c])  // same as 'move to end'
+  */
+ function moveTraces(gd, currentIndices, newIndices) {
++    window.__DEBUG_PLOTLY && console.log('[plotly:plot_api:moveTraces]', { gd, currentIndices, newIndices });
+     gd = Lib.getGraphDiv(gd);
+ 
+     var newData = [];
+@@ -1246,6 +1251,7 @@ function moveTraces(gd, currentIndices, newIndices) {
+  * style files that want to specify cyclical default values).
+  */
+ function restyle(gd, astr, val, _traces) {
++    window.__DEBUG_PLOTLY && console.log('[plotly:plot_api:restyle]', { gd, astr, val, _traces });
+     gd = Lib.getGraphDiv(gd);
+     helpers.clearPromiseQueue(gd);
+ 
+@@ -1387,6 +1393,8 @@ function _storeDirectGUIEdit(container, preGUI, edits) {
+ }
+ 
+ function _restyle(gd, aobj, traces) {
++    // NOTE:L Probably the main core method to update chart?
++    window.__DEBUG_PLOTLY && console.log('[plotly:plot_api:_restyle]', { gd, aobj, trace });
+     var fullLayout = gd._fullLayout;
+     var fullData = gd._fullData;
+     var data = gd.data;
+@@ -1477,6 +1485,7 @@ function _restyle(gd, aobj, traces) {
+     // now make the changes to gd.data (and occasionally gd.layout)
+     // and figure out what kind of graphics update we need to do
+     for(var ai in aobj) {
++        // NOTE: Process update object items...
+         if(helpers.hasParent(aobj, ai)) {
+             throw new Error('cannot set ' + ai + ' and a parent attribute simultaneously');
+         }
+@@ -1516,13 +1525,27 @@ function _restyle(gd, aobj, traces) {
+ 
+         // set attribute in gd.data
+         undoit[ai] = a0();
++        // NOTE: Allow to update while array for specific keys
++        var safeFieldForKeys = ['node.color', 'node.label'];
++        var isSafeField = safeFieldForKeys.includes(ai);
++        window.__DEBUG_PLOTLY && console.log('[plotly:plot_api:_restyle] start processing data', {
++            traces,
++            flags: {...flags},
++            ai,
++            vi,
++            newVal,
++            valObject,
++            // gd, aobj, trace,
++        });
+         for(i = 0; i < traces.length; i++) {
+             cont = data[traces[i]];
+             contFull = getFullTrace(traces[i]);
+             var preGUI = fullLayout._tracePreGUI[contFull._fullInput.uid];
+             param = makeNP(preGUI, guiEditFlag)(cont, ai);
+             oldVal = param.get();
+-            newVal = Array.isArray(vi) ? vi[i % vi.length] : vi;
++            // NOTE: Fetching value list item with index equals current trace? WTF?
++            // TODO: Prevent this bechavior for `ai === 'node.color'`?
++            newVal = !isSafeField && Array.isArray(vi) ? vi[i % vi.length] : vi;
+ 
+             if(newVal === undefined) continue;
+ 
+@@ -1618,7 +1641,17 @@ function _restyle(gd, aobj, traces) {
+                 // TODO: use manageArrays.applyContainerArrayChanges here too
+                 helpers.manageArrayContainers(param, newVal, undoit);
+                 flags.calc = true;
+-            } else {
++            }
++            // NOTE: Update flags if no safe field detected
++            else {
++                if (isSafeField) {
++                    window.__DEBUG_PLOTLY && console.log('[plotly:plot_api:_restyle] before update flags for isSafeField', {
++                        flags: {...flags},
++                        ai,
++                        valObject,
++                        // gd, aobj, trace,
++                    });
++                }
+                 if(valObject) {
+                     // must redo calcdata when restyling array values of arrayOk attributes
+                     // ... but no need to this for regl-based traces
+@@ -1627,7 +1660,9 @@ function _restyle(gd, aobj, traces) {
+                         (Lib.isArrayOrTypedArray(newVal) || Lib.isArrayOrTypedArray(oldVal))
+                     ) {
+                         flags.calc = true;
+-                    } else editTypes.update(flags, valObject);
++                    } else {
++                        editTypes.update(flags, valObject);
++                    }
+                 } else {
+                     /*
+                      * if we couldn't find valObject,  assume a full recalc.
+@@ -1637,7 +1672,14 @@ function _restyle(gd, aobj, traces) {
+                      */
+                     flags.calc = true;
+                 }
+-
++                if (isSafeField) {
++                    window.__DEBUG_PLOTLY && console.log('[plotly:plot_api:_restyle] before set param for isSafeField', {
++                        flags: {...flags},
++                        ai,
++                        newVal,
++                        // gd, aobj, trace,
++                    });
++                }
+                 // all the other ones, just modify that one attribute
+                 param.set(newVal);
+             }
+@@ -1686,6 +1728,7 @@ function _restyle(gd, aobj, traces) {
+     }
+ 
+     if(flags.calc || flags.plot) {
++        // ???
+         flags.fullReplot = true;
+     }
+ 
+@@ -1762,6 +1805,7 @@ function cleanDeprecatedAttributeKeys(aobj) {
+  *  allows setting multiple attributes simultaneously
+  */
+ function relayout(gd, astr, val) {
++    window.__DEBUG_PLOTLY && console.log('[plotly:plot_api:relayout]', { gd, astr, val });
+     gd = Lib.getGraphDiv(gd);
+     helpers.clearPromiseQueue(gd);
+ 
+@@ -2287,6 +2331,7 @@ function updateAutosize(gd) {
+  *
+  */
+ function update(gd, traceUpdate, layoutUpdate, _traces) {
++    window.__DEBUG_PLOTLY && console.log('[plotly:plot_api:update]', { gd, traceUpdate, layoutUpdate, _traces });
+     gd = Lib.getGraphDiv(gd);
+     helpers.clearPromiseQueue(gd);
+ 
+@@ -2417,6 +2462,8 @@ var traceUIControlPatterns = [
+ ];
+ 
+ function findUIPattern(key, patternSpecs) {
++    // window.__DEBUG_PLOTLY && console.log('[plotly:plot_api:findUIPattern]', { key, patternSpecs });
++    // TODO: Not exposed as public api
+     for(var i = 0; i < patternSpecs.length; i++) {
+         var spec = patternSpecs[i];
+         var match = key.match(spec.pattern);
+@@ -2633,6 +2680,7 @@ function applyUIRevisions(data, layout, oldFullData, oldFullLayout) {
+  *
+  */
+ function react(gd, data, layout, config) {
++    window.__DEBUG_PLOTLY && console.log('[plotly:plot_api:react]', { gd, data, layout, config });
+     var frames, plotDone;
+ 
+     function addFrames() { return exports.addFrames(gd, frames); }
+@@ -3478,6 +3526,7 @@ function animate(gd, frameOrGroupNameOrFrameList, animationOpts) {
+  *      will be overwritten.
+  */
+ function addFrames(gd, frameList, indices) {
++    window.__DEBUG_PLOTLY && console.log('[plotly:plot_api:addFrames]', { gd, frameList, indices });
+     gd = Lib.getGraphDiv(gd);
+ 
+     if(frameList === null || frameList === undefined) {
+diff --git a/node_modules/plotly.js/src/traces/sankey/render.js b/node_modules/plotly.js/src/traces/sankey/render.js
+index f84a1ed..de087a9 100644
+--- a/node_modules/plotly.js/src/traces/sankey/render.js
++++ b/node_modules/plotly.js/src/traces/sankey/render.js
+@@ -600,6 +600,7 @@ function attachPointerEvents(selection, sankey, eventSet) {
+ }
+ 
+ function attachDragHandler(sankeyNode, sankeyLink, callbacks, gd) {
++    window.__DEBUG_PLOTLY && console.log('[plotly:trace/sankey/render:attachDragHandler]', { sankeyNode, sankeyLink, callbacks, gd });
+     var dragBehavior = d3.behavior.drag()
+         .origin(function(d) {
+             return {
