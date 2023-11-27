@@ -9,7 +9,9 @@ import bound from 'bind-decorator';
 
 import { TEdgesData, TFlowsData, TGraphId, TGraphsData, TNodeId, TNodesData } from 'src/core/types';
 
-// const defaultEdgesData: TEdgesData = [{ x: 1 }];
+const defaultNodeNames: Record<TNodeId, string> = {
+  [-1]: 'Root', // Default name for root node
+};
 
 export class SankeyAppDataStore {
   // NOTE: remember to clean/reset properties in `clearData`
@@ -27,19 +29,20 @@ export class SankeyAppDataStore {
   @observable graphsData?: TGraphsData;
   @observable nodesData?: TNodesData;
 
-  // Selected data...
+  // Selected (active) data...
 
   /** Currently selected graph id */
   @observable selectedGraphId?: TGraphId;
 
-  // Changeable data...
+  // Overridable data...
 
   /** Changed or overriding (changeable) node names */
-  @observable nodeNames: Record<TNodeId, string> = {
-    [-1]: 'Root', // Default name for root node
-  };
+  @observable nodeNames: Record<TNodeId, string> = { ...defaultNodeNames };
   /** Changed node colors */
   @observable nodeColors: Record<TNodeId, string> = {};
+
+  /** List of changed node ids (TNodeId[]) */
+  @observable changedNodes: TNodeId[] = [];
 
   // Lifecycle...
 
@@ -95,6 +98,10 @@ export class SankeyAppDataStore {
     this.nodesData = undefined;
     // Current...
     this.selectedGraphId = undefined;
+    // Overrided data...
+    this.changedNodes = [];
+    this.nodeNames = { ...defaultNodeNames };
+    this.nodeColors = {};
   }
 
   // Data setters...

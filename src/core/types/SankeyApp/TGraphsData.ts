@@ -3,8 +3,9 @@ import { TNodeId } from './TNodesData';
 export type TGraphId = number;
 
 export interface TGraphItem {
-  /** Self index */
+  /** Self index (TGraphId) */
   id_in_graph: TGraphId; // -1, self index
+  /** Database node id (TNodeId) */
   id_in_database: TNodeId; // -1, node id
   product_id_in_database: TNodeId; // -1
   product_scaling_amount: number; // 1.0
