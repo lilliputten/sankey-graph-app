@@ -102,7 +102,7 @@ export class ReactDiagram extends React.Component<DiagramProps, {}> {
    * @param nextProps
    * @param nextState
    */
-  public shouldComponentUpdate(nextProps: DiagramProps, nextState: any) {
+  public shouldComponentUpdate(nextProps: DiagramProps, _nextState: any) {
     if (nextProps.divClassName !== this.props.divClassName || nextProps.style !== this.props.style)
       return true;
     if (nextProps.skipsDiagramUpdate) return false;
@@ -122,7 +122,7 @@ export class ReactDiagram extends React.Component<DiagramProps, {}> {
    * @param prevProps
    * @param prevState
    */
-  public componentDidUpdate(prevProps: DiagramProps, prevState: any) {
+  public componentDidUpdate(prevProps: DiagramProps, _prevState: any) {
     // quick shallow compare, maybe it was just a style update
     if (
       prevProps.nodeDataArray === this.props.nodeDataArray &&

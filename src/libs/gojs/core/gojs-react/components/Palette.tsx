@@ -84,7 +84,7 @@ export class ReactPalette extends React.Component<PaletteProps, {}> {
    * @param nextProps
    * @param nextState
    */
-  public shouldComponentUpdate(nextProps: PaletteProps, nextState: any) {
+  public shouldComponentUpdate(nextProps: PaletteProps, _nextState: any) {
     if (nextProps.divClassName !== this.props.divClassName || nextProps.style !== this.props.style)
       return true;
     // quick shallow compare
@@ -103,7 +103,7 @@ export class ReactPalette extends React.Component<PaletteProps, {}> {
    * @param prevProps
    * @param prevState
    */
-  public componentDidUpdate(prevProps: PaletteProps, prevState: any) {
+  public componentDidUpdate(prevProps: PaletteProps, _prevState: any) {
     // quick shallow compare, maybe it was just a style update
     if (
       prevProps.nodeDataArray === this.props.nodeDataArray &&

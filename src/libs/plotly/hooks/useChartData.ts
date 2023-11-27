@@ -25,8 +25,6 @@ export function useChartData(): TPlotlyData {
     const sankeyData: Partial<Plotly.SankeyData> = {
       type: 'sankey',
       orientation: 'h',
-      // valueformat: '.0f',
-      // valuesuffix: 'TWh',
       /** @type {Partial<SankeyNode>} */
       node: {
         /** Chart bar default (vertical?) padding */
@@ -38,10 +36,11 @@ export function useChartData(): TPlotlyData {
           color: 'black',
           width: 0,
         },
-        label, // getGraphLabelsList(fullDataSet),
-        color, // getGraphColorsList(fullDataSet),
+        label,
+        color,
       },
-      link, // getLinkData(fullDataSet),
+      link,
+      // uirevision: 1,
     };
     const chartData: TPlotlyData = [sankeyData];
     return chartData;

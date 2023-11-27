@@ -12,7 +12,7 @@
 npx patch-package NAME
 ```
 
-(Check for wrongly included swap files.)
+(Check for accidentally included swap files: eg, diffs for `.swp` files.)
 
 ## To apply all the patches:
 

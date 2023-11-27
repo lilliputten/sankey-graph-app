@@ -1,3 +1,5 @@
+$plotAnimateTime: $transitionTimeMs;
+
 .root {
   flex: 1;
   display: flex;
@@ -38,7 +40,7 @@
   }
   :global(.sankey-link) {
     opacity: 0.5 !important;
-    transition: all $animationTimeMs;
+    transition: all $plotAnimateTime;
   }
   :global(.sankey-node) {
     position: absolute;
@@ -46,7 +48,7 @@
   :global(.node-rect) {
     position: absolute;
     opacity: 0.8;
-    transition: all $animationTimeMs;
+    transition: all $plotAnimateTime;
     &:hover {
       opacity: 1;
     }

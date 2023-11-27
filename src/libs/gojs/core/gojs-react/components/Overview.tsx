@@ -72,7 +72,7 @@ export class ReactOverview extends React.Component<OverviewProps, {}> {
    * @param nextProps
    * @param nextState
    */
-  public shouldComponentUpdate(nextProps: OverviewProps, nextState: any) {
+  public shouldComponentUpdate(nextProps: OverviewProps, _nextState: any) {
     if (nextProps.divClassName !== this.props.divClassName || nextProps.style !== this.props.style)
       return true;
     if (nextProps.observedDiagram === this.props.observedDiagram) return false;
@@ -85,7 +85,7 @@ export class ReactOverview extends React.Component<OverviewProps, {}> {
    * @param prevProps
    * @param prevState
    */
-  public componentDidUpdate(prevProps: OverviewProps, prevState: any) {
+  public componentDidUpdate(prevProps: OverviewProps, _prevState: any) {
     // quick shallow compare, maybe it was just a style update
     if (prevProps.observedDiagram === this.props.observedDiagram) return;
     const overview = this.getOverview();
