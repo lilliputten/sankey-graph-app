@@ -33,7 +33,7 @@ export class SankeyAppSessionStore {
   @observable themeMode: TMuiThemeMode = defaultMuiThemeMode;
 
   /** Coefficient for multiplying the width of connecting lines between nodes (GoJS only) */
-  @observable lineWidthFactor: number = defaultLineWidthFactor;
+  @observable goJsLineWidthFactor: number = defaultLineWidthFactor;
 
   /** Library used to display data */
   @observable chartLibrary: TChartLibrary = defaultChartLibrary;
@@ -127,7 +127,7 @@ export class SankeyAppSessionStore {
 
   @action clearSettings() {
     this.themeMode = defaultMuiThemeMode;
-    this.lineWidthFactor = defaultLineWidthFactor;
+    this.goJsLineWidthFactor = defaultLineWidthFactor;
     this.chartLibrary = defaultChartLibrary;
   }
 

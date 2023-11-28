@@ -27,7 +27,7 @@ export const SankeyGoJSDemo: React.FC<TChartComponentProps> = observer((props) =
   const { className } = props;
   const sankeyAppDataStore = useSankeyAppDataStore();
   const sankeyAppSessionStore = useSankeyAppSessionStore();
-  const { lineWidthFactor } = sankeyAppSessionStore;
+  const { goJsLineWidthFactor } = sankeyAppSessionStore;
   const [errorText, setErrorText] = React.useState<string | undefined>();
   React.useEffect(() => {
     if (errorText) {
@@ -65,7 +65,7 @@ export const SankeyGoJSDemo: React.FC<TChartComponentProps> = observer((props) =
        */
       // prettier-ignore
       const nodeDataArray = constructNodeDataArrayFromGraphs(fullDataSet);
-      const linkDataArray = constructLinkDataArrayFromEdges(fullDataSet, { lineWidthFactor });
+      const linkDataArray = constructLinkDataArrayFromEdges(fullDataSet, { goJsLineWidthFactor });
       // const modelData = go.Model.fromJson(gojsData);
       /* console.log('[SankeyGoJSDemo:gojsData] data', {
        *   fullDataSet,
@@ -110,7 +110,7 @@ export const SankeyGoJSDemo: React.FC<TChartComponentProps> = observer((props) =
     flowsData,
     graphsData,
     nodesData,
-    lineWidthFactor,
+    goJsLineWidthFactor,
   ]);
 
   const fullGojsData = React.useMemo(() => {
