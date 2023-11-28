@@ -5,11 +5,11 @@ import { FormControl, FormHelperText } from '@mui/material';
 import { MuiColorInput } from 'mui-color-input';
 import classNames from 'classnames';
 
-import { TPropsWithClassName } from 'src/core/types';
+import { TColor, TPropsWithClassName } from 'src/core/types';
 import { TNodeId } from 'src/core/types/SankeyApp';
+import { useNodeColor } from 'src/hooks/Sankey';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
-
-import { useNodeColor } from './hooks';
+import { checkValidHexColor } from 'src/helpers/colors';
 
 interface TEditNodeColorProps extends TPropsWithClassName {
   nodeId: TNodeId | undefined;
@@ -17,9 +17,8 @@ interface TEditNodeColorProps extends TPropsWithClassName {
 
 interface TMemo {
   nodeId?: TNodeId;
+  nodeColor?: TColor;
 }
-
-const defaultColor = '#ffffff';
 
 export const EditNodeColor: React.FC<TEditNodeColorProps> = observer((props) => {
   const { className, nodeId } = props;
@@ -30,57 +29,89 @@ export const EditNodeColor: React.FC<TEditNodeColorProps> = observer((props) => 
   const sankeyAppDataStore = useSankeyAppDataStore();
   /** Node color from store */
   const nodeColor = useNodeColor(nodeId);
+
   // Store color locally first
   const [color, setColor] = React.useState<string | undefined>(nodeColor);
 
-  // TODO: To throttle/debounce external handler (with local state)?
+  // Effect: Update store with local color
   React.useEffect(() => {
-    /* console.log('[EditNodeColor:handleEditNodeColor] before', {
+    const { nodeId, nodeColor } = memo;
+    const doSet =
+      nodeId !== undefined &&
+      // nodeId === memo.nodeId &&
+      color &&
+      color !== nodeColor &&
+      checkValidHexColor(color);
+    /* console.log('[EditNodeColor:Effect: Update store with local color] check', {
+     *   doSet,
      *   nodeId,
-     *   'memo.nodeId': memo.nodeId,
-     *   nodeColor,
      *   color,
+     *   nodeColor,
      * });
      */
-    if (nodeId !== memo.nodeId) {
-      // Another node id: update local color
-      /* console.log('[EditNodeColor:handleEditNodeColor] set local color for new id', {
-       *   color,
-       *   nodeId,
-       * });
-       */
-      setColor(nodeColor);
-      memo.nodeId = nodeId;
-    } else if (color && color !== nodeColor && nodeId !== undefined) {
+    if (doSet) {
       // Update color in storage...
       runInAction(() => {
         const { nodeColors, changedNodes } = sankeyAppDataStore;
-        /* console.log('[EditNodeColor:handleEditNodeColor:runInAction]', {
-         *   color,
+        /* console.log('[EditNodeColor:Effect: Update store with local color] do update', {
          *   nodeId,
+         *   color,
+         *   nodeColor,
          *   nodeColors: { ...nodeColors },
          *   changedNodes: { ...changedNodes },
          * });
          */
         sankeyAppDataStore.nodeColors = {
           ...nodeColors,
-          [nodeId]: color,
+          [nodeId]: color as TColor,
         };
         if (!changedNodes.includes(nodeId)) {
           sankeyAppDataStore.changedNodes = changedNodes.concat(nodeId);
         }
+        memo.nodeColor = color as TColor;
       });
     }
-  }, [memo, nodeId, color, nodeColor, sankeyAppDataStore]);
+  }, [memo, nodeId, color, sankeyAppDataStore]);
+
+  // Update local color from store...
+  React.useEffect(() => {
+    if (memo.nodeColor !== nodeColor) {
+      /* console.log('[EditNodeColor:Effect: Update local color from store]', {
+       *   'memo.nodeId': memo.nodeId,
+       *   'memo.nodeColor': memo.nodeColor,
+       *   nodeColor,
+       * });
+       */
+      setColor(nodeColor);
+      memo.nodeColor = nodeColor;
+    }
+  }, [memo, nodeColor]);
+
+  // Update local node id...
+  React.useEffect(() => {
+    if (nodeId !== memo.nodeId) {
+      /* console.log('[EditNodeColor:Effect: Update local node id]', {
+       *   'memo.nodeId': memo.nodeId,
+       *   nodeId,
+       * });
+       */
+      // setId(nodeId);
+      memo.nodeId = nodeId;
+    }
+  }, [memo, nodeId]);
 
   const handleEditNodeColor = (color: string) => {
+    /* console.log('[EditNodeColor:handleEditNodeColor]', {
+     *   color,
+     * });
+     */
     setColor(color);
   };
 
   return (
     <FormControl className={classNames(className, 'EditNodeColor')}>
       <MuiColorInput
-        value={nodeColor || defaultColor}
+        value={color || ''}
         onChange={handleEditNodeColor}
         format="hex"
         isAlphaHidden

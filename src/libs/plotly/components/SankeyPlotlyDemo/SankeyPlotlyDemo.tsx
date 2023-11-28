@@ -187,7 +187,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
         memo.unhoverTimeout = undefined;
       }
       memo.currentNodePoint = currentNodePoint;
-      console.log('[SankeyPlotlyDemo:handleHover]', currentNodePoint);
+      // console.log('[SankeyPlotlyDemo:handleHover]', currentNodePoint);
     },
     [memo],
   );
@@ -199,7 +199,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
       memo.unhoverTimeout = setTimeout(() => {
         memo.currentNodePoint = undefined;
       }, 300);
-      console.log('[SankeyPlotlyDemo:handleUnhover]');
+      // console.log('[SankeyPlotlyDemo:handleUnhover]');
     },
     [memo],
   );
@@ -207,11 +207,12 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
   const handleSankeyNodeClick = React.useCallback(
     ([_update, _traces]: readonly [Plotly.PlotRestyleEventUpdate, number[]]) => {
       const { currentNodePoint } = memo;
-      console.log('[SankeyPlotlyDemo:handleSankeyNodeClick] start', {
-        // update,
-        // traces,
-        currentNodePoint,
-      });
+      /* console.log('[SankeyPlotlyDemo:handleSankeyNodeClick] start', {
+       *   // update,
+       *   // traces,
+       *   currentNodePoint,
+       * });
+       */
       const { graphsData } = sankeyAppDataStore;
       if (currentNodePoint && graphsData) {
         const {
@@ -243,13 +244,14 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
           // score_of_node, // 0.0
         } = graph;
         // TODO: Check if not graphId has defined?
-        console.log('[SankeyPlotlyDemo:handleSankeyNodeClick]', {
-          graph: { ...graph },
-          graphIdx,
-          graphId,
-          pointNumber,
-          currentNodePoint,
-        });
+        /* console.log('[SankeyPlotlyDemo:handleSankeyNodeClick]', {
+         *   graph: { ...graph },
+         *   graphIdx,
+         *   graphId,
+         *   pointNumber,
+         *   currentNodePoint,
+         * });
+         */
         /* // UNUSED (?): Start node editor dialog: save graph id, open dialog...
          * setCurrentGraphId(graphId);
          * handleOpenEditSankeyNodeDialog();

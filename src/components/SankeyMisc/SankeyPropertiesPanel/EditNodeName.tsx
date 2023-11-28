@@ -7,8 +7,7 @@ import classNames from 'classnames';
 import { TPropsWithClassName } from 'src/core/types';
 import { TNodeId } from 'src/core/types/SankeyApp';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
-
-import { useNodeName } from './hooks';
+import { useNodeName } from 'src/hooks/Sankey';
 
 interface TEditNodeNameProps extends TPropsWithClassName {
   nodeId: TNodeId | undefined;

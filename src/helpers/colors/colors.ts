@@ -1,4 +1,6 @@
-function getColorsList() {
+import { TColor } from 'src/core/types';
+
+function getColorsList(): TColor[] {
   return [
     '#2dc3d2',
     '#3483ba',
@@ -30,7 +32,7 @@ function getColorsList() {
   ];
 }
 
-export function getColorForIndex(idx: number) {
+export function getColorForIndex(idx: number): TColor {
   const colors = getColorsList();
   let colorIdx = idx % colors.length;
   if (colorIdx < 0) {
@@ -39,9 +41,14 @@ export function getColorForIndex(idx: number) {
   return colors[colorIdx];
 }
 
-export function getRandomColor() {
+export function getRandomColor(): TColor {
   const colors = getColorsList();
   const maxColor = colors.length - 1;
   const randomIdx = Math.round(Math.random() * maxColor);
   return colors[randomIdx];
+}
+
+export function checkValidHexColor(color?: TColor | string) {
+  // '#xxxxxx', '#xxx'
+  return !!color && /^#([0-9a-f]{6}|[0-9a-f]{3})$/.test(color);
 }

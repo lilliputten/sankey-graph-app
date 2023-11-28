@@ -19,7 +19,7 @@ import {
 } from 'src/core/types';
 import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 
-const radioControl = <Radio size="small" />;
+const radioControl = <Radio />;
 
 export const EditThemeMode: React.FC<TPropsWithClassName> = observer((props) => {
   const { className } = props;
@@ -37,9 +37,7 @@ export const EditThemeMode: React.FC<TPropsWithClassName> = observer((props) => 
       <RadioGroup
         aria-labelledby="themeMode"
         aria-describedby="muiThemeModeText"
-        // id="themeMode"
         name="themeMode"
-        sx={{ marginTop: 1 }}
         onChange={setMuiThemeMode}
         value={themeMode}
       >

@@ -15,7 +15,7 @@ import { TPropsWithClassName } from 'src/core/types';
 import { chartLibraryNames, TChartLibrary, validChartLibraries } from 'src/core/types/SankeyApp';
 import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 
-const radioControl = <Radio size="small" />;
+const radioControl = <Radio />;
 
 export const EditChartLibrary: React.FC<TPropsWithClassName> = observer((props) => {
   const { className } = props;
@@ -33,9 +33,7 @@ export const EditChartLibrary: React.FC<TPropsWithClassName> = observer((props) 
       <RadioGroup
         aria-labelledby="chartLibrary"
         aria-describedby="chartLibraryText"
-        // id="chartLibrary"
         name="chartLibrary"
-        sx={{ marginTop: 1 }}
         onChange={setChartLibrary}
         value={chartLibrary}
       >
