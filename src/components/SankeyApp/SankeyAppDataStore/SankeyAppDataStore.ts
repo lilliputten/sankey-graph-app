@@ -1,19 +1,15 @@
-import {
-  makeObservable,
-  observable,
-  action,
-  // computed,
-  when,
-} from 'mobx';
+import { makeObservable, observable, action, when, runInAction } from 'mobx';
 import bound from 'bind-decorator';
 
 import {
+  // defaultNodesColorMode,
   TColor,
   TEdgesData,
   TFlowsData,
   TGraphId,
   TGraphsData,
   TNodeId,
+  TNodesColorMode,
   TNodesData,
 } from 'src/core/types';
 
@@ -52,6 +48,11 @@ export class SankeyAppDataStore {
   /** List of changed node ids (TNodeId[]) */
   @observable changedNodes: TNodeId[] = [];
 
+  // Colors data...
+
+  /** Color mode (mirrored `SankeyAppSessionStore` value) */
+  @observable nodesColorMode?: TNodesColorMode; // = defaultNodesColorMode;
+
   // Lifecycle...
 
   constructor() {
@@ -63,6 +64,22 @@ export class SankeyAppDataStore {
   async destroy() {
     this.clearData();
     // TODO: Cleanup before exit?
+  }
+
+  // External changes handlers...
+
+  @bound onNodesColorModeChanged(nodesColorMode: TNodesColorMode) {
+    const isChanged = nodesColorMode !== this.nodesColorMode;
+    console.log('[SankeyAppSessionStore:onNodesColorModeChanged]', {
+      isChanged,
+      nodesColorMode,
+    });
+    // Reset current custom colors...
+    runInAction(() => {
+      this.nodeColors = {};
+      // TODO: Reset changedNodes data?
+    });
+    // TODO: Prepare aux data...
   }
 
   // Status setters...
@@ -91,27 +108,6 @@ export class SankeyAppDataStore {
     this.setError(undefined);
   }
 
-  @action clearData() {
-    // NOTE: Don't just clear the data. It's a place to set them to default values.
-    // Status...
-    this.inited = false;
-    this.finished = false;
-    this.ready = false;
-    this.loading = false;
-    this.error = undefined;
-    // Data...
-    this.edgesData = undefined;
-    this.flowsData = undefined;
-    this.graphsData = undefined;
-    this.nodesData = undefined;
-    // Current...
-    this.selectedGraphId = undefined;
-    // Overrided data...
-    this.changedNodes = [];
-    this.nodeNames = { ...defaultNodeNames };
-    this.nodeColors = {};
-  }
-
   // Data setters...
 
   @action setEdgesData(edgesData: typeof SankeyAppDataStore.prototype.edgesData) {
@@ -131,5 +127,30 @@ export class SankeyAppDataStore {
 
   @action setSelectedGraphId(selectedGraphId: typeof SankeyAppDataStore.prototype.selectedGraphId) {
     this.selectedGraphId = selectedGraphId;
+  }
+
+  // Generic utilities...
+
+  @action clearData() {
+    // NOTE: Don't just clear the data. It's a place to set them to default values.
+    // Status...
+    this.inited = false;
+    this.finished = false;
+    this.ready = false;
+    this.loading = false;
+    this.error = undefined;
+    // Data...
+    this.edgesData = undefined;
+    this.flowsData = undefined;
+    this.graphsData = undefined;
+    this.nodesData = undefined;
+    // Current...
+    this.selectedGraphId = undefined;
+    // Overrided data...
+    this.changedNodes = [];
+    this.nodeNames = { ...defaultNodeNames };
+    this.nodeColors = {};
+    this.changedNodes = [];
+    this.nodesColorMode = undefined;
   }
 }

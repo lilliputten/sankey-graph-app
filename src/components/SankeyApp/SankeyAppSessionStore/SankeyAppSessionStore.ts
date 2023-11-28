@@ -1,4 +1,4 @@
-import { makeObservable, observable, action, computed, when } from 'mobx';
+import { makeObservable, observable, action, computed, IReactionDisposer, reaction } from 'mobx';
 import bound from 'bind-decorator';
 
 import { TMuiThemeMode, defaultMuiThemeMode, TColor } from 'src/core/types';
@@ -12,6 +12,8 @@ import { SankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore'
 
 export type TSankeyAppSessionStoreStatus = undefined | 'dataLoaded' | 'finished';
 
+// TODO: Move default parameters to constants?
+
 const defaultLineWidthFactor = 200;
 
 const defaultBaseColor: TColor = '#0f0';
@@ -21,6 +23,9 @@ const defaultSecondColor: TColor = '#f00';
 
 export class SankeyAppSessionStore {
   // NOTE: remember to clean/reset properties in `clearData` or in `clearSettings`
+
+  // Session reaction disposers...
+  staticDisposers?: IReactionDisposer[];
 
   @observable inited: boolean = false;
   @observable finished: boolean = false;
@@ -58,13 +63,12 @@ export class SankeyAppSessionStore {
 
   constructor() {
     makeObservable(this);
-    // Automatically clear the error for final& successfull statuses (started, stopped)
-    when(() => this.isFinished, this.clearError);
+    this.setStaticReactions();
   }
 
   async destroy() {
     this.clearData();
-    // TODO: Cleanup before exit?
+    this.resetStaticReactions();
   }
 
   // Core getters...
@@ -127,6 +131,40 @@ export class SankeyAppSessionStore {
     this.status = status;
   }
 
+  // Reactions...
+
+  @bound onNodesColorModeChanged(nodesColorMode: TNodesColorMode) {
+    const { sankeyAppDataStore } = this;
+    if (sankeyAppDataStore) {
+      sankeyAppDataStore.onNodesColorModeChanged(nodesColorMode);
+    }
+  }
+
+  @bound onSankeyAppDataStore(sankeyAppDataStore?: SankeyAppDataStore) {
+    const { nodesColorMode } = this;
+    if (sankeyAppDataStore) {
+      sankeyAppDataStore.onNodesColorModeChanged(nodesColorMode);
+    }
+  }
+
+  // Misc setters...
+
+  @action setThemeMode(themeMode: typeof SankeyAppSessionStore.prototype.themeMode) {
+    this.themeMode = themeMode;
+  }
+
+  // Other setters...
+
+  @action setSankeyAppDataStore(sankeyAppDataStore?: SankeyAppDataStore) {
+    this.sankeyAppDataStore = sankeyAppDataStore;
+  }
+
+  @action setLoadNewDataCb(loadNewDataCb: typeof SankeyAppSessionStore.prototype.loadNewDataCb) {
+    this.loadNewDataCb = loadNewDataCb;
+  }
+
+  // Generic utilities...
+
   @action clearData() {
     // this.inited = false;
     // this.ready = false;
@@ -150,17 +188,19 @@ export class SankeyAppSessionStore {
     this.secondNodesColor = defaultSecondColor;
   }
 
-  @action setThemeMode(themeMode: typeof SankeyAppSessionStore.prototype.themeMode) {
-    this.themeMode = themeMode;
+  setStaticReactions() {
+    this.staticDisposers = [
+      // prettier-ignore
+      reaction(() => this.nodesColorMode, this.onNodesColorModeChanged),
+      reaction(() => this.sankeyAppDataStore, this.onSankeyAppDataStore),
+    ];
   }
-
-  // Other setters...
-
-  @action setSankeyAppDataStore(sankeyAppDataStore?: SankeyAppDataStore) {
-    this.sankeyAppDataStore = sankeyAppDataStore;
-  }
-
-  @action setLoadNewDataCb(loadNewDataCb: typeof SankeyAppSessionStore.prototype.loadNewDataCb) {
-    this.loadNewDataCb = loadNewDataCb;
+  resetStaticReactions() {
+    const { staticDisposers } = this;
+    // Reset all disposers...
+    if (Array.isArray(staticDisposers) && staticDisposers.length) {
+      staticDisposers.forEach((disposer) => disposer());
+    }
+    this.staticDisposers = undefined;
   }
 }
