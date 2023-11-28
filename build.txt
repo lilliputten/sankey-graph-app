@@ -1,6 +1,6 @@
 Project: sankey-graph-app
 Version: 0.0.10
-Branch: dev-231125-issue-5-plotly-customize
-Commit: 278e8a7
-Fixed: 2023.11.28, 04:04 GMT+7
-Built: 2023.11.28, 04:10 GMT+7
+Branch: dev-231128-issue-8-progressive-colors
+Commit: c76f78e
+Fixed: 2023.11.29, 04:04 GMT+7
+Built: 2023.11.29, 04:10 GMT+7
