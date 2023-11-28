@@ -8,6 +8,8 @@ import { TPropsWithClassName } from 'src/core/types';
 import { EditGoJsLineWidthFactor } from './EditGoJsLineWidthFactor';
 import { EditThemeMode } from './EditThemeMode';
 import { EditChartLibrary } from './EditChartLibrary';
+import { EditNodesColorMode } from './EditNodesColorMode';
+import { EditNodeColors } from './EditNodeColors';
 
 import styles from './SankeySettingsPanel.module.scss';
 
@@ -17,6 +19,8 @@ export const SankeySettingsPanel: React.FC<TPropsWithClassName> = observer((prop
     <Box className={classNames(className, styles.root)}>
       <EditChartLibrary />
       <EditThemeMode />
+      <EditNodesColorMode />
+      <EditNodeColors />
       <EditGoJsLineWidthFactor />
     </Box>
   );

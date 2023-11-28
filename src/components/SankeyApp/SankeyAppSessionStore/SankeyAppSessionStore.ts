@@ -1,18 +1,26 @@
 import { makeObservable, observable, action, computed, when } from 'mobx';
 import bound from 'bind-decorator';
 
-import { TMuiThemeMode, defaultMuiThemeMode } from 'src/core/types';
-import { defaultChartLibrary, TChartLibrary } from 'src/core/types/SankeyApp';
+import { TMuiThemeMode, defaultMuiThemeMode, TColor } from 'src/core/types';
+import {
+  defaultChartLibrary,
+  defaultNodesColorMode,
+  TChartLibrary,
+  TNodesColorMode,
+} from 'src/core/types/SankeyApp';
 import { SankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 
 export type TSankeyAppSessionStoreStatus = undefined | 'dataLoaded' | 'finished';
 
 const defaultLineWidthFactor = 200;
 
+const defaultBaseColor: TColor = '#0f0';
+const defaultSecondColor: TColor = '#f00';
+
 // TODO 2023.11.26, 22:55 -- Save some data (themeMode, eg) to localStorage?
 
 export class SankeyAppSessionStore {
-  // NOTE: remember to clean/reset properties in `clearData`
+  // NOTE: remember to clean/reset properties in `clearData` or in `clearSettings`
 
   @observable inited: boolean = false;
   @observable finished: boolean = false;
@@ -37,6 +45,14 @@ export class SankeyAppSessionStore {
 
   /** Library used to display data */
   @observable chartLibrary: TChartLibrary = defaultChartLibrary;
+
+  /** Chart nodes color mode (could be overriden individually later) */
+  @observable nodesColorMode: TNodesColorMode = defaultNodesColorMode;
+
+  /** Base nodes color */
+  @observable baseNodesColor: TColor = defaultBaseColor;
+  /** Second nodes color */
+  @observable secondNodesColor: TColor = defaultSecondColor;
 
   // Lifecycle...
 
@@ -129,6 +145,9 @@ export class SankeyAppSessionStore {
     this.themeMode = defaultMuiThemeMode;
     this.goJsLineWidthFactor = defaultLineWidthFactor;
     this.chartLibrary = defaultChartLibrary;
+    this.nodesColorMode = defaultNodesColorMode;
+    this.baseNodesColor = defaultBaseColor;
+    this.secondNodesColor = defaultSecondColor;
   }
 
   @action setThemeMode(themeMode: typeof SankeyAppSessionStore.prototype.themeMode) {

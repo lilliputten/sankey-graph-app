@@ -1,20 +1,27 @@
 import React from 'react';
-import { SankeyNode } from 'plotly.js/lib/traces/sankey';
 
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
+import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
+import { getNodeColor } from 'src/hooks/Sankey';
+import { TColor } from 'src/core/types';
 
-import { getColorForIndex } from 'src/helpers/colors';
-
-export function useGraphColorsList(): SankeyNode['color'] | undefined {
+export function useGraphColorsList(): TColor[] {
   const sankeyAppDataStore = useSankeyAppDataStore();
+  const sankeyAppSessionStore = useSankeyAppSessionStore();
   const {
     // prettier-ignore
     graphsData, // TGraphsData;
     nodeColors, // Record<TNodeId, string>
   } = sankeyAppDataStore;
-  const colors = React.useMemo<SankeyNode['color'] | undefined>(() => {
+  const {
+    // prettier-ignore
+    nodesColorMode,
+    baseNodesColor,
+    secondNodesColor,
+  } = sankeyAppSessionStore;
+  const colors = React.useMemo<TColor[]>(() => {
     if (!graphsData) {
-      return undefined;
+      return [];
     }
     return graphsData.map((graph) => {
       const {
@@ -26,13 +33,14 @@ export function useGraphColorsList(): SankeyNode['color'] | undefined {
         // score_through_supply_chain, // 9.981936043202016e-9
         // score_of_node, // 0.0
       } = graph;
-      const color =
-        nodeColors[nodeId] !== undefined ? nodeColors[nodeId] : getColorForIndex(nodeId);
-      return color;
+      return getNodeColor({
+        nodeId,
+        nodeColors,
+        nodesColorMode,
+        baseNodesColor,
+        secondNodesColor,
+      });
     });
-  }, [
-    graphsData, // TGraphsData;
-    nodeColors, // Record<TNodeId, string>
-  ]);
+  }, [baseNodesColor, graphsData, nodeColors, nodesColorMode, secondNodesColor]);
   return colors;
 }

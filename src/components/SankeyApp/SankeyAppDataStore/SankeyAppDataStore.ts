@@ -7,10 +7,18 @@ import {
 } from 'mobx';
 import bound from 'bind-decorator';
 
-import { TEdgesData, TFlowsData, TGraphId, TGraphsData, TNodeId, TNodesData } from 'src/core/types';
+import {
+  TColor,
+  TEdgesData,
+  TFlowsData,
+  TGraphId,
+  TGraphsData,
+  TNodeId,
+  TNodesData,
+} from 'src/core/types';
 
 const defaultNodeNames: Record<TNodeId, string> = {
-  [-1]: 'Root', // Default name for root node
+  [-1]: 'Root', // Default name for root node (TODO: Move default name to constants?)
 };
 
 export class SankeyAppDataStore {
@@ -39,7 +47,7 @@ export class SankeyAppDataStore {
   /** Changed or overriding (changeable) node names */
   @observable nodeNames: Record<TNodeId, string> = { ...defaultNodeNames };
   /** Changed node colors */
-  @observable nodeColors: Record<TNodeId, string> = {};
+  @observable nodeColors: Record<TNodeId, TColor> = {};
 
   /** List of changed node ids (TNodeId[]) */
   @observable changedNodes: TNodeId[] = [];

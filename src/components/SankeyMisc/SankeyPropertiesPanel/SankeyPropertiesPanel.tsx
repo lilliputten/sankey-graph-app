@@ -6,9 +6,9 @@ import classNames from 'classnames';
 import { isDevBrowser } from 'src/config/build';
 import { TPropsWithClassName } from 'src/core/types';
 import { TNodeId } from 'src/core/types/SankeyApp';
+import { useGraphNodeId } from 'src/hooks/Sankey';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 
-import { useGraphNodeId } from './hooks';
 import { EditNodeName } from './EditNodeName';
 import { EditNodeColor } from './EditNodeColor';
 

@@ -1,3 +1,4 @@
 export * from './MuiThemeMode';
-export * from './react';
+export * from './TColor';
 export * from './UUID';
+export * from './react';
