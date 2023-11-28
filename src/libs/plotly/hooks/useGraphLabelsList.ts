@@ -9,7 +9,7 @@ import { getNodeForId } from 'src/helpers/Sankey/data';
 import { useNodesHash } from 'src/hooks/Sankey/useNodesHash';
 
 /** Show debug data in the node name */
-const __showDebugInName = false && isDevBrowser;
+const __showDebugInName = true && isDevBrowser;
 
 export function useGraphLabelsList(): Plotly.Datum[] | undefined {
   const sankeyAppDataStore = useSankeyAppDataStore();
@@ -23,7 +23,12 @@ export function useGraphLabelsList(): Plotly.Datum[] | undefined {
     if (!graphsData) {
       return undefined;
     }
-    return graphsData.map((graph, idx) => {
+    console.log('[useGraphLabelsList] start', {
+      graphsData, // TGraphsData
+      nodeNames, // Record<TNodeId, string>
+      nodesHash,
+    });
+    const labels = graphsData.map((graph, _idx) => {
       const {
         id_in_graph: graphId, // -1, self index
         id_in_database: nodeId, // -1, node id
@@ -38,12 +43,22 @@ export function useGraphLabelsList(): Plotly.Datum[] | undefined {
       const name = nodeNames[nodeId] !== undefined ? nodeNames[nodeId] : node.name;
       // Combine composite name...
       return [
-        __showDebugInName && `[graphIdx: ${idx}, graphId: ${graphId}, nodeId: ${nodeId}]`,
+        __showDebugInName &&
+          '[' +
+            [
+              // prettier-ignore
+              `graphId: ${graphId}`,
+              `nodeId: ${nodeId}`,
+              `idx: ${_idx}`,
+            ].join(' ') +
+            ']',
         name,
       ]
         .filter(Boolean)
         .join(' ');
     });
+    console.log('[useGraphLabelsList] memo done', labels);
+    return labels;
   }, [
     graphsData, // TGraphsData
     nodeNames, // Record<TNodeId, string>
