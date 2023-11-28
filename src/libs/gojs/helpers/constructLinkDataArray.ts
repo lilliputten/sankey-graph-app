@@ -6,7 +6,7 @@ const minLineWidth = 1;
 
 export function constructLinkDataArrayFromEdges(
   fullDataSet: TFullChartDataSet,
-  { lineWidthFactor }: Pick<SankeyAppSessionStore, 'lineWidthFactor'>,
+  { goJsLineWidthFactor }: Pick<SankeyAppSessionStore, 'goJsLineWidthFactor'>,
 ): TGojsLinkDataArray {
   const {
     edgesData,
@@ -27,7 +27,7 @@ export function constructLinkDataArrayFromEdges(
       // prettier-ignore
       from: fromId,
       to: toId,
-      width: Math.max(minLineWidth, lineWidthFactor * amount),
+      width: Math.max(minLineWidth, goJsLineWidthFactor * amount),
     };
   });
   /* // Data sample:

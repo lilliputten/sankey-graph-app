@@ -29,7 +29,7 @@ export const SankeyViewer: React.FC<TSankeyViewerProps> = observer((props) => {
     // prettier-ignore
     className,
     useLeftPanel = true,
-    defaultShowLeftPanel = false,
+    defaultShowLeftPanel = true,
     defaultShowRightPanel = false,
   } = props;
   const sankeyAppDataStore = useSankeyAppDataStore();
