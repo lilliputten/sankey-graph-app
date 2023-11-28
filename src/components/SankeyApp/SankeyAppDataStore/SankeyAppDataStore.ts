@@ -80,6 +80,7 @@ export class SankeyAppDataStore {
       // TODO: Reset changedNodes data?
     });
     // TODO: Prepare aux data...
+    // const nodeDepthsMap = createNodeDepthsMap();
   }
 
   // Status setters...
