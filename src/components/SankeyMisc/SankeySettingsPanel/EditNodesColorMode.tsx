@@ -43,10 +43,6 @@ export const EditNodesColorMode: React.FC<TPropsWithClassName> = observer((props
       // console.log('[EditNodesColorMode:setNodesColorMode] runInAction', nodesColorMode);
       // Update color mode...
       sankeyAppSessionStore.nodesColorMode = nodesColorMode;
-      // TODO: Use mobx reaction?
-      // Reset custom colors...
-      sankeyAppDataStore.nodeColors = {};
-      // TODO: Reset changedNodes data?
     });
   };
   const helperText = React.useMemo(() => {

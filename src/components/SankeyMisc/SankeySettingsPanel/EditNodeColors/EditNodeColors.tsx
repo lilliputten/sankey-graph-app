@@ -15,7 +15,7 @@ export const EditNodeColors: React.FC = observer(() => {
           <EditColor
             // prettier-ignore
             storeId="baseNodesColor"
-            text="Edit default nodes color"
+            text="Default nodes color"
           />
         );
       }
@@ -25,12 +25,12 @@ export const EditNodeColors: React.FC = observer(() => {
             <EditColor
               // prettier-ignore
               storeId="baseNodesColor"
-              text="Edit progression start color"
+              text="Progression start color"
             />
             <EditColor
               // prettier-ignore
               storeId="secondNodesColor"
-              text="Edit progression end color"
+              text="Progression end color"
             />
           </>
         );
