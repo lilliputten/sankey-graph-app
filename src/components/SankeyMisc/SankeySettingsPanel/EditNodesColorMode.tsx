@@ -19,24 +19,13 @@ import {
   validNodesColorModes,
 } from 'src/core/types/SankeyApp';
 import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
-import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 
 const radioControl = <Radio />;
 
 export const EditNodesColorMode: React.FC<TPropsWithClassName> = observer((props) => {
   const { className } = props;
   const sankeyAppSessionStore = useSankeyAppSessionStore();
-  const sankeyAppDataStore = useSankeyAppDataStore();
   const { nodesColorMode = defaultNodesColorMode } = sankeyAppSessionStore;
-  /* // DEBUG: Check store changed data...
-   * const { nodeColors } = sankeyAppDataStore;
-   * React.useEffect(() => {
-   *   console.log('[EditNodesColorMode:nodeColors]', { ...nodeColors });
-   * }, [nodeColors]);
-   * React.useEffect(() => {
-   *   console.log('[EditNodesColorMode:nodesColorMode]', nodesColorMode);
-   * }, [nodesColorMode]);
-   */
   const setNodesColorMode: React.ChangeEventHandler<HTMLInputElement> = (ev) => {
     const nodesColorMode = ev.target.value as TNodesColorMode;
     runInAction(() => {
