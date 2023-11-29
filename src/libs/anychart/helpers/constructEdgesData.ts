@@ -23,7 +23,7 @@ export function constructEdgesData(fullDataSet: TFullChartDataSet) {
     const {
       producer_graph_id: toId, // 2,
       consumer_graph_id: fromId, // 0,
-      amount, // 0.0016624585259705782
+      // amount, // 0.0016624585259705782
     } = edgeNode;
     // TODO: Check data and throw errors?
     try {
@@ -35,6 +35,7 @@ export function constructEdgesData(fullDataSet: TFullChartDataSet) {
       const toNode = getNodeForId(nodesHash, toNodeId);
       const fromName = fromNode.name;
       const toName = toNode.name;
+      const value = toGraph.score_through_supply_chain;
       /* console.log('[constructEdgesData] item', {
        *   toName,
        *   fromName,
@@ -56,8 +57,7 @@ export function constructEdgesData(fullDataSet: TFullChartDataSet) {
       const chartDataItem: TAnyChartRecord = {
         from: `[${fromId}] ${fromName}`,
         to: `[${toId}] ${toName}`,
-        // value: amount,
-        weight: amount,
+        weight: value,
         // TODO: To get this data in anychart to construct labels (see preconfigured instance in `SankeyAnychartDemo`).
         toName,
         fromName,
