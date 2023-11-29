@@ -5,21 +5,30 @@ import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataSto
 
 import { useGraphsMap } from 'src/hooks/Sankey/useGraphsMap';
 import { TGraphId } from 'src/core/types';
-import { useGraphLabelsList } from './useGraphLabelsList';
+// import { useGraphLabelsList } from './useGraphLabelsList'; // DEBUG: Using for verify data processing algorithms
 
 export function useLinkData(): Partial<SankeyLink> | undefined {
   const sankeyAppDataStore = useSankeyAppDataStore();
   const {
     // prettier-ignore
-    edgesData, // TEdgesData;
+    edgesData,
+    graphsData,
   } = sankeyAppDataStore;
 
   const graphsMap = useGraphsMap();
 
   const valuesList = React.useMemo(
-    // TODO 2023.11.29, 03:47 -- Here is a problem -- probaly some negative values causes the lack of some nodes.
-    () => edgesData && edgesData.map(({ amount }) => amount),
-    [edgesData],
+    () =>
+      edgesData &&
+      graphsData &&
+      edgesData.map(({ producer_graph_id: toGraphId }) => {
+        const graphIdx = graphsMap[toGraphId];
+        const graph = graphsData[graphIdx];
+        // FIXED 2023.11.29, 15:44 -- Here was a problem -- negative values caused the lack of some nodes. Now using the correct data.
+        const { score_through_supply_chain: value } = graph;
+        return value;
+      }),
+    [edgesData, graphsData, graphsMap],
   );
 
   const sourceGraphIdsList = React.useMemo<TGraphId[] | undefined>(
@@ -40,89 +49,21 @@ export function useLinkData(): Partial<SankeyLink> | undefined {
     [targetGraphIdsList, graphsMap],
   );
 
-  const labelsList = useGraphLabelsList();
-
-  // Effect: Debug graph ids and pos list
-  React.useEffect(() => {
-    if (
-      edgesData &&
-      labelsList &&
-      valuesList &&
-      sourceGraphPosList &&
-      targetGraphPosList &&
-      sourceGraphIdsList &&
-      targetGraphIdsList
-    ) {
-      // Nodes tracing: @see useLinkData-trace
-      const combo = [];
-      for (let i = 0; i < edgesData.length; i++) {
-        const fromId = sourceGraphIdsList[i];
-        const toId = targetGraphIdsList[i];
-        const fromPos = sourceGraphPosList[i];
-        const toPos = targetGraphPosList[i];
-        const toLabel = labelsList[toPos];
-        const fromLabel = labelsList[fromPos];
-        const toValue = valuesList[toPos];
-        const fromValue = valuesList[fromPos];
-        const comboItem = {
-          fromId,
-          toId,
-          fromPos,
-          toPos,
-          fromLabel,
-          toLabel,
-          fromValue,
-          toValue,
-        };
-        if (toId === 18 || fromId === 18) {
-          // @ts-ignore
-          comboItem._DEBUG = 18;
-        }
-        combo.push(comboItem);
-      }
-      console.log('[useLinkData:Effect: Debug graph ids and pos list]', {
-        combo,
-        sourceGraphPosList,
-        targetGraphPosList,
-        sourceGraphIdsList,
-        targetGraphIdsList,
-      });
-    }
-  }, [
-    // prettier-ignore
-    edgesData,
-    labelsList,
-    valuesList,
-    sourceGraphPosList,
-    targetGraphPosList,
-    sourceGraphIdsList,
-    targetGraphIdsList,
-  ]);
-
   // Construct link data
   const linkData = React.useMemo<Partial<SankeyLink> | undefined>(() => {
     if (!edgesData) {
       return undefined;
     }
-    /* console.log('[useLinkData:linkData] start', {
-     *   edgesData: edgesData.map((it) => ({ ...it })),
-     *   sourceGraphPosList,
-     *   targetGraphPosList,
-     *   valuesList,
-     *   // graphsMap,
-     * });
-     */
     // @see https://plotly.com/javascript/sankey-diagram/
     // @see https://raw.githubusercontent.com/plotly/plotly.js/master/test/image/mocks/sankey_energy_dark.json
     const linkData: Partial<SankeyLink> = {
-      source: sourceGraphPosList as SankeyLink['source'], // [0, 1, 0, 2, 3, 3],
-      target: targetGraphPosList as SankeyLink['target'], // [2, 3, 3, 4, 4, 5],
-      value: valuesList as SankeyLink['value'], // [8, 4, 2, 8, 4, 2],
+      source: sourceGraphPosList as SankeyLink['source'],
+      target: targetGraphPosList as SankeyLink['target'],
+      value: valuesList as SankeyLink['value'],
       /* // Link names (TODO?)
-       * label: [] as SankeyLink['label'], // [8, 4, 2, 8, 4, 2],
+       * label: [] as SankeyLink['label'],
        */
     };
-    // console.log('[useLinkData:linkData] done', linkData);
     return linkData;
   }, [
     // prettier-ignore
@@ -132,49 +73,70 @@ export function useLinkData(): Partial<SankeyLink> | undefined {
     valuesList,
   ]);
 
-  // Effect: Debug graph ids and pos list
-  React.useEffect(() => {
-    console.log('[useLinkData:Effect: Debug link data]', linkData);
-    debugger;
-  }, [linkData]);
-
-  /* // OLD_DATA
-   * const linkData = React.useMemo<Partial<SankeyLink> | undefined>(() => {
-   *   if (!edgesData) {
-   *     return undefined;
+  /* // DEBUG: Here is the point to verify data processing
+   * const labelsList = useGraphLabelsList();
+   * // DEBUG: Effect: Check intermediate data creation...
+   * React.useEffect(() => {
+   *   if (
+   *     edgesData &&
+   *     labelsList &&
+   *     valuesList &&
+   *     sourceGraphPosList &&
+   *     targetGraphPosList &&
+   *     sourceGraphIdsList &&
+   *     targetGraphIdsList
+   *   ) {
+   *     // Nodes tracing: @see useLinkData-trace
+   *     const combo = [];
+   *     for (let i = 0; i < edgesData.length; i++) {
+   *       const fromId = sourceGraphIdsList[i];
+   *       const toId = targetGraphIdsList[i];
+   *       const fromPos = sourceGraphPosList[i];
+   *       const toPos = targetGraphPosList[i];
+   *       const toLabel = labelsList[toPos];
+   *       const fromLabel = labelsList[fromPos];
+   *       const toValue = valuesList[toPos];
+   *       const fromValue = valuesList[fromPos];
+   *       const comboItem = {
+   *         fromId,
+   *         toId,
+   *         fromPos,
+   *         toPos,
+   *         fromLabel,
+   *         toLabel,
+   *         fromValue,
+   *         toValue,
+   *       };
+   *       if (toId === 18 || fromId === 18) {
+   *         // @ts-ignore
+   *         comboItem._DEBUG = 18;
+   *       }
+   *       combo.push(comboItem);
+   *     }
+   *     console.log('[useLinkData:Effect: Debug graph ids and pos list]', {
+   *       combo,
+   *       sourceGraphPosList,
+   *       targetGraphPosList,
+   *       sourceGraphIdsList,
+   *       targetGraphIdsList,
+   *     });
    *   }
-   *   console.log('[useLinkData] start', {
-   *     edgesData: edgesData.map((it) => ({ ...it })),
-   *     graphsMap,
-   *   });
-   *   // @see https://plotly.com/javascript/sankey-diagram/
-   *   // @see https://raw.githubusercontent.com/plotly/plotly.js/master/test/image/mocks/sankey_energy_dark.json
-   *   const linkData [> : Partial<SankeyLink> <] = {
-   *     source: [] as SankeyLink['source'], // [0, 1, 0, 2, 3, 3],
-   *     target: [] as SankeyLink['target'], // [2, 3, 3, 4, 4, 5],
-   *     value: [] as SankeyLink['value'], // [8, 4, 2, 8, 4, 2],
-   *     [> // Link names (TODO?)
-   *      * label: [] as SankeyLink['label'], // [8, 4, 2, 8, 4, 2],
-   *      <]
-   *   };
-   *   edgesData.forEach((edge) => {
-   *     const {
-   *       producer_graph_id: toGraphId, // 2,
-   *       consumer_graph_id: fromGraphId, // 0,
-   *       amount, // 0.0016624585259705782
-   *     } = edge;
-   *     const fromGraphPos = graphsMap[fromGraphId];
-   *     const toGraphPos = graphsMap[toGraphId];
-   *     linkData.source.push(fromGraphPos);
-   *     linkData.target.push(toGraphPos);
-   *     linkData.value.push(amount);
-   *     [> // Set link name (TODO?)
-   *      * linkData.label.push('Link ' + n);
-   *      <]
-   *   });
-   *   console.log('[useLinkData] memo done', linkData);
-   *   return linkData;
-   * }, [edgesData, graphsMap]);
+   * }, [
+   *   // prettier-ignore
+   *   edgesData,
+   *   labelsList,
+   *   valuesList,
+   *   sourceGraphPosList,
+   *   targetGraphPosList,
+   *   sourceGraphIdsList,
+   *   targetGraphIdsList,
+   * ]);
+   * // DEBUG: Effect: Check created data...
+   * React.useEffect(() => {
+   *   console.log('[useLinkData:Effect: Debug link data]', linkData);
+   *   // debugger; // NOTE: Debug here: It's the end of the data processing
+   * }, [linkData]);
    */
+
   return linkData;
 }

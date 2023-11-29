@@ -14,20 +14,31 @@ export function constructLinkDataArrayFromEdges(
     // graphsData,
     // nodesData,
     // nodesHash,
-    // graphsHash,
+    graphsHash,
   } = fullDataSet;
   const linkDataArray: TGojsLinkDataArray = edgesData.map((edge: TEdgeItem) => {
     const {
       // prettier-ignore
       producer_graph_id: toId, // 2,
       consumer_graph_id: fromId, // 0,
-      amount, // 0.0016624585259705782
+      // amount, // 0.0016624585259705782
     } = edge;
+    const toGraph = graphsHash[toId];
+    const value = toGraph.score_through_supply_chain;
+    const width = Math.max(minLineWidth, goJsLineWidthFactor * value);
+    /* console.log('[constructLinkDataArray:constructLinkDataArrayFromEdges]', {
+     *   fromId,
+     *   toId,
+     *   width,
+     *   goJsLineWidthFactor,
+     *   value,
+     * });
+     */
     return {
       // prettier-ignore
       from: fromId,
       to: toId,
-      width: Math.max(minLineWidth, goJsLineWidthFactor * amount),
+      width,
     };
   });
   /* // Data sample:
