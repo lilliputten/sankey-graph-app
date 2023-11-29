@@ -3,7 +3,7 @@ import tinycolor from 'tinycolor2';
 import { TColor } from 'src/core/types';
 
 // TODO: Move static colors to constants?
-function getColorsList(): TColor[] {
+export function getStaticColorsList(): TColor[] {
   return [
     '#2dc3d2',
     '#3483ba',
@@ -36,7 +36,7 @@ function getColorsList(): TColor[] {
 }
 
 export function getColorForIndex(idx: number): TColor {
-  const colors = getColorsList();
+  const colors = getStaticColorsList();
   let colorIdx = idx % colors.length;
   if (colorIdx < 0) {
     colorIdx = colors.length + colorIdx;
@@ -45,7 +45,7 @@ export function getColorForIndex(idx: number): TColor {
 }
 
 export function getRandomColor(): TColor {
-  const colors = getColorsList();
+  const colors = getStaticColorsList();
   const maxColor = colors.length - 1;
   const randomIdx = Math.round(Math.random() * maxColor);
   return colors[randomIdx];

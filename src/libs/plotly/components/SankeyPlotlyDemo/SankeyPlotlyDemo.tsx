@@ -14,11 +14,9 @@ import PlotlyLib from 'src/libs/plotly/core/PlotlyLib';
 
 import * as toasts from 'src/ui/Basic/Toasts';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
-import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 import { TChartComponentProps } from 'src/core/types';
 import { useContainerSize } from 'src/ui/hooks';
-
-import { useChartData } from 'src/libs/plotly/hooks';
+import { useChartConfig, useChartData, useChartLayout } from 'src/libs/plotly/hooks';
 
 import styles from './SankeyPlotlyDemo.module.scss';
 
@@ -33,11 +31,13 @@ window.__DEBUG_PLOTLY = false;
 // @see https://github.com/plotly/react-plotly.js#customizing-the-plotlyjs-bundle
 const CustomReactPlotty = createPlotlyComponent(PlotlyLib);
 
+// TODO: Split solid memo to different ones: for handlers, api handler, etc
 interface TMemo {
   /** Last active (clicked or dragged) node */
   currentNodePoint?: PlotlyLib.PlotDatum;
-  /** Current plotly data (is it used?) */
-  figure?: Figure;
+  /* [>* Current plotly data (is it used?) <]
+   * figure?: Figure;
+   */
   /** Current poltly node -- host for plotly api */
   graphDiv?: HTMLElement;
   unhoverTimeout?: NodeJS.Timeout;
@@ -51,9 +51,6 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
 
   // const [currentNodePoint, setCurrentNodePoint] = React.useState<PlotDatum | undefined>();
   const sankeyAppDataStore = useSankeyAppDataStore();
-  const sankeyAppSessionStore = useSankeyAppSessionStore();
-  const { themeMode } = sankeyAppSessionStore;
-  const isDarkTheme = themeMode === 'dark';
   const [errorText /* , setErrorText */] = React.useState<string | undefined>();
   // Effect: Show an error...
   React.useEffect(() => {
@@ -116,57 +113,9 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
     }
   }, [memo, chartLabels]);
 
-  const chartLayout = React.useMemo<Partial<PlotlyLib.Layout>>(
-    () => ({
-      width,
-      height,
-      type: 'sankey',
-      // TODO: Store theming colors in config/storage?
-      paper_bgcolor: isDarkTheme ? 'black' : 'white',
-      font: {
-        color: isDarkTheme ? '#ccc' : '#333',
-      },
-      /* // TODO: To use to control updates?
-       * uirevision: 1,
-       * datarevision: 1,
-       * editrevision: 1,
-       * selectionrevision: 1,
-       */
-    }),
-    [width, height, isDarkTheme],
-  );
+  const chartLayout = useChartLayout({ width, height });
 
-  const chartConfig = React.useMemo<Partial<PlotlyLib.Config>>(
-    () => ({
-      // NOTE: Sankey diagrams can't be zoomed?
-      scrollZoom: true,
-      displaylogo: false,
-      responsive: true,
-      displayModeBar: true,
-      // displayModeBar: false,
-      modeBarButtonsToRemove: [
-        // prettier-ignore
-        'lasso2d',
-        'select2d',
-      ],
-      logging: 2,
-      /* editable: true,
-       * edits: {
-       *   annotationPosition: true,
-       *   annotationTail: true,
-       *   annotationText: true,
-       *   axisTitleText: true,
-       *   colorbarPosition: true,
-       *   colorbarTitleText: true,
-       *   legendPosition: true,
-       *   legendText: true,
-       *   shapePosition: true,
-       *   titleText: true,
-       * },
-       */
-    }),
-    [],
-  );
+  const chartConfig = useChartConfig();
 
   /* // UNUSED (?): Edit node dialog (now used side panel, see `SankeyPropertiesPanel`)...
    * // const [currentGraphId, setCurrentGraphId] = React.useState<TGraphId | undefined>();
@@ -272,14 +221,16 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
     ],
   );
 
-  const setStateFigure = React.useCallback(
-    (figure: Readonly<Figure>, graphDiv: Readonly<HTMLElement>) => {
-      memo.figure = figure;
+  const savePlotlyGraphDiv = React.useCallback(
+    (_figure: Readonly<Figure>, graphDiv: Readonly<HTMLElement>) => {
+      // memo.figure = figure;
       memo.graphDiv = graphDiv;
     },
     [memo],
   );
 
+  // TODO 2023.11.29, 23:57 -- Create more production-like wrapper from plotly demo.
+  // TODO 2023.11.29, 23:53 -- Split hooks and handlers to dedicated modules, use compose to combine them into single working piece.
   // TODO 2023.11.26, 22:39 -- Fix overcasting labels (`node-label`) by node bars (`node-rect`)
   // TODO 2023.11.26, 17:39 -- Don't auto open properties panel if it had hidden manually?
   // TODO 2023.11.26, 17:27 -- Reset selected graph id on click outside the node
@@ -310,8 +261,8 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
           // NOTE: Unhover events invokes before sankey node click, so we mustn't to use it
           onUnhover={handleUnhover}
           // State...
-          onInitialized={setStateFigure}
-          onUpdate={setStateFigure}
+          onInitialized={savePlotlyGraphDiv}
+          onUpdate={savePlotlyGraphDiv}
         />
       )}
       {/* // Use modal dialog to edit current graph node (TODO?)
