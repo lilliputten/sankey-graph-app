@@ -221,24 +221,9 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
     ],
   );
 
-  /* // DEBUG: Try to register and use graphDiv
-   * const [graphDiv, setGraphDiv] = React.useState<HTMLElement | undefined>();
-   * React.useEffect(() => {
-   *   if (graphDiv) {
-   *     debugger;
-   *     // @ts-ignore
-   *     graphDiv?.on('plotly_afterplot', (position, forcePos) => {
-   *       console.log('XXX', {
-   *         position,
-   *         forcePos,
-   *       });
-   *       debugger;
-   *     });
-   *   }
-   *   // Destroyer?
-   * }, [graphDiv]);
-   */
-
+  const savePlotlyGraphDiv = React.useCallback(
+    (_figure: Readonly<Figure>, graphDiv: Readonly<HTMLElement>) => {
+      // memo.figure = figure;
   const savePlotlyGraphDiv = React.useCallback(
     (_figure: Readonly<Figure>, graphDiv: Readonly<HTMLElement>) => {
       // memo.figure = figure;
