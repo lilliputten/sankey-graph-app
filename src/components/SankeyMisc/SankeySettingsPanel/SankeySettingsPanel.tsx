@@ -7,6 +7,7 @@ import { TPropsWithClassName } from 'src/core/types';
 
 import { EditGoJsLineWidthFactor } from './EditGoJsLineWidthFactor';
 import { EditThemeMode } from './EditThemeMode';
+import { EditVerticalLayout } from './EditVerticalLayout';
 import { EditChartLibrary } from './EditChartLibrary';
 import { EditNodesColorMode } from './EditNodesColorMode';
 import { EditNodeColors } from './EditNodeColors';
@@ -19,6 +20,7 @@ export const SankeySettingsPanel: React.FC<TPropsWithClassName> = observer((prop
     <Box className={classNames(className, styles.root)}>
       <EditChartLibrary />
       <EditThemeMode />
+      <EditVerticalLayout />
       <EditNodesColorMode />
       <EditNodeColors />
       <EditGoJsLineWidthFactor />

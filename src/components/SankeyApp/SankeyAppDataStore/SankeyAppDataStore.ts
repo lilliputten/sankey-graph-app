@@ -68,12 +68,14 @@ export class SankeyAppDataStore {
 
   // External changes handlers...
 
-  @bound onNodesColorModeChanged(nodesColorMode: TNodesColorMode) {
-    const isChanged = nodesColorMode !== this.nodesColorMode;
-    console.log('[SankeyAppSessionStore:onNodesColorModeChanged]', {
-      isChanged,
-      nodesColorMode,
-    });
+  @bound onNodesColorModeChanged(_nodesColorMode: TNodesColorMode) {
+    /* // DEBUG
+     * const isChanged = nodesColorMode !== this.nodesColorMode;
+     * console.log('[SankeyAppSessionStore:onNodesColorModeChanged]', {
+     *   isChanged,
+     *   nodesColorMode,
+     * });
+     */
     // Reset current custom colors...
     runInAction(() => {
       this.nodeColors = {};

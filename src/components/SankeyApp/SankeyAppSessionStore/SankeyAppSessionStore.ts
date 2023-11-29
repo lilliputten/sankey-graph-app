@@ -45,6 +45,9 @@ export class SankeyAppSessionStore {
   /** Application theme */
   @observable themeMode: TMuiThemeMode = defaultMuiThemeMode;
 
+  /** Vertical layout */
+  @observable verticalLayout: boolean = false;
+
   /** Coefficient for multiplying the width of connecting lines between nodes (GoJS only) */
   @observable goJsLineWidthFactor: number = defaultLineWidthFactor;
 
@@ -181,6 +184,7 @@ export class SankeyAppSessionStore {
 
   @action clearSettings() {
     this.themeMode = defaultMuiThemeMode;
+    this.verticalLayout = false;
     this.goJsLineWidthFactor = defaultLineWidthFactor;
     this.chartLibrary = defaultChartLibrary;
     this.nodesColorMode = defaultNodesColorMode;
