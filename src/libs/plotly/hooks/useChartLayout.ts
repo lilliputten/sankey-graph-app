@@ -9,6 +9,9 @@ interface TChartLayoutParams {
   height?: number;
 }
 
+const chartMarginSize = 16;
+const chartMarginTopSize = 56;
+
 export function useChartLayout(params: TChartLayoutParams) {
   const { width, height } = params;
   const sankeyAppSessionStore = useSankeyAppSessionStore();
@@ -22,13 +25,43 @@ export function useChartLayout(params: TChartLayoutParams) {
       type: 'sankey',
       // TODO: Store theming colors in config/storage?
       paper_bgcolor: isDarkTheme ? 'black' : 'white',
+      plot_bgcolor: isDarkTheme ? '#222' : '#ddd',
       font: {
         color: isDarkTheme ? '#ccc' : '#333',
       },
-      autosize: true,
+      autosize: true, // Does it have an effect?
+      // Set chart margins
       margin: {
-        pad: 20,
+        // @see https://plotly.com/javascript/reference/layout/#layout-margin
+        // Top margin is wider in order to make room for panel buttons and legend
+        t: chartMarginTopSize || chartMarginSize,
+        b: chartMarginSize,
+        l: chartMarginSize,
+        r: chartMarginSize,
       },
+      // Stylize hover labels
+      hoverlabel: {
+        // @see https://plotly.com/javascript/reference/layout/#layout-hoverlabel
+        // @see https://plotly.com/javascript/reference/layout/#layout-newshape-label
+        padding: 10,
+        bgcolor: isDarkTheme ? '#eee' : '#222',
+        bordercolor: 'none',
+        namelength: 5,
+      },
+      transition: {
+        // @see https://plotly.com/javascript/reference/layout/#layout-transition
+        easing: 'linear',
+        duration: 50,
+      },
+      /* // Doesn't have effect...
+       * newshape: {
+       *   label: {
+       *     // @see https://plotly.com/javascript/reference/layout/#layout-newshape-label
+       *     padding: 10,
+       *   },
+       * },
+       * opacity: 0.2,
+       */
       /* // colorway: Use our colors
        * colorway: getStaticColorsList(),
        */
