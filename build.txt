@@ -1,6 +1,6 @@
 Project: sankey-graph-app
-Version: 0.0.10
+Version: 0.0.11
 Branch: dev-231128-issue-8-progressive-colors
-Commit: c76f78e
-Fixed: 2023.11.29, 04:04 GMT+7
-Built: 2023.11.29, 04:10 GMT+7
+Commit: c96222c
+Fixed: 2023.11.29, 21:26 GMT+7
+Built: 2023.11.29, 21:30 GMT+7
