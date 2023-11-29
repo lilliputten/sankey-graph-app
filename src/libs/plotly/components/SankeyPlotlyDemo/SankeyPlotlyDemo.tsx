@@ -3,7 +3,6 @@ import { observer } from 'mobx-react-lite';
 import { Box } from '@mui/material';
 import classNames from 'classnames';
 
-// @ts-ignore
 import Plotly from 'plotly.js/lib'; // NOTE: Use dev (patched) version of plotly (required core nodejs polyfills for webpack 5+, see solution in `craco.config.js`)
 // import Plotly from 'plotly.js'; // NOTE: Use production version of plotly
 
@@ -55,7 +54,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
   // const [currentNodePoint, setCurrentNodePoint] = React.useState<PlotDatum | undefined>();
   const sankeyAppDataStore = useSankeyAppDataStore();
   const sankeyAppSessionStore = useSankeyAppSessionStore();
-  const { themeMode } = sankeyAppSessionStore;
+  const { themeMode, verticalLayout } = sankeyAppSessionStore;
   const isDarkTheme = themeMode === 'dark';
   const [errorText /* , setErrorText */] = React.useState<string | undefined>();
   // Effect: Show an error...
@@ -84,6 +83,19 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
   const chartColors = useGraphColorsList();
   const chartLabels = useGraphLabelsList();
 
+  // Effect: Update orientation with plotly api
+  React.useEffect(() => {
+    const { graphDiv } = memo;
+    if (graphDiv) {
+      const orientation = verticalLayout ? 'v' : 'h';
+      console.log('[SankeyPlotlyDemo:Effect: Update orientation]', {
+        orientation,
+      });
+      // @ts-ignore
+      Plotly.restyle(graphDiv, 'orientation', orientation);
+    }
+  }, [memo, verticalLayout]);
+
   // Effect: Update colors with plotly api
   React.useEffect(() => {
     const { graphDiv } = memo;
@@ -92,8 +104,12 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
      * });
      */
     if (graphDiv) {
-      //NOTE: Attention to patches for `node_modules/plotly.js/src/plot_api/plot_api.js:_restyle`)
+      // NOTE: Attention to patches for `node_modules/plotly.js/src/plot_api/plot_api.js:_restyle`)
+      // @ts-ignore
       Plotly.restyle(graphDiv, 'node.color', chartColors);
+      /* // NOTE: This approach (with full data) doesn't work (it resets other node properties)
+       * Plotly.restyle(graphDiv, { node: { color: chartColors } });
+       */
     }
   }, [memo, chartColors]);
 
@@ -106,6 +122,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
      */
     if (graphDiv) {
       //NOTE: Attention to patches for `node_modules/plotly.js/src/plot_api/plot_api.js:_restyle`)
+      // @ts-ignore
       Plotly.restyle(graphDiv, 'node.label', chartLabels);
     }
   }, [memo, chartLabels]);
@@ -114,6 +131,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
     () => ({
       width,
       height,
+      type: 'sankey',
       // TODO: Store theming colors in config/storage?
       paper_bgcolor: isDarkTheme ? 'black' : 'white',
       font: {

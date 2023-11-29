@@ -23,11 +23,12 @@ export function useGraphLabelsList(): Plotly.Datum[] | undefined {
     if (!graphsData) {
       return undefined;
     }
-    console.log('[useGraphLabelsList] start', {
-      graphsData, // TGraphsData
-      nodeNames, // Record<TNodeId, string>
-      nodesHash,
-    });
+    /* console.log('[useGraphLabelsList] start', {
+     *   graphsData, // TGraphsData
+     *   nodeNames, // Record<TNodeId, string>
+     *   nodesHash,
+     * });
+     */
     const labels = graphsData.map((graph, _idx) => {
       const {
         id_in_graph: graphId, // -1, self index
@@ -57,7 +58,7 @@ export function useGraphLabelsList(): Plotly.Datum[] | undefined {
         .filter(Boolean)
         .join(' ');
     });
-    console.log('[useGraphLabelsList] memo done', labels);
+    // console.log('[useGraphLabelsList] memo done', labels);
     return labels;
   }, [
     graphsData, // TGraphsData
