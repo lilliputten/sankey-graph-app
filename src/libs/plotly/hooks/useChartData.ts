@@ -1,34 +1,19 @@
 import React from 'react';
-import Plotly from 'plotly.js';
 
-import { isDevBrowser } from 'src/config/build';
-import { TPlotlyData } from 'src/libs/plotly/types';
 import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
-
-import { demoPlotlySankeyData } from 'src/libs/plotly/data/demoPlotlySankeyData';
 
 import { useGraphLabelsList } from './useGraphLabelsList';
 import { useGraphColorsList } from './useGraphColorsList';
 import { useLinkData } from './useLinkData';
 
-/** DEBUG: Don't wait for user action */
-const __debugUseDemoData = false && isDevBrowser;
-
-export function useChartData(): TPlotlyData {
+export function useChartData() {
   const sankeyAppSessionStore = useSankeyAppSessionStore();
   const { verticalLayout } = sankeyAppSessionStore;
-  /* React.useEffect(() => {
-   *   console.log('[useChartData:DEBUG]', verticalLayout);
-   * }, [verticalLayout]);
-   */
   const label = useGraphLabelsList();
   const color = useGraphColorsList();
   const link = useLinkData();
-  const chartData = React.useMemo<TPlotlyData>(() => {
-    if (__debugUseDemoData) {
-      return demoPlotlySankeyData;
-    }
-    const sankeyData: Partial<Plotly.SankeyData> = {
+  const chartData = React.useMemo(() => {
+    const sankeyData = {
       type: 'sankey',
       orientation: verticalLayout ? 'v' : 'h',
       /** @type {Partial<SankeyNode>} */
@@ -46,9 +31,9 @@ export function useChartData(): TPlotlyData {
         color,
       },
       link,
-      // uirevision: 1,
+      // uirevision: 1, // TODO: To use to control updates?
     };
-    const chartData: TPlotlyData = [sankeyData];
+    const chartData = [sankeyData];
     return chartData;
   }, [color, label, link, verticalLayout]);
   return chartData;

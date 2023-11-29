@@ -1,3 +1,3 @@
-﻿declare module 'plotly.js/lib' {
+declare module 'plotly.js/lib' {
   export * from 'plotly.js';
 }

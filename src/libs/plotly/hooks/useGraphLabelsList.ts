@@ -1,5 +1,6 @@
 import React from 'react';
-import Plotly from 'plotly.js';
+
+import PlotlyLib from 'src/libs/plotly/core/PlotlyLib';
 
 import { isDevBrowser } from 'src/config/build';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
@@ -9,9 +10,9 @@ import { getNodeForId } from 'src/helpers/Sankey/data';
 import { useNodesHash } from 'src/hooks/Sankey/useNodesHash';
 
 /** Show debug data in the node name */
-const __showDebugInName = true && isDevBrowser;
+const __showDebugInName = false && isDevBrowser;
 
-export function useGraphLabelsList(): Plotly.Datum[] | undefined {
+export function useGraphLabelsList(): PlotlyLib.Datum[] | undefined {
   const sankeyAppDataStore = useSankeyAppDataStore();
   const {
     // prettier-ignore
@@ -19,7 +20,7 @@ export function useGraphLabelsList(): Plotly.Datum[] | undefined {
     nodeNames, // Record<TNodeId, string>
   } = sankeyAppDataStore;
   const nodesHash = useNodesHash();
-  const labels = React.useMemo<Plotly.Datum[] | undefined>(() => {
+  const labels = React.useMemo<PlotlyLib.Datum[] | undefined>(() => {
     if (!graphsData) {
       return undefined;
     }

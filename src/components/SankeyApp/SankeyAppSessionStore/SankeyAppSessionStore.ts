@@ -13,9 +13,7 @@ import { SankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore'
 export type TSankeyAppSessionStoreStatus = undefined | 'dataLoaded' | 'finished';
 
 // TODO: Move default parameters to constants?
-
-const defaultLineWidthFactor = 200;
-
+const defaultGoJsLineWidthFactor = 200;
 const defaultBaseColor: TColor = '#0f0';
 const defaultSecondColor: TColor = '#f00';
 
@@ -49,7 +47,7 @@ export class SankeyAppSessionStore {
   @observable verticalLayout: boolean = false;
 
   /** Coefficient for multiplying the width of connecting lines between nodes (GoJS only) */
-  @observable goJsLineWidthFactor: number = defaultLineWidthFactor;
+  @observable goJsLineWidthFactor: number = defaultGoJsLineWidthFactor;
 
   /** Library used to display data */
   @observable chartLibrary: TChartLibrary = defaultChartLibrary;
@@ -185,7 +183,7 @@ export class SankeyAppSessionStore {
   @action clearSettings() {
     this.themeMode = defaultMuiThemeMode;
     this.verticalLayout = false;
-    this.goJsLineWidthFactor = defaultLineWidthFactor;
+    this.goJsLineWidthFactor = defaultGoJsLineWidthFactor;
     this.chartLibrary = defaultChartLibrary;
     this.nodesColorMode = defaultNodesColorMode;
     this.baseNodesColor = defaultBaseColor;

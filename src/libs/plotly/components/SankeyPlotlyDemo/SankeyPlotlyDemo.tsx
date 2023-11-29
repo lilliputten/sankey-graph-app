@@ -3,9 +3,6 @@ import { observer } from 'mobx-react-lite';
 import { Box } from '@mui/material';
 import classNames from 'classnames';
 
-import Plotly from 'plotly.js/lib'; // NOTE: Use dev (patched) version of plotly (required core nodejs polyfills for webpack 5+, see solution in `craco.config.js`)
-// import Plotly from 'plotly.js'; // NOTE: Use production version of plotly
-
 // NOTE: Import and use stock pre-built react component or create it (below)
 // with `createPlotlyComponent` from your own patched instance. Don't use the
 // same name for stock and custom components to avoid caching issues.
@@ -13,14 +10,15 @@ import Plotly from 'plotly.js/lib'; // NOTE: Use dev (patched) version of plotly
 import createPlotlyComponent from 'react-plotly.js/factory';
 import { Figure } from 'react-plotly.js';
 
+import PlotlyLib from 'src/libs/plotly/core/PlotlyLib';
+
 import * as toasts from 'src/ui/Basic/Toasts';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 import { TChartComponentProps } from 'src/core/types';
 import { useContainerSize } from 'src/ui/hooks';
 
-import { useChartData, useGraphColorsList, useGraphLabelsList } from 'src/libs/plotly/hooks';
-import { TPlotlyData } from 'src/libs/plotly/types';
+import { useChartData } from 'src/libs/plotly/hooks';
 
 import styles from './SankeyPlotlyDemo.module.scss';
 
@@ -33,11 +31,11 @@ import styles from './SankeyPlotlyDemo.module.scss';
 window.__DEBUG_PLOTLY = false;
 
 // @see https://github.com/plotly/react-plotly.js#customizing-the-plotlyjs-bundle
-const CustomReactPlotty = createPlotlyComponent(Plotly);
+const CustomReactPlotty = createPlotlyComponent(PlotlyLib);
 
 interface TMemo {
   /** Last active (clicked or dragged) node */
-  currentNodePoint?: Plotly.PlotDatum;
+  currentNodePoint?: PlotlyLib.PlotDatum;
   /** Current plotly data (is it used?) */
   figure?: Figure;
   /** Current poltly node -- host for plotly api */
@@ -54,7 +52,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
   // const [currentNodePoint, setCurrentNodePoint] = React.useState<PlotDatum | undefined>();
   const sankeyAppDataStore = useSankeyAppDataStore();
   const sankeyAppSessionStore = useSankeyAppSessionStore();
-  const { themeMode, verticalLayout } = sankeyAppSessionStore;
+  const { themeMode } = sankeyAppSessionStore;
   const isDarkTheme = themeMode === 'dark';
   const [errorText /* , setErrorText */] = React.useState<string | undefined>();
   // Effect: Show an error...
@@ -68,66 +66,57 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
   const { ref: resizeRef, width, height } = useContainerSize();
 
   const currentChartData = useChartData();
-  // XXX: Temporarily use frozen data (no updates)
-  const [chartData, _setChartData] = React.useState<TPlotlyData>(currentChartData);
-  // Effect: Update chart data...
-  React.useEffect(() => {
-    /* console.log('[SankeyPlotlyDemo:Effect: Update chart data]', {
-     *   currentChartData,
-     * });
-     */
-    // NOTE: Updating full chart data causes completely re-render of the chart and layout reset
-    // setChartData(currentChartData);
-  }, [currentChartData]);
+  const currentSankeyData = currentChartData[0];
+  const currentSankeyNode = currentSankeyData.node;
 
-  const chartColors = useGraphColorsList();
-  const chartLabels = useGraphLabelsList();
+  // XXX: Temporarily use frozen data (updating only with internal relayouts)
+  const [initialChartData, _setChartData] = React.useState(currentChartData);
+  /* // NOTE: Unused temporarily: Updating full chart data causes completely re-render of the chart and layout reset
+   * // Effect: Update chart data...
+   * React.useEffect(() => _setChartData(currentChartData), [currentChartData]);
+   */
+
+  const {
+    // prettier-ignore
+    orientation,
+    // link: chartLinks, // TODO: To update links data if they'll be updated (now consider them as a constant).
+  } = currentSankeyData;
+  const {
+    // prettier-ignore
+    color: chartColors,
+    label: chartLabels,
+  } = currentSankeyNode;
 
   // Effect: Update orientation with plotly api
   React.useEffect(() => {
-    const { graphDiv } = memo;
-    if (graphDiv) {
-      const orientation = verticalLayout ? 'v' : 'h';
-      console.log('[SankeyPlotlyDemo:Effect: Update orientation]', {
-        orientation,
-      });
+    if (memo.graphDiv) {
       // @ts-ignore
-      Plotly.restyle(graphDiv, 'orientation', orientation);
+      PlotlyLib.restyle(memo.graphDiv, 'orientation', orientation);
     }
-  }, [memo, verticalLayout]);
+  }, [memo, orientation]);
 
   // Effect: Update colors with plotly api
   React.useEffect(() => {
-    const { graphDiv } = memo;
-    /* console.log('[SankeyPlotlyDemo:Effect: Update colors]', {
-     *   chartColors,
-     * });
-     */
-    if (graphDiv) {
+    if (memo.graphDiv) {
       // NOTE: Attention to patches for `node_modules/plotly.js/src/plot_api/plot_api.js:_restyle`)
       // @ts-ignore
-      Plotly.restyle(graphDiv, 'node.color', chartColors);
+      PlotlyLib.restyle(memo.graphDiv, 'node.color', chartColors);
       /* // NOTE: This approach (with full data) doesn't work (it resets other node properties)
-       * Plotly.restyle(graphDiv, { node: { color: chartColors } });
+       * PlotlyLib.restyle(memo.graphDiv, { node: { color: chartColors } });
        */
     }
   }, [memo, chartColors]);
 
   // Effect: Update labels with plotly api
   React.useEffect(() => {
-    const { graphDiv } = memo;
-    /* console.log('[SankeyPlotlyDemo:Effect: Update labels]', {
-     *   chartLabels,
-     * });
-     */
-    if (graphDiv) {
+    if (memo.graphDiv) {
       //NOTE: Attention to patches for `node_modules/plotly.js/src/plot_api/plot_api.js:_restyle`)
       // @ts-ignore
-      Plotly.restyle(graphDiv, 'node.label', chartLabels);
+      PlotlyLib.restyle(memo.graphDiv, 'node.label', chartLabels);
     }
   }, [memo, chartLabels]);
 
-  const chartLayout = React.useMemo<Partial<Plotly.Layout>>(
+  const chartLayout = React.useMemo<Partial<PlotlyLib.Layout>>(
     () => ({
       width,
       height,
@@ -137,8 +126,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
       font: {
         color: isDarkTheme ? '#ccc' : '#333',
       },
-      /*
-       * // XXX: Trying to fix lost state error...
+      /* // TODO: To use to control updates?
        * uirevision: 1,
        * datarevision: 1,
        * editrevision: 1,
@@ -148,7 +136,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
     [width, height, isDarkTheme],
   );
 
-  const chartConfig = React.useMemo<Partial<Plotly.Config>>(
+  const chartConfig = React.useMemo<Partial<PlotlyLib.Config>>(
     () => ({
       // NOTE: Sankey diagrams can't be zoomed?
       scrollZoom: true,
@@ -194,7 +182,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
   // Interactive: user handlers...
 
   const handleHover = React.useCallback(
-    (ev: Readonly<Plotly.PlotMouseEvent>) => {
+    (ev: Readonly<PlotlyLib.PlotMouseEvent>) => {
       const {
         points, // PlotDatum[]
       } = ev;
@@ -210,7 +198,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
     [memo],
   );
   const handleUnhover = React.useCallback(
-    (_ev: Readonly<Plotly.PlotMouseEvent>) => {
+    (_ev: Readonly<PlotlyLib.PlotMouseEvent>) => {
       if (memo.unhoverTimeout) {
         clearTimeout(memo.unhoverTimeout);
       }
@@ -223,7 +211,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
   );
   // NOTE: Actually, for 'sankey' data mode this handler triggered for restyles event
   const handleSankeyNodeClick = React.useCallback(
-    ([_update, _traces]: readonly [Plotly.PlotRestyleEventUpdate, number[]]) => {
+    ([_update, _traces]: readonly [PlotlyLib.PlotRestyleEventUpdate, number[]]) => {
       const { currentNodePoint } = memo;
       /* console.log('[SankeyPlotlyDemo:handleSankeyNodeClick] start', {
        *   // update,
@@ -286,11 +274,6 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
 
   const setStateFigure = React.useCallback(
     (figure: Readonly<Figure>, graphDiv: Readonly<HTMLElement>) => {
-      /* console.log('[SankeyPlotlyDemo:setStateFigure]', {
-       *   figure,
-       *   graphDiv,
-       * });
-       */
       memo.figure = figure;
       memo.graphDiv = graphDiv;
     },
@@ -300,7 +283,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
   // TODO 2023.11.26, 22:39 -- Fix overcasting labels (`node-label`) by node bars (`node-rect`)
   // TODO 2023.11.26, 17:39 -- Don't auto open properties panel if it had hidden manually?
   // TODO 2023.11.26, 17:27 -- Reset selected graph id on click outside the node
-  // TODO 2023.11.26, 17:25 -- Prevent react to node dragging?
+  // TODO 2023.11.26, 17:25 -- Prevent react to node dragging (to keep last active node data)?
 
   return (
     <Box
@@ -308,11 +291,11 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
       className={classNames(className, styles.root)}
     >
       {!!errorText && <Box className={styles.errorBox}>{errorText}</Box>}
-      {!!chartData && (
+      {!!initialChartData && (
         <CustomReactPlotty
           // prettier-ignore
           className={styles.chart}
-          data={chartData}
+          data={initialChartData as PlotlyLib.SankeyData[]}
           config={chartConfig}
           layout={chartLayout}
           // NOTE: 'onClick' event works only for flow elements in sankey data mode

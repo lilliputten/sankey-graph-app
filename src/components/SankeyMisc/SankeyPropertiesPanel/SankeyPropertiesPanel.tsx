@@ -10,7 +10,7 @@ import { useGraphNodeId } from 'src/hooks/Sankey';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 
 import { EditNodeName } from './EditNodeName';
-import { EditNodeColor } from './EditNodeColor';
+import { EditGraphColor } from './EditGraphColor';
 
 import styles from './SankeyPropertiesPanel.module.scss';
 
@@ -27,7 +27,7 @@ const PropertiesContent: React.FC<TPropsWithClassName> = observer(() => {
     <>
       {__debugUseDemoData && <Box className={styles.infoBox}>Edit graph id: {selectedGraphId}</Box>}
       <EditNodeName nodeId={nodeId} />
-      <EditNodeColor nodeId={nodeId} />
+      <EditGraphColor graphId={selectedGraphId} />
     </>
   );
 });

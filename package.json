@@ -1,11 +1,15 @@
 {
   "name": "sankey-graph-app",
-  "version": "0.0.10",
-  "timetag": "231129-0404",
-  "timestamp": "2023.11.29, 04:04 GMT+7",
+  "version": "0.0.11",
+  "timetag": "231129-2126",
+  "timestamp": "2023.11.29, 21:26 GMT+7",
   "changed": "2023.11.13, 00:02",
   "private": true,
   "eslint-unused-rules": {
+    "eqeqeq": [
+      "warn",
+      "smart"
+    ],
     "no-unused-vars": [
       "warn",
       {
@@ -75,6 +79,7 @@
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@types/react-plotly.js": "^2.6.3",
+    "@types/tinycolor2": "^1.4.6",
     "bind-decorator": "^1.0.11",
     "classnames": "^2.3.2",
     "cross-env": "^7.0.3",
@@ -103,6 +108,7 @@
     "stylelint-config-recommended-scss": "^13.1.0",
     "stylelint-config-standard": "^34.0.0",
     "stylelint-scss": "^5.3.1",
+    "tinycolor2": "^1.6.0",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },

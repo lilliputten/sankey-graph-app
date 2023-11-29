@@ -1,5 +1,8 @@
+import tinycolor from 'tinycolor2';
+
 import { TColor } from 'src/core/types';
 
+// TODO: Move static colors to constants?
 function getColorsList(): TColor[] {
   return [
     '#2dc3d2',
@@ -51,4 +54,34 @@ export function getRandomColor(): TColor {
 export function checkValidHexColor(color?: TColor | string) {
   // '#xxxxxx', '#xxx'
   return !!color && /^#([0-9a-f]{6}|[0-9a-f]{3})$/.test(color);
+}
+
+export function createColorsGradientSteps(
+  stepsCount: number,
+  startColor: TColor,
+  endColor: TColor,
+) {
+  if (!stepsCount || !startColor || !endColor) {
+    return;
+  }
+  if (stepsCount < 2) {
+    // Only one step?
+    return [startColor];
+  }
+  if (stepsCount === 2) {
+    // Two steps?
+    return [startColor, endColor];
+  }
+  const startColorObj = tinycolor(startColor);
+  const endColorObj = tinycolor(endColor);
+  // const stepSize = 100 / stepsCount;
+  const stepsList: TColor[] = [];
+  const lastStep = stepsCount - 1;
+  for (let step = 0; step < stepsCount; step++) {
+    const amount = (100 * step) / lastStep;
+    const mixColor = tinycolor.mix(startColorObj, endColorObj, amount);
+    const color = mixColor.toHexString() as TColor;
+    stepsList.push(color);
+  }
+  return stepsList;
 }

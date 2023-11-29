@@ -1,13 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
-import {
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Switch,
-  // FormHelperText,
-} from '@mui/material';
+import { FormControl, FormLabel, Switch } from '@mui/material';
 import classNames from 'classnames';
 
 import { TPropsWithClassName } from 'src/core/types';
@@ -35,9 +29,6 @@ export const EditVerticalLayout: React.FC<TPropsWithClassName> = observer((props
         onChange={setVerticalLayout}
         inputProps={{ 'aria-label': 'controlled' }}
       />
-      {/*
-      <FormHelperText id="verticalLayoutText">Vertical layout</FormHelperText>
-      */}
     </FormControl>
   );
 });
