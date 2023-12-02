@@ -1,0 +1,9 @@
+rules:
+    no-console: 0
+    strict: 0
+    no-useless-escape: 0
+    default-case: 0
+    array-callback-return: 0
+    no-mixed-operators: 0
+    no-useless-concat: 0
+    no-throw-literal: 0
