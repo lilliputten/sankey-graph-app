@@ -7,8 +7,8 @@ import classNames from 'classnames';
 // with `createPlotlyComponent` from your own patched instance. Don't use the
 // same name for stock and custom components to avoid caching issues.
 // import ReactPlotty from 'react-plotly.js';
-import createPlotlyComponent from 'react-plotly.js/factory';
-import { Figure } from 'react-plotly.js';
+import createPlotlyComponent from 'src/libs/react-plotly.js/factory';
+import { Figure } from 'src/libs/react-plotly.js';
 
 import PlotlyLib from 'src/libs/plotly/core/PlotlyLib';
 
