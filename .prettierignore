@@ -19,6 +19,7 @@
 
 # Ignore plotly library
 /src/libs/plotly.js/
+/src/libs/react-plotly.js/
 
 package-lock.*
 **/*_
