@@ -1,0 +1,10 @@
+--- events.orig.js	2023-12-02 22:22:38.934100800 +0700
++++ events.patched.js	2023-11-28 10:05:18.000000000 +0700
+@@ -67,6 +67,7 @@
+                 jQuery(plotObj).trigger(event, data);
+             }
+ 
++            window.__DEBUG_PLOTLY && console.log('[plotly:events:plotObj.emit]', event, data);
+             ev.emit(event, data);
+             internalEv.emit(event, data);
+         };

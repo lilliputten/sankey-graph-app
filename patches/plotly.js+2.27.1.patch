@@ -75,7 +75,7 @@ index a104e88..71aa421 100644
  
  function _restyle(gd, aobj, traces) {
 +    // NOTE:L Probably the main core method to update chart?
-+    window.__DEBUG_PLOTLY && console.log('[plotly:plot_api:_restyle]', { gd, aobj, trace });
++    window.__DEBUG_PLOTLY && console.log('[plotly:plot_api:_restyle]', { gd, aobj, traces });
      var fullLayout = gd._fullLayout;
      var fullData = gd._fullData;
      var data = gd.data;

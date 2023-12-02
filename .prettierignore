@@ -17,5 +17,8 @@
 /types
 /utils
 
+# Ignore plotly library
+/src/libs/plotly.js/
+
 package-lock.*
 **/*_
