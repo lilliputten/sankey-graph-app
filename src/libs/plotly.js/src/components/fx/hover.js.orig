@@ -1306,7 +1306,6 @@ function createHoverText(hoverData, opts) {
     // then put the text in, position the pointer to the data,
     // and figure out sizes
     hoverLabels.each(function(d) {
-        var bgColor = 'red'; // XXX 2023.12.03, 22:08 -- Override bgColor?
         var g = d3.select(this).attr('transform', '');
 
         var dColor = d.color;
@@ -1323,8 +1322,7 @@ function createHoverText(hoverData, opts) {
         );
         // color for 'name' part of the label
         var nameColor = Color.combine(
-            // Color.opacity(dColor) ? dColor : Color.defaultLine, // XXX 2023.12.03, 21:34
-            Color.opacity(color0) ? color0 : Color.defaultLine,
+            Color.opacity(dColor) ? dColor : Color.defaultLine,
             bgColor
         );
         // find a contrasting color for border and text
@@ -1354,8 +1352,7 @@ function createHoverText(hoverData, opts) {
             tx2.call(Drawing.font,
                     d.fontFamily || fontFamily,
                     d.fontSize || fontSize,
-                    d.fontColor || contrastColor)
-                    // nameColor)
+                    nameColor)
                 .text(name)
                 .attr('data-notex', 1)
                 .call(svgTextUtils.positionText, 0, 0)
