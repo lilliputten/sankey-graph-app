@@ -233,7 +233,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
 
   /** Example of update of node label attributes: positions, for example */
   const alignAllNodes = React.useCallback(() => {
-    const forcePos = false;
+    const forcePos = true;
     const textPad = 3;
     type TPosition = 'left' | 'right' | 'center';
     type TTextAnchor = 'end' | 'start' | 'middle';
@@ -257,17 +257,24 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
 
       for (const node of nodes) {
         const d = node.__data__;
+        // @see `cn.nodeLabel` in `src/libs/plotly.js/src/traces/sankey/constants.js`
         const nodeLabels = node.getElementsByClassName('node-label');
-        const label = (nodeLabels.item(0) as SVGElement | null) || undefined;
+        const label = nodeLabels.item(0) as SVGElement;
 
-        const { horizontal, nodeLineWidth, visibleWidth, left, node: dataNode } = d
+        const { horizontal, nodeLineWidth, visibleWidth, left, node: dataNode } = d;
         const { originalLayer } = dataNode;
 
-        console.log('[SankeyPlotlyDemo:alignAllNodes] node start', {
+        console.log('[SankeyPlotlyDemo:alignAllNodes] node item: start', {
+          horizontal,
+          nodeLineWidth,
+          visibleWidth,
+          left,
+          dataNode,
+          originalLayer,
           d,
+          label,
           // 'd.horizontal': d.horizontal,
           // nodeLabels,
-          label,
         });
 
         if (!horizontal) {

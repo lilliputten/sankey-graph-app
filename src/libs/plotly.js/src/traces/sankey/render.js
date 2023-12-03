@@ -823,6 +823,7 @@ module.exports = function(gd, svg, calcData, layout, callbacks) {
     var sankey = svg.selectAll('.' + c.cn.sankey)
         .data(styledData, keyFun);
 
+    // NOTE: Svg graph container
     sankey.exit()
         .remove();
 
@@ -859,6 +860,7 @@ module.exports = function(gd, svg, calcData, layout, callbacks) {
         .ease(c.ease).duration(c.duration)
         .attr('transform', sankeyTransform);
 
+    // NOTE: Link nodes
     var sankeyLinks = sankey.selectAll('.' + c.cn.sankeyLinks)
         .data(repeat, keyFun);
 
@@ -910,6 +912,7 @@ module.exports = function(gd, svg, calcData, layout, callbacks) {
         .style('opacity', 0)
         .remove();
 
+    // NOTE: Node rects and lables wrapper
     var sankeyNodeSet = sankey.selectAll('.' + c.cn.sankeyNodeSet)
         .data(repeat, keyFun);
 
@@ -926,6 +929,7 @@ module.exports = function(gd, svg, calcData, layout, callbacks) {
             }
         });
 
+    // NOTE: Node roots
     var sankeyNode = sankeyNodeSet.selectAll('.' + c.cn.sankeyNode)
         .data(function(d) {
             var nodes = d.graph.nodes;
@@ -956,6 +960,7 @@ module.exports = function(gd, svg, calcData, layout, callbacks) {
         .style('opacity', 0)
         .remove();
 
+    // NOTE: Configuring of node rects
     var nodeRect = sankeyNode.selectAll('.' + c.cn.nodeRect)
         .data(repeat);
 
@@ -975,6 +980,7 @@ module.exports = function(gd, svg, calcData, layout, callbacks) {
         .ease(c.ease).duration(c.duration)
         .call(sizeNode);
 
+    // NOTE: Configuring of node labels
     var nodeLabel = sankeyNode.selectAll('.' + c.cn.nodeLabel)
         .data(repeat);
 
