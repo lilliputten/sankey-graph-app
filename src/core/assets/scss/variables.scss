@@ -31,7 +31,33 @@ $borderColor: rgba(27, 31, 59, 0.1);
 
 $themeControlsRadiusPx: 8px;
 
+// Paddings...
+
 $innerPaddingPx: 4px;
 $itemPaddingPx: 8px;
 $containerPaddingPx: 16px;
 $blockPaddingPx: 24px;
+
+// Basic containers backgrounds...
+
+$graphPaperBgLightColor: #fff;
+$graphPaperBgDarkColor: #000;
+
+$graphPlotBgLightColor: #222;
+$graphPlotBgDarkColor: #ddd;
+
+$graphPlotFontLightColor: #333;
+$graphPlotFontDarkColor: #ccc;
+
+// Graph labels...
+
+$graphLabelBgLightColor: #222;
+$graphLabelBgDarkColor: #eee;
+
+// $graphLabelBorderLightColor: transparent; // #222;
+// $graphLabelBorderDarkColor: transparent; // #eee;
+$graphLabelBorderLightColor: color.change($graphLabelBgLightColor, $alpha: 0.85);
+$graphLabelBorderDarkColor: color.change($graphLabelBgDarkColor, $alpha: 0.85);
+
+$graphLabelFontLightColor: #ccc;
+$graphLabelFontDarkColor: #333;

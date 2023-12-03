@@ -58,6 +58,21 @@ $plotAnimateTime: $transitionTimeMs;
     position: absolute;
     z-index: 100;
   }
+  :global(.hoverlayer) {
+    // Hover labels, name part
+    rect:first-child {
+      fill: $graphLabelBgLightColor !important;
+      .theme-mode-dark & {
+        fill: $graphLabelBgDarkColor !important;
+      }
+    }
+    :global(text.name) {
+      fill: $graphLabelFontLightColor !important;
+      .theme-mode-dark & {
+        fill: $graphLabelFontDarkColor !important;
+      }
+    }
+  }
 }
 
 .errorBox {
