@@ -4,6 +4,8 @@ import PlotlyLib from 'src/libs/plotly/core/PlotlyLib';
 
 import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 
+import cssVariables from 'src/core/assets/scss/variables.module.scss';
+
 interface TChartLayoutParams {
   width?: number;
   height?: number;
@@ -17,6 +19,7 @@ export function useChartLayout(params: TChartLayoutParams) {
   const sankeyAppSessionStore = useSankeyAppSessionStore();
   const { themeMode } = sankeyAppSessionStore;
   const isDarkTheme = themeMode === 'dark';
+  const isLightTheme = !isDarkTheme;
   const chartLayout = React.useMemo<Partial<PlotlyLib.Layout>>(
     // @see https://plotly.com/python/reference/layout/
     () => ({
@@ -24,10 +27,12 @@ export function useChartLayout(params: TChartLayoutParams) {
       height,
       type: 'sankey',
       // TODO: Store theming colors in config/storage?
-      paper_bgcolor: isDarkTheme ? 'black' : 'white',
-      plot_bgcolor: isDarkTheme ? '#222' : '#ddd',
+      paper_bgcolor: cssVariables.graphPaperBgLight, // isDarkTheme ? 'black' : 'white',
+      plot_bgcolor: cssVariables.graphPlotBgLight, // isDarkTheme ? '#222' : '#ddd',
       font: {
-        color: isDarkTheme ? '#ccc' : '#333',
+        color: isLightTheme
+          ? cssVariables.graphPlotFontLightColor
+          : cssVariables.graphPlotFontDarkColor, // isDarkTheme ? '#ccc' : '#333',
       },
       autosize: true, // Does it have an effect?
       // Set chart margins
@@ -44,8 +49,18 @@ export function useChartLayout(params: TChartLayoutParams) {
         // @see https://plotly.com/javascript/reference/layout/#layout-hoverlabel
         // @see https://plotly.com/javascript/reference/layout/#layout-newshape-label
         padding: 10,
-        bgcolor: isDarkTheme ? '#eee' : '#222',
-        bordercolor: 'none',
+        font: {
+          color: isLightTheme
+            ? cssVariables.graphLabelFontLightColor
+            : cssVariables.graphLabelFontDarkColor, // isDarkTheme ? '#333' : '#ccc',
+        },
+        bgcolor: isLightTheme
+          ? cssVariables.graphLabelBgLightColor
+          : cssVariables.graphLabelBgDarkColor, // isDarkTheme ? '#eee' : '#222',
+        bordercolor: isLightTheme
+          ? cssVariables.graphLabelBorderLightColor
+          : cssVariables.graphLabelBorderDarkColor, // isDarkTheme ? '#fff' : '#111', // Used fo contrastcolor here (?)
+        // bordercolor: 'red',
         namelength: 5,
       },
       transition: {
