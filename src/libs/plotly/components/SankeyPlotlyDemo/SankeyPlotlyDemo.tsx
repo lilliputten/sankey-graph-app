@@ -13,6 +13,7 @@ import { Figure } from 'src/libs/react-plotly.js';
 import PlotlyLib from 'src/libs/plotly/core/PlotlyLib';
 
 import * as toasts from 'src/ui/Basic/Toasts';
+import { TPlottlyNodeElement } from 'src/libs/plotly/types';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 import { TChartComponentProps } from 'src/core/types';
 import { useContainerSize } from 'src/ui/hooks';
@@ -221,24 +222,6 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
     ],
   );
 
-  /* // DEBUG: Try to register and use graphDiv
-   * const [graphDiv, setGraphDiv] = React.useState<HTMLElement | undefined>();
-   * React.useEffect(() => {
-   *   if (graphDiv) {
-   *     debugger;
-   *     // @ts-ignore
-   *     graphDiv?.on('plotly_afterplot', (position, forcePos) => {
-   *       console.log('XXX', {
-   *         position,
-   *         forcePos,
-   *       });
-   *       debugger;
-   *     });
-   *   }
-   *   // Destroyer?
-   * }, [graphDiv]);
-   */
-
   const savePlotlyGraphDiv = React.useCallback(
     (_figure: Readonly<Figure>, graphDiv: Readonly<HTMLElement>) => {
       // memo.figure = figure;
@@ -250,6 +233,85 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
     },
     [memo],
   );
+
+  /** Example of update of node label attributes: positions, for example */
+  const alignAllNodes = React.useCallback(() => {
+    const forcePos = false;
+    const textPad = 3;
+    type TPosition = 'left' | 'right' | 'center';
+    type TTextAnchor = 'end' | 'start' | 'middle';
+    const position: TPosition = 'center' as TPosition;
+    const anchorForPosition: Record<TPosition, TTextAnchor> = {
+      left: 'end',
+      right: 'start',
+      center: 'middle',
+    };
+    const textAnchor: TTextAnchor = anchorForPosition[position];
+    const { graphDiv } = memo;
+    if (graphDiv) {
+      const nodes = Array.from(
+        graphDiv.getElementsByClassName('sankey-node'),
+      ) as TPlottlyNodeElement[];
+      console.log('[SankeyPlotlyDemo:alignAllNodes]', {
+        nodes,
+        graphDiv,
+        memo,
+      });
+
+      for (const node of nodes) {
+        const d = node.__data__;
+        const nodeLabels = node.getElementsByClassName('node-label');
+        const label = (nodeLabels.item(0) as SVGElement | null) || undefined;
+
+        const { horizontal, nodeLineWidth, visibleWidth, left, node: dataNode } = d
+        const { originalLayer } = dataNode;
+
+        console.log('[SankeyPlotlyDemo:alignAllNodes] node start', {
+          d,
+          // 'd.horizontal': d.horizontal,
+          // nodeLabels,
+          label,
+        });
+
+        if (!horizontal) {
+          continue;
+        }
+
+        // This is how Plotly's default text positioning is computed (coordinates
+        // are relative to that of the cooresponding node).
+        const padX = nodeLineWidth / 2 + textPad;
+        const posX = padX + visibleWidth;
+        let x = 0;
+
+        // Ensure to reset any previous modifications
+        label?.setAttribute('x', String(x));
+
+        switch (position) {
+          case 'left':
+            if (left || (originalLayer === 0 && !forcePos)) {
+              continue;
+            }
+            x = -posX - padX;
+            break;
+          case 'right':
+            if (!left || !forcePos) {
+              continue;
+            }
+            x = posX + padX;
+            break;
+          case 'center':
+            if (!forcePos && (left || originalLayer === 0)) {
+              continue;
+            }
+            x = (nodeLineWidth + visibleWidth) / 2 + (left ? padX : -posX);
+            break;
+        }
+
+        label?.setAttribute('x', String(x));
+        label?.setAttribute('text-anchor', textAnchor);
+      }
+    }
+  }, [memo]);
 
   // TODO 2023.11.29, 23:57 -- Create more production-like wrapper from plotly demo.
   // TODO 2023.11.29, 23:53 -- Split hooks and handlers to dedicated modules, use compose to combine them into single working piece.
@@ -285,6 +347,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
           // State...
           onInitialized={savePlotlyGraphDiv}
           onUpdate={savePlotlyGraphDiv}
+          onAfterPlot={alignAllNodes}
         />
       )}
       {/* // Use modal dialog to edit current graph node (TODO?)
