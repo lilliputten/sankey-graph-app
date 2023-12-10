@@ -2,8 +2,10 @@ import { TChartComponent } from 'src/core/types';
 import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 
 // Library components...
-import { SankeyAnychartDemo } from 'src/libs/anychart/components/SankeyAnychartDemo';
-import { SankeyGoJSDemo } from 'src/libs/gojs/components/SankeyGoJSDemo';
+/* // Issue #15: Removed unused libraries
+ * import { SankeyAnychartDemo } from 'src/libs/anychart/components/SankeyAnychartDemo';
+ * import { SankeyGoJSDemo } from 'src/libs/gojs/components/SankeyGoJSDemo';
+ */
 import { SankeyPlotlyDemo } from 'src/libs/plotly/components/SankeyPlotlyDemo';
 
 /* TODO 2023.11.24, 02:07 -- Load libraries dynamically? (Needs to be ensured
@@ -18,10 +20,12 @@ export const useChartComponent = (): TChartComponent => {
   switch (chartLibrary) {
     case 'plotly':
       return SankeyPlotlyDemo;
-    case 'anychart':
-      return SankeyAnychartDemo;
-    case 'gojs':
-      return SankeyGoJSDemo;
+    /* // Issue #15: Removed unused libraries
+     * case 'anychart':
+     *   return SankeyAnychartDemo;
+     * case 'gojs':
+     *   return SankeyGoJSDemo;
+     */
     default:
       const errMsg = 'Not found chart library component "' + chartLibrary + '"';
       const error = new Error(errMsg);
