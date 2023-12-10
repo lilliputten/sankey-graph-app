@@ -1321,12 +1321,12 @@ function createHoverText(hoverData, opts) {
             Color.opacity(color0) ? color0 : Color.defaultLine,
             bgColor
         );
-        // color for 'name' part of the label
-        var nameColor = Color.combine(
-            // Color.opacity(dColor) ? dColor : Color.defaultLine, // XXX 2023.12.03, 21:34
-            Color.opacity(color0) ? color0 : Color.defaultLine,
-            bgColor
-        );
+        // // color for 'name' part of the label
+        // var nameColor = Color.combine(
+        //     // Color.opacity(dColor) ? dColor : Color.defaultLine, // XXX 2023.12.03, 21:34
+        //     Color.opacity(color0) ? color0 : Color.defaultLine,
+        //     bgColor
+        // );
         // find a contrasting color for border and text
         var contrastColor = d.borderColor || Color.contrast(numsColor);
 
