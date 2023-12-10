@@ -19,7 +19,7 @@ import { TChartComponentProps } from 'src/core/types';
 import { useContainerSize } from 'src/ui/hooks';
 import { useChartConfig, useChartData, useChartLayout } from 'src/libs/plotly/hooks';
 
-import styles from './SankeyPlotlyDemo.module.scss';
+import styles from './SankeyPlotlyMain.module.scss';
 
 /* DEBUG: Debug plotly library
  * @see node_modules/plotly.js/src/plot_api/plot_api.js
@@ -44,7 +44,7 @@ interface TMemo {
   unhoverTimeout?: NodeJS.Timeout;
 }
 
-export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props) => {
+export const SankeyPlotlyMain: React.FC<TChartComponentProps> = observer((props) => {
   const { className } = props;
 
   /** Memo is used to store active (last clicked/dragged) node */
@@ -143,7 +143,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
         memo.unhoverTimeout = undefined;
       }
       memo.currentNodePoint = currentNodePoint;
-      // console.log('[SankeyPlotlyDemo:handleHover]', currentNodePoint);
+      // console.log('[SankeyPlotlyMain:handleHover]', currentNodePoint);
     },
     [memo],
   );
@@ -155,7 +155,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
       memo.unhoverTimeout = setTimeout(() => {
         memo.currentNodePoint = undefined;
       }, 300);
-      // console.log('[SankeyPlotlyDemo:handleUnhover]');
+      // console.log('[SankeyPlotlyMain:handleUnhover]');
     },
     [memo],
   );
@@ -163,7 +163,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
   const handleSankeyNodeClick = React.useCallback(
     ([_update, _traces]: readonly [PlotlyLib.PlotRestyleEventUpdate, number[]]) => {
       const { currentNodePoint } = memo;
-      /* console.log('[SankeyPlotlyDemo:handleSankeyNodeClick] start', {
+      /* console.log('[SankeyPlotlyMain:handleSankeyNodeClick] start', {
        *   // update,
        *   // traces,
        *   currentNodePoint,
@@ -181,7 +181,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
           const errMsg = 'Not found graph node for index ' + graphIdx;
           const error = new Error(errMsg);
           // eslint-disable-next-line no-console
-          console.error('[SankeyPlotlyDemo:handleSankeyNodeClick] error', {
+          console.error('[SankeyPlotlyMain:handleSankeyNodeClick] error', {
             error,
             graphIdx,
             pointNumber,
@@ -200,7 +200,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
           // score_of_node, // 0.0
         } = graph;
         // TODO: Check if not graphId has defined?
-        /* console.log('[SankeyPlotlyDemo:handleSankeyNodeClick]', {
+        /* console.log('[SankeyPlotlyMain:handleSankeyNodeClick]', {
          *   graph: { ...graph },
          *   graphIdx,
          *   graphId,
@@ -249,7 +249,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
       const nodes = Array.from(
         graphDiv.getElementsByClassName('sankey-node'),
       ) as TPlottlyNodeElement[];
-      console.log('[SankeyPlotlyDemo:alignAllNodes]', {
+      console.log('[SankeyPlotlyMain:alignAllNodes]', {
         nodes,
         graphDiv,
         memo,
@@ -264,7 +264,7 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
         const { horizontal, nodeLineWidth, visibleWidth, left, node: dataNode } = d;
         const { originalLayer } = dataNode;
 
-        console.log('[SankeyPlotlyDemo:alignAllNodes] node item: start', {
+        console.log('[SankeyPlotlyMain:alignAllNodes] node item: start', {
           horizontal,
           nodeLineWidth,
           visibleWidth,

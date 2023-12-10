@@ -3,10 +3,12 @@ import bound from 'bind-decorator';
 
 import { TMuiThemeMode, defaultMuiThemeMode, TColor } from 'src/core/types';
 import {
-  defaultChartLibrary,
   defaultNodesColorMode,
-  TChartLibrary,
   TNodesColorMode,
+  /* // Issue #15: Removed unused libraries
+   * defaultChartLibrary,
+   * TChartLibrary,
+   */
 } from 'src/core/types/SankeyApp';
 import { SankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 
@@ -49,8 +51,9 @@ export class SankeyAppSessionStore {
   /** Coefficient for multiplying the width of connecting lines between nodes (GoJS only) */
   @observable goJsLineWidthFactor: number = defaultGoJsLineWidthFactor;
 
-  /** Library used to display data */
-  @observable chartLibrary: TChartLibrary = defaultChartLibrary;
+  /** (Issue #15: Unused) Library used to display data
+   * @observable chartLibrary: TChartLibrary = defaultChartLibrary;
+   */
 
   /** Chart nodes color mode (could be overriden individually later) */
   @observable nodesColorMode: TNodesColorMode = defaultNodesColorMode;
@@ -184,7 +187,9 @@ export class SankeyAppSessionStore {
     this.themeMode = defaultMuiThemeMode;
     this.verticalLayout = false;
     this.goJsLineWidthFactor = defaultGoJsLineWidthFactor;
-    this.chartLibrary = defaultChartLibrary;
+    /* // Issue #15: Unused
+     * this.chartLibrary = defaultChartLibrary;
+     */
     this.nodesColorMode = defaultNodesColorMode;
     this.baseNodesColor = defaultBaseColor;
     this.secondNodesColor = defaultSecondColor;
