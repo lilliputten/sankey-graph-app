@@ -54,6 +54,10 @@ function sankeyModel(layout, d, traceIndex) {
     }
 
     sankey
+      // NOTE: Pass d3-sankey options (like `nodeAlign`, see: https://github.com/d3/d3-sankey#sankey_nodeAlign)
+      // TODO: Get this parameter from app options
+      .nodeAlign(d3Sankey.sankeyLeft) // Align nodes to left
+      // .nodeAlign(d3Sankey.sankeyJustify) // Default align mode
       .iterations(c.sankeyIterations)
       .size(horizontal ? [width, height] : [height, width])
       .nodeWidth(nodeThickness)
@@ -600,7 +604,7 @@ function attachPointerEvents(selection, sankey, eventSet) {
 }
 
 function attachDragHandler(sankeyNode, sankeyLink, callbacks, gd) {
-    window.__DEBUG_PLOTLY && console.log('[plotly:trace/sankey/render:attachDragHandler]', { sankeyNode, sankeyLink, callbacks, gd });
+    // window.__DEBUG_PLOTLY.includes('render-generic') && console.log('[plotly:trace/sankey/render:attachDragHandler]', { sankeyNode, sankeyLink, callbacks, gd });
     var dragBehavior = d3.behavior.drag()
         .origin(function(d) {
             return {
@@ -804,7 +808,7 @@ function switchToSankeyFormat(nodes) {
 }
 
 // scene graph
-module.exports = function(gd, svg, calcData, layout, callbacks) {
+module.exports = function render(gd, svg, calcData, layout, callbacks) {
     var isStatic = gd._context.staticPlot;
 
     // To prevent animation on first render
@@ -981,13 +985,60 @@ module.exports = function(gd, svg, calcData, layout, callbacks) {
         .call(sizeNode);
 
     // NOTE: Configuring of node labels
-    var nodeLabel = sankeyNode.selectAll('.' + c.cn.nodeLabel)
+    var nodeLabelRect = sankeyNode.selectAll('.' + c.cn.nodeLabelRect)
+        .data(repeat);
+    // var nodeLabel = sankeyNode.selectAll('.' + c.cn.nodeLabel)
+    //     .data(repeat);
+    var nodeLabel = nodeLabelRect.selectAll('.' + c.cn.nodeLabel)
         .data(repeat);
 
+    nodeLabelRect.enter()
+        .append('rect')
+        .classed(c.cn.nodeLabelRect, true)
+        .call(sizeNode) // Set size equals to node size
+        .style('fill', 'red')
+        .style('fill-opacity', '0.5')
+    ;
     nodeLabel.enter()
         .append('text')
         .classed(c.cn.nodeLabel, true)
         .style('cursor', 'default');
+
+    function setLabelAnchor(d) {
+        return (d.horizontal && d.left) ? 'end' : 'start';
+    }
+    function setLabelTransform(d) {
+        var e = d3.select(this);
+        // how much to shift a multi-line label to center it vertically.
+        var nLines = svgTextUtils.lineCount(e);
+        var blockHeight = d.textFont.size * (
+            (nLines - 1) * LINE_SPACING - CAP_SHIFT
+        );
+
+        var posX = d.nodeLineWidth / 2 + TEXTPAD;
+        var posY = ((d.horizontal ? d.visibleHeight : d.visibleWidth) - blockHeight) / 2;
+        if(d.horizontal) {
+            if(d.left) {
+                posX = -posX;
+            } else {
+                posX += d.visibleWidth;
+            }
+        }
+
+        var flipText = d.horizontal ? '' : (
+            'scale(-1,1)' + strRotate(90)
+        );
+
+        return strTranslate(
+            d.horizontal ? posX : posY,
+            d.horizontal ? posY : posX
+        ) + flipText;
+    }
+
+    console.log('[plotly.js:render]', {
+        nodeLabelRect,
+        nodeLabel,
+    });
 
     nodeLabel
         .attr('data-notex', 1) // prohibit tex interpretation until we can handle tex and regular text together
@@ -998,37 +1049,13 @@ module.exports = function(gd, svg, calcData, layout, callbacks) {
             svgTextUtils.convertToTspans(e, gd);
         })
         .style('text-shadow', svgTextUtils.makeTextShadow(gd._fullLayout.paper_bgcolor))
-        .attr('text-anchor', function(d) {
-            return (d.horizontal && d.left) ? 'end' : 'start';
-        })
-        .attr('transform', function(d) {
-            var e = d3.select(this);
-            // how much to shift a multi-line label to center it vertically.
-            var nLines = svgTextUtils.lineCount(e);
-            var blockHeight = d.textFont.size * (
-                (nLines - 1) * LINE_SPACING - CAP_SHIFT
-            );
+        .attr('text-anchor', setLabelAnchor)
+        // .attr('transform', setLabelTransform)
+    ;
 
-            var posX = d.nodeLineWidth / 2 + TEXTPAD;
-            var posY = ((d.horizontal ? d.visibleHeight : d.visibleWidth) - blockHeight) / 2;
-            if(d.horizontal) {
-                if(d.left) {
-                    posX = -posX;
-                } else {
-                    posX += d.visibleWidth;
-                }
-            }
-
-            var flipText = d.horizontal ? '' : (
-                'scale(-1,1)' + strRotate(90)
-            );
-
-            return strTranslate(
-                d.horizontal ? posX : posY,
-                d.horizontal ? posY : posX
-            ) + flipText;
-        });
-
+    nodeLabelRect
+        .transition()
+        .ease(c.ease).duration(c.duration);
     nodeLabel
         .transition()
         .ease(c.ease).duration(c.duration);

@@ -7,7 +7,7 @@ module.exports = {
     sankeyIterations: 50,
     forceIterations: 5,
     forceTicksPerFrame: 10,
-    duration: 500,
+    duration: 150,
     ease: 'linear',
     cn: {
         sankey: 'sankey',
@@ -16,6 +16,7 @@ module.exports = {
         sankeyNodeSet: 'sankey-node-set',
         sankeyNode: 'sankey-node',
         nodeRect: 'node-rect',
-        nodeLabel: 'node-label'
+        nodeLabel: 'node-label',
+        nodeLabelRect: 'node-label-rect', // Issue #16: Try to use clipping rect for node labels
     }
 };
