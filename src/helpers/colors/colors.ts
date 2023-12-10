@@ -76,8 +76,8 @@ export function createColorsGradientSteps(
   const endColorObj = tinycolor(endColor);
   // const stepSize = 100 / stepsCount;
   const stepsList: TColor[] = [];
-  const lastStep = stepsCount - 1;
-  for (let step = 0; step < stepsCount; step++) {
+  const lastStep = stepsCount;
+  for (let step = 0; step <= lastStep; step++) {
     const amount = (100 * step) / lastStep;
     const mixColor = tinycolor.mix(startColorObj, endColorObj, amount);
     const color = mixColor.toHexString() as TColor;
