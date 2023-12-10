@@ -27,7 +27,7 @@ import styles from './SankeyPlotlyMain.module.scss';
  * @see `plotObj.emit` in `node_modules/plotly.js/src/lib/events.js:70`
  * @see patches/plotly.js+2.27.1.patch
  */
-window.__DEBUG_PLOTLY = false;
+window.__DEBUG_PLOTLY = 'render';
 
 // @see https://github.com/plotly/react-plotly.js#customizing-the-plotlyjs-bundle
 const CustomReactPlotty = createPlotlyComponent(PlotlyLib);
@@ -264,18 +264,19 @@ export const SankeyPlotlyMain: React.FC<TChartComponentProps> = observer((props)
         const { horizontal, nodeLineWidth, visibleWidth, left, node: dataNode } = d;
         const { originalLayer } = dataNode;
 
-        console.log('[SankeyPlotlyMain:alignAllNodes] node item: start', {
-          horizontal,
-          nodeLineWidth,
-          visibleWidth,
-          left,
-          dataNode,
-          originalLayer,
-          d,
-          label,
-          // 'd.horizontal': d.horizontal,
-          // nodeLabels,
-        });
+        /* console.log('[SankeyPlotlyMain:alignAllNodes] node item: start', {
+         *   horizontal,
+         *   nodeLineWidth,
+         *   visibleWidth,
+         *   left,
+         *   dataNode,
+         *   originalLayer,
+         *   d,
+         *   label,
+         *   // 'd.horizontal': d.horizontal,
+         *   // nodeLabels,
+         * });
+         */
 
         if (!horizontal) {
           continue;
@@ -351,7 +352,7 @@ export const SankeyPlotlyMain: React.FC<TChartComponentProps> = observer((props)
           // State...
           onInitialized={savePlotlyGraphDiv}
           onUpdate={savePlotlyGraphDiv}
-          onAfterPlot={alignAllNodes}
+          // onAfterPlot={alignAllNodes} // Re-calculate node positions
         />
       )}
       {/* // Use modal dialog to edit current graph node (TODO?)
