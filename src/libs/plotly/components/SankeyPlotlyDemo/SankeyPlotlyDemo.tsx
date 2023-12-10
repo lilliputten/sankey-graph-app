@@ -225,9 +225,6 @@ export const SankeyPlotlyDemo: React.FC<TChartComponentProps> = observer((props)
   const savePlotlyGraphDiv = React.useCallback(
     (_figure: Readonly<Figure>, graphDiv: Readonly<HTMLElement>) => {
       // memo.figure = figure;
-  const savePlotlyGraphDiv = React.useCallback(
-    (_figure: Readonly<Figure>, graphDiv: Readonly<HTMLElement>) => {
-      // memo.figure = figure;
       memo.graphDiv = graphDiv;
       // setGraphDiv(graphDiv);
     },
