@@ -37,7 +37,7 @@ export function useChartLayout(params: TChartLayoutParams) {
       autosize: true, // Does it have an effect?
       // Set chart margins
       margin: {
-        pad: 20,
+        // pad: 20,
         // @see https://plotly.com/javascript/reference/layout/#layout-margin
         // Top margin is wider in order to make room for panel buttons and legend
         t: chartMarginTopSize || chartMarginSize,
@@ -95,7 +95,6 @@ export function useChartLayout(params: TChartLayoutParams) {
        *   '#17becf',
        * ],
        */
-      // hoverlabel
       /* // colorscale: Unknown effect
        * colorscale: {
        *   [> diverging: [

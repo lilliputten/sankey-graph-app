@@ -984,30 +984,37 @@ module.exports = function render(gd, svg, calcData, layout, callbacks) {
         .ease(c.ease).duration(c.duration)
         .call(sizeNode);
 
+    /* // NOTE: Configuring of node label rects (it's not neccessary)
+     * var nodeLabelRect = sankeyNode.selectAll('.' + c.cn.nodeLabelRect)
+     *     .data(repeat);
+     * // NOTE: For some reason label rects are little larger then node rects in vertical mode?+
+     * nodeLabelRect.enter()
+     *     .append('rect')
+     *     .classed(c.cn.nodeLabelRect, true)
+     *     .call(sizeNode) // Set size equals to node size
+     *     .style('fill', 'green')
+     *     .style('fill-opacity', '0.5')
+     * ;
+     * nodeLabelRect
+     *     .transition()
+     *     .ease(c.ease).duration(c.duration);
+     */
+
     // NOTE: Configuring of node labels
-    var nodeLabelRect = sankeyNode.selectAll('.' + c.cn.nodeLabelRect)
-        .data(repeat);
-    // var nodeLabel = sankeyNode.selectAll('.' + c.cn.nodeLabel)
-    //     .data(repeat);
-    var nodeLabel = nodeLabelRect.selectAll('.' + c.cn.nodeLabel)
+    var nodeLabel = sankeyNode.selectAll('.' + c.cn.nodeLabel)
         .data(repeat);
 
-    nodeLabelRect.enter()
-        .append('rect')
-        .classed(c.cn.nodeLabelRect, true)
-        .call(sizeNode) // Set size equals to node size
-        .style('fill', 'red')
-        .style('fill-opacity', '0.5')
-    ;
     nodeLabel.enter()
         .append('text')
         .classed(c.cn.nodeLabel, true)
-        .style('cursor', 'default');
+        // .call(sizeNode) // Set size equals to node size
+        // .style('cursor', 'default')
+    ;
 
     function setLabelAnchor(d) {
         return (d.horizontal && d.left) ? 'end' : 'start';
     }
-    function setLabelTransform(d) {
+    function setLabelTransformOrig(d) {
         var e = d3.select(this);
         // how much to shift a multi-line label to center it vertically.
         var nLines = svgTextUtils.lineCount(e);
@@ -1034,9 +1041,47 @@ module.exports = function render(gd, svg, calcData, layout, callbacks) {
             d.horizontal ? posY : posX
         ) + flipText;
     }
+    function setLabelTransformTry(d) {
+        var e = d3.select(this);
+        // how much to shift a multi-line label to center it vertically.
+        var nLines = svgTextUtils.lineCount(e);
+        var blockHeight = d.textFont.size * (
+            (nLines - 1) * LINE_SPACING - CAP_SHIFT
+        );
+
+        // TODO: Get thickness parameter to calculate node width
+        const nodeWidth = d.node.x1 - d.node.x0;
+        console.log('[render:setLabelTransformOrig]', {
+            nodeWidth,
+            d,
+        });
+
+        var posX = - nodeWidth / 2; // - d.nodeLineWidth / 2 - 50;
+        var posY = ((d.horizontal ? d.visibleHeight : d.visibleWidth) - blockHeight) / 2;
+        if(d.horizontal) {
+            if(d.left) {
+                posX = -posX;
+            } else {
+                posX += d.visibleWidth;
+            }
+        }
+
+        // var flipText = true [> d.horizontal <] ? '' : (
+        //     'scale(-1,1)' + strRotate(90)
+        // );
+        var flipText = d.horizontal ? strRotate(90) : (
+            'scale(-1,1)' + strRotate(90)
+        );
+        // var flipText = strRotate(-90);
+
+        return strTranslate(
+            d.horizontal ? posX : posY,
+            d.horizontal ? posY : posX
+        ) + flipText;
+    }
 
     console.log('[plotly.js:render]', {
-        nodeLabelRect,
+        // nodeLabelRect,
         nodeLabel,
     });
 
@@ -1046,16 +1091,16 @@ module.exports = function render(gd, svg, calcData, layout, callbacks) {
         .each(function(d) {
             var e = d3.select(this);
             Drawing.font(e, d.textFont);
-            svgTextUtils.convertToTspans(e, gd);
+            svgTextUtils.convertToTspans(e, gd)
+            ;
         })
-        .style('text-shadow', svgTextUtils.makeTextShadow(gd._fullLayout.paper_bgcolor))
-        .attr('text-anchor', setLabelAnchor)
-        // .attr('transform', setLabelTransform)
+        // .style('text-shadow', svgTextUtils.makeTextShadow(gd._fullLayout.paper_bgcolor))
+        .attr('text-anchor', setLabelAnchor) // Original positioning base
+        // .attr('text-anchor', 'middle') // Always position by center
+        // .attr('transform', setLabelTransformTry)
+        .attr('transform', setLabelTransformOrig) // Original positioning method
     ;
 
-    nodeLabelRect
-        .transition()
-        .ease(c.ease).duration(c.duration);
     nodeLabel
         .transition()
         .ease(c.ease).duration(c.duration);
