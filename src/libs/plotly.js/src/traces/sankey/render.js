@@ -1018,6 +1018,7 @@ module.exports = function render(gd, svg, calcData, layout, callbacks) {
     var dy = dyPx + 'px';
     var labelSplitLen = 30;
 
+
     function setLabelAnchor(d) {
         return (d.horizontal && d.left) ? 'end' : 'start';
     }
