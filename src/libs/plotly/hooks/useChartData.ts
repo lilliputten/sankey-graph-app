@@ -21,7 +21,7 @@ export function useChartData() {
         /** Chart bar default (vertical?) padding */
         pad: 10,
         /** Chart bar width */
-        thickness: 30,
+        thickness: 20,
         /** Chart bar outline */
         line: {
           color: 'black',
