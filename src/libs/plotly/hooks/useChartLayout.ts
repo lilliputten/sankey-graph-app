@@ -135,7 +135,7 @@ export function useChartLayout(params: TChartLayoutParams) {
        * selectionrevision: 1,
        */
     }),
-    [width, height, isDarkTheme],
+    [width, height, isLightTheme],
   );
   return chartLayout;
 }
