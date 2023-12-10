@@ -2,8 +2,10 @@
 export const validChartLibraries = [
   // prettier-ignore
   'plotly',
-  'anychart',
-  'gojs',
+  /* // Issue #15: Removed unused libraries
+   * 'anychart',
+   * 'gojs',
+   */
 ] as const;
 
 // NOTE: Don't forget to update the library selection method in `src/components/SankeyHooks/useChartComponent.ts`
@@ -15,6 +17,8 @@ export const defaultChartLibrary: TChartLibrary = validChartLibraries[0];
 
 export const chartLibraryNames: Record<TChartLibrary, string> = {
   plotly: 'Plotly',
-  anychart: 'Anychart',
-  gojs: 'GoJS',
+  /* // Issue #15: Removed unused libraries
+   * anychart: 'Anychart',
+   * gojs: 'GoJS',
+   */
 };
