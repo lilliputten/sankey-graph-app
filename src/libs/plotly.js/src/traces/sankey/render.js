@@ -1041,49 +1041,48 @@ module.exports = function render(gd, svg, calcData, layout, callbacks) {
             d.horizontal ? posY : posX
         ) + flipText;
     }
-    function setLabelTransformTry(d) {
-        var e = d3.select(this);
-        // how much to shift a multi-line label to center it vertically.
-        var nLines = svgTextUtils.lineCount(e);
-        var blockHeight = d.textFont.size * (
-            (nLines - 1) * LINE_SPACING - CAP_SHIFT
-        );
+    /* // UNUSED: setLabelTransformTry
+     * function setLabelTransformTry(d) {
+     *     var e = d3.select(this);
+     *     // how much to shift a multi-line label to center it vertically.
+     *     var nLines = svgTextUtils.lineCount(e);
+     *     var blockHeight = d.textFont.size * (
+     *         (nLines - 1) * LINE_SPACING - CAP_SHIFT
+     *     );
+     *     // TODO: Get thickness parameter to calculate node width
+     *     const nodeWidth = d.node.x1 - d.node.x0;
+     *     console.log('[render:setLabelTransformOrig]', {
+     *         nodeWidth,
+     *         d,
+     *     });
+     *     var posX = - nodeWidth / 2; // - d.nodeLineWidth / 2 - 50;
+     *     var posY = ((d.horizontal ? d.visibleHeight : d.visibleWidth) - blockHeight) / 2;
+     *     if(d.horizontal) {
+     *         if(d.left) {
+     *             posX = -posX;
+     *         } else {
+     *             posX += d.visibleWidth;
+     *         }
+     *     }
+     *     // var flipText = true [> d.horizontal <] ? '' : (
+     *     //     'scale(-1,1)' + strRotate(90)
+     *     // );
+     *     var flipText = d.horizontal ? strRotate(90) : (
+     *         'scale(-1,1)' + strRotate(90)
+     *     );
+     *     // var flipText = strRotate(-90);
+     *     return strTranslate(
+     *         d.horizontal ? posX : posY,
+     *         d.horizontal ? posY : posX
+     *     ) + flipText;
+     * }
+     */
 
-        // TODO: Get thickness parameter to calculate node width
-        const nodeWidth = d.node.x1 - d.node.x0;
-        console.log('[render:setLabelTransformOrig]', {
-            nodeWidth,
-            d,
-        });
-
-        var posX = - nodeWidth / 2; // - d.nodeLineWidth / 2 - 50;
-        var posY = ((d.horizontal ? d.visibleHeight : d.visibleWidth) - blockHeight) / 2;
-        if(d.horizontal) {
-            if(d.left) {
-                posX = -posX;
-            } else {
-                posX += d.visibleWidth;
-            }
-        }
-
-        // var flipText = true [> d.horizontal <] ? '' : (
-        //     'scale(-1,1)' + strRotate(90)
-        // );
-        var flipText = d.horizontal ? strRotate(90) : (
-            'scale(-1,1)' + strRotate(90)
-        );
-        // var flipText = strRotate(-90);
-
-        return strTranslate(
-            d.horizontal ? posX : posY,
-            d.horizontal ? posY : posX
-        ) + flipText;
-    }
-
-    console.log('[plotly.js:render]', {
-        // nodeLabelRect,
-        nodeLabel,
-    });
+    /* console.log('[plotly.js:render]', {
+     *     // nodeLabelRect,
+     *     nodeLabel,
+     * });
+     */
 
     nodeLabel
         .attr('data-notex', 1) // prohibit tex interpretation until we can handle tex and regular text together

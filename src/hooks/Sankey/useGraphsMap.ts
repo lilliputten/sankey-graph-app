@@ -4,6 +4,25 @@ import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataSto
 
 import { TGraphMap } from 'src/core/types';
 
+export function useVisibleGraphsMap(): TGraphMap {
+  const sankeyAppDataStore = useSankeyAppDataStore();
+  const { graphsData, hiddenGraphNodes } = sankeyAppDataStore;
+  // TODO: Detect duplicated ids?
+  const gtaphsMap = React.useMemo<TGraphMap>(() => {
+    if (!graphsData) {
+      return {};
+    }
+    return graphsData
+      .filter(({ id_in_graph: id }) => !hiddenGraphNodes.includes(id))
+      .reduce<TGraphMap>((indices, graph, idx) => {
+        const { id_in_graph: id } = graph;
+        indices[id] = idx;
+        return indices;
+      }, {});
+  }, [graphsData, hiddenGraphNodes]);
+  return gtaphsMap;
+}
+
 export function useGraphsMap(): TGraphMap {
   const sankeyAppDataStore = useSankeyAppDataStore();
   const { graphsData } = sankeyAppDataStore;

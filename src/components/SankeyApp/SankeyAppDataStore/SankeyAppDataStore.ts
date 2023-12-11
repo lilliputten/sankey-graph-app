@@ -114,7 +114,17 @@ export class SankeyAppDataStore {
       graphsData,
       nodesData,
     } = this;
+    // DEBUG: Check the corectness of hidden nodes
+    // const demoHideNodes: TGraphId[] = []; // No auto hidden nodes
+    const demoHideNodes: TGraphId[] = [4]; // Hide graphId node 4 (from chain 0 -> 4 -> 10)
+    // const demoHideNodes: TGraphId[] = [1, 2, 3, 4]; // Hide all nodes on the 2nd level (except one graphId 5)
+    const hiddenGraphNodes: typeof SankeyAppDataStore.prototype.hiddenGraphNodes = autoHideNodes
+      ? demoHideNodes
+      : [];
     console.log('[SankeyAppDataStore:updateHiddenGraphNodes]', {
+      hiddenGraphNodes,
+      'this.hiddenGraphNodes': [...this.hiddenGraphNodes],
+      demoHideNodes,
       edgesData,
       flowsData,
       graphsData,
@@ -123,7 +133,8 @@ export class SankeyAppDataStore {
       autoHideNodesThreshold,
       autoHideNodesMaxOutputs,
     });
-    debugger;
+    // TODO: Combine auto and manually hidden graph node lists
+    this.hiddenGraphNodes = hiddenGraphNodes;
   }
 
   // Status setters...
