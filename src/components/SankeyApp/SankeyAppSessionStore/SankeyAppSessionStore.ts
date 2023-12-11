@@ -21,6 +21,10 @@ export type TSankeyAppSessionStoreStatus = undefined | 'dataLoaded' | 'finished'
 const defaultBaseColor: TColor = '#0f0';
 const defaultSecondColor: TColor = '#f00';
 
+const defaultAutoHideNodes: boolean = true;
+const defaultAutoHideNodesThreshold: number = 90;
+const defaultAutoHideNodesMaxOutputs: number = 3;
+
 // TODO 2023.11.26, 22:55 -- Save some data (themeMode, eg) to localStorage?
 
 export class SankeyAppSessionStore {
@@ -65,6 +69,15 @@ export class SankeyAppSessionStore {
   @observable baseNodesColor: TColor = defaultBaseColor;
   /** Second nodes color */
   @observable secondNodesColor: TColor = defaultSecondColor;
+
+  /** Auto hide nodes (see `THideNodesParams` and `updateHiddenGraphNodes` in `SankeyAppDataStore`) */
+  autoHideNodes: boolean = defaultAutoHideNodes;
+
+  /** Auto hide nodes threshold value (percents) */
+  autoHideNodesThreshold: number = defaultAutoHideNodesThreshold;
+
+  /** Auto hide nodes maxmum outputs to show */
+  autoHideNodesMaxOutputs: number = defaultAutoHideNodesMaxOutputs;
 
   // Lifecycle...
 
@@ -198,6 +211,9 @@ export class SankeyAppSessionStore {
     this.nodesColorMode = defaultNodesColorMode;
     this.baseNodesColor = defaultBaseColor;
     this.secondNodesColor = defaultSecondColor;
+    this.autoHideNodes = defaultAutoHideNodes;
+    this.autoHideNodesThreshold = defaultAutoHideNodesThreshold;
+    this.autoHideNodesMaxOutputs = defaultAutoHideNodesMaxOutputs;
   }
 
   setStaticReactions() {

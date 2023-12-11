@@ -12,6 +12,7 @@ import {
   TGraphsData,
   TNodesData,
 } from 'src/core/types';
+import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 import {
   getSankeyDataInfo,
   useSankeyAppDataStore,
@@ -29,6 +30,7 @@ type TSankeyAppCoreStartProps = TPropsWithClassName;
 
 export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((props) => {
   const { className } = props;
+  const sankeyAppSessionStore = useSankeyAppSessionStore();
   const sankeyAppDataStore = useSankeyAppDataStore();
   const {
     // prettier-ignore
