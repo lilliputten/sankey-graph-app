@@ -45,9 +45,10 @@ export const SankeyAppCoreStart: React.FC<TSankeyAppCoreStartProps> = observer((
   const [isSomeDataLoaded, setSomeDataLoaded] = React.useState(false);
   /** Start core application if all the data is ready... */
   const doVisualize = React.useCallback(() => {
+    sankeyAppSessionStore.updateHiddenGraphNodes();
     // All data is ready
     sankeyAppDataStore.setReady(true);
-  }, [sankeyAppDataStore]);
+  }, [sankeyAppDataStore, sankeyAppSessionStore]);
   const doResetData = React.useCallback(() => {
     // Clear all the data...
     setAutoLoad(false);

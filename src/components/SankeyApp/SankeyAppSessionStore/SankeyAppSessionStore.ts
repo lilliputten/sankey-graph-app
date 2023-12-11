@@ -151,6 +151,26 @@ export class SankeyAppSessionStore {
     this.status = status;
   }
 
+  // Session/Data relations...
+
+  // TODO: Call this on hide settings change.
+  updateHiddenGraphNodes() {
+    const {
+      // prettier-ignore
+      autoHideNodes,
+      autoHideNodesThreshold,
+      autoHideNodesMaxOutputs,
+      sankeyAppDataStore,
+    } = this;
+    if (sankeyAppDataStore) {
+      sankeyAppDataStore.updateHiddenGraphNodes({
+        autoHideNodes,
+        autoHideNodesThreshold,
+        autoHideNodesMaxOutputs,
+      });
+    }
+  }
+
   // Reactions...
 
   @bound onNodesColorModeChanged(nodesColorMode: TNodesColorMode) {
