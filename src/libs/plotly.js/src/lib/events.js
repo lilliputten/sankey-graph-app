@@ -67,7 +67,7 @@ var Events = {
                 jQuery(plotObj).trigger(event, data);
             }
 
-            window.__DEBUG_PLOTLY.includes('events') && console.log('[plotly:events:plotObj.emit]', event, data);
+            window.__DEBUG_PLOTLY && window.__DEBUG_PLOTLY.includes('events') && console.log('[plotly:events:plotObj.emit]', event, data);
             ev.emit(event, data);
             internalEv.emit(event, data);
         };

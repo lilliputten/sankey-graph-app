@@ -604,7 +604,7 @@ function attachPointerEvents(selection, sankey, eventSet) {
 }
 
 function attachDragHandler(sankeyNode, sankeyLink, callbacks, gd) {
-    // window.__DEBUG_PLOTLY.includes('render-generic') && console.log('[plotly:trace/sankey/render:attachDragHandler]', { sankeyNode, sankeyLink, callbacks, gd });
+    // window.__DEBUG_PLOTLY && window.__DEBUG_PLOTLY.includes('render-generic') && console.log('[plotly:trace/sankey/render:attachDragHandler]', { sankeyNode, sankeyLink, callbacks, gd });
     var dragBehavior = d3.behavior.drag()
         .origin(function(d) {
             return {
