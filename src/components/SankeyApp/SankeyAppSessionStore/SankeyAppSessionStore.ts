@@ -15,7 +15,9 @@ import { SankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore'
 export type TSankeyAppSessionStoreStatus = undefined | 'dataLoaded' | 'finished';
 
 // TODO: Move default parameters to constants?
-const defaultGoJsLineWidthFactor = 200;
+/* // Issue #15: UNUSED
+ * const defaultGoJsLineWidthFactor = 200;
+ */
 const defaultBaseColor: TColor = '#0f0';
 const defaultSecondColor: TColor = '#f00';
 
@@ -48,10 +50,11 @@ export class SankeyAppSessionStore {
   /** Vertical layout */
   @observable verticalLayout: boolean = false;
 
-  /** Coefficient for multiplying the width of connecting lines between nodes (GoJS only) */
-  @observable goJsLineWidthFactor: number = defaultGoJsLineWidthFactor;
+  /* (Issue #15: UNUSED) [>* Coefficient for multiplying the width of connecting lines between nodes (GoJS only) <]
+   * @observable goJsLineWidthFactor: number = defaultGoJsLineWidthFactor;
+   */
 
-  /** (Issue #15: Unused) Library used to display data
+  /** (Issue #15: UNUSED) Library used to display data
    * @observable chartLibrary: TChartLibrary = defaultChartLibrary;
    */
 
@@ -186,7 +189,9 @@ export class SankeyAppSessionStore {
   @action clearSettings() {
     this.themeMode = defaultMuiThemeMode;
     this.verticalLayout = false;
-    this.goJsLineWidthFactor = defaultGoJsLineWidthFactor;
+    /* // Issue #15: UNUSED
+     * this.goJsLineWidthFactor = defaultGoJsLineWidthFactor;
+     */
     /* // Issue #15: Unused
      * this.chartLibrary = defaultChartLibrary;
      */

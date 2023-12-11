@@ -27,7 +27,7 @@ import styles from './SankeyPlotlyMain.module.scss';
  * @see `plotObj.emit` in `node_modules/plotly.js/src/lib/events.js:70`
  * @see patches/plotly.js+2.27.1.patch
  */
-window.__DEBUG_PLOTLY = 'render';
+window.__DEBUG_PLOTLY = undefined; // 'render';
 
 // @see https://github.com/plotly/react-plotly.js#customizing-the-plotlyjs-bundle
 const CustomReactPlotty = createPlotlyComponent(PlotlyLib);
