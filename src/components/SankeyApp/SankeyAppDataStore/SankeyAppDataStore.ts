@@ -1,4 +1,4 @@
-import { makeObservable, observable, action, when, runInAction } from 'mobx';
+import { makeObservable, observable, action, when, runInAction, computed } from 'mobx';
 import bound from 'bind-decorator';
 
 import {
@@ -16,6 +16,16 @@ import {
 const defaultNodeNames: Record<TNodeId, string> = {
   [-1]: 'Root', // Default name for root node (TODO: Move default name to constants?)
 };
+
+/** Parameters to hide nodes (from `SankeyAppSessionStore`) */
+interface THideNodesParams {
+  /** Auto hide nodes */
+  autoHideNodes: boolean;
+  /** Auto hide nodes threshold value (percents) */
+  autoHideNodesThreshold: number;
+  /** Auto hide nodes maxmum outputs to show */
+  autoHideNodesMaxOutputs: number;
+}
 
 export class SankeyAppDataStore {
   // NOTE: remember to clean/reset properties in `clearData`
@@ -45,8 +55,11 @@ export class SankeyAppDataStore {
   /** Changed node colors */
   @observable nodeColors: Record<TNodeId, TColor> = {};
 
-  /** List of changed node ids (TNodeId[]) */
+  /** TODO: (!) List of changed node ids (TNodeId[]) */
   @observable changedNodes: TNodeId[] = [];
+
+  /** Hidden nodes (TGraphId[]) */
+  @observable hiddenGraphNodes: TGraphId[] = [];
 
   // Colors data...
 
@@ -83,6 +96,34 @@ export class SankeyAppDataStore {
     });
     // TODO: Prepare aux data...
     // const nodeDepthsMap = createNodeDepthsMap();
+  }
+
+  // Updaters...
+
+  @action updateHiddenGraphNodes(hideNodesParams: THideNodesParams) {
+    const {
+      // prettier-ignore
+      autoHideNodes,
+      autoHideNodesThreshold,
+      autoHideNodesMaxOutputs,
+    } = hideNodesParams;
+    const {
+      // prettier-ignore
+      edgesData,
+      flowsData,
+      graphsData,
+      nodesData,
+    } = this;
+    console.log('[SankeyAppDataStore:updateHiddenGraphNodes]', {
+      edgesData,
+      flowsData,
+      graphsData,
+      nodesData,
+      autoHideNodes,
+      autoHideNodesThreshold,
+      autoHideNodesMaxOutputs,
+    });
+    debugger;
   }
 
   // Status setters...
@@ -132,6 +173,10 @@ export class SankeyAppDataStore {
     this.selectedGraphId = selectedGraphId;
   }
 
+  @computed get hasHiddenGraphNodes() {
+    return !!(Array.isArray(this.hiddenGraphNodes) && this.hiddenGraphNodes.length);
+  }
+
   // Generic utilities...
 
   @action clearData() {
@@ -155,5 +200,6 @@ export class SankeyAppDataStore {
     this.nodeColors = {};
     this.changedNodes = [];
     this.nodesColorMode = undefined;
+    this.hiddenGraphNodes = [];
   }
 }
