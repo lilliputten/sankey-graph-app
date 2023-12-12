@@ -1,6 +1,6 @@
 Project: sankey-graph-app
-Version: 0.0.12
-Branch: dev-231129-issue-10-readability
-Commit: 92d7f1c
-Fixed: 2023.12.03, 23:06 GMT+7
-Built: 2023.12.03, 23:12 GMT+7
+Version: 0.0.14
+Branch: dev-231211-issue-9-collpase-nodes
+Commit: 18ac742
+Fixed: 2023.12.13, 00:33 GMT+7
+Built: 2023.12.13, 00:36 GMT+7
