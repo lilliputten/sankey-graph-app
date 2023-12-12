@@ -74,8 +74,6 @@ export function useLinkData(): Partial<SankeyLink> | undefined {
    * );
    */
 
-  // TODO: Link children of hidden node to it's parent (in progress)
-
   // NEW_CODE: Filtering and replacing/excluding hidden elements in place
   const graphEdgesList = React.useMemo<TGraphEdgesItem[] | undefined>(
     () =>

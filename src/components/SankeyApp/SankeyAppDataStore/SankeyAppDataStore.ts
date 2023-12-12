@@ -1,34 +1,49 @@
-import { makeObservable, observable, action, when, runInAction, computed } from 'mobx';
+import {
+  makeObservable,
+  observable,
+  action,
+  when,
+  runInAction,
+  computed,
+  IReactionDisposer,
+  reaction,
+} from 'mobx';
 import bound from 'bind-decorator';
 
 import {
+  TAutoHideNodesParams,
   // defaultNodesColorMode,
   TColor,
   TEdgesData,
   TFlowsData,
   TGraphId,
+  TGraphItem,
+  TGraphMap,
   TGraphsData,
   TNodeId,
   TNodesColorMode,
   TNodesData,
 } from 'src/core/types';
+import {
+  getGraphChildren,
+  getGraphRootIdsByChildren,
+  getGraphsMap,
+  shouldGraphNodeToBeAutoHidden,
+  TGraphChidren,
+  TGraphIdsList,
+} from 'src/helpers/Sankey';
 
 const defaultNodeNames: Record<TNodeId, string> = {
   [-1]: 'Root', // Default name for root node (TODO: Move default name to constants?)
 };
 
-/** Parameters to hide nodes (from `SankeyAppSessionStore`) */
-interface THideNodesParams {
-  /** Auto hide nodes */
-  autoHideNodes: boolean;
-  /** Auto hide nodes threshold value (percents) */
-  autoHideNodesThreshold: number;
-  /** Auto hide nodes maxmum outputs to show */
-  autoHideNodesMaxOutputs: number;
-}
+const sortByNumberAsc = (a: number, b: number) => a - b;
 
 export class SankeyAppDataStore {
   // NOTE: remember to clean/reset properties in `clearData`
+
+  // Session reaction disposers...
+  staticDisposers?: IReactionDisposer[];
 
   // State...
   @observable inited: boolean = false;
@@ -58,6 +73,12 @@ export class SankeyAppDataStore {
   /** TODO: (!) List of changed node ids (TNodeId[]) */
   @observable changedNodes: TNodeId[] = [];
 
+  /** Automatically hidden nodes, by filters (TGraphId[]) */
+  @observable autoHiddenGraphNodes: TGraphId[] = [];
+
+  /** Nodes hidden by user in manual mode (TGraphId[]) */
+  @observable userHiddenGraphNodes: TGraphId[] = [];
+
   /** Hidden nodes (TGraphId[]) */
   @observable hiddenGraphNodes: TGraphId[] = [];
 
@@ -72,11 +93,13 @@ export class SankeyAppDataStore {
     makeObservable(this);
     // Automatically clear the error for final& successfull statuses (started, stopped)
     when(() => this.finished, this.clearError);
+    this.setStaticReactions();
   }
 
   async destroy() {
     this.clearData();
     // TODO: Cleanup before exit?
+    this.resetStaticReactions();
   }
 
   // External changes handlers...
@@ -100,13 +123,13 @@ export class SankeyAppDataStore {
 
   // Updaters...
 
-  @action updateHiddenGraphNodes(hideNodesParams: THideNodesParams) {
+  @action updateAutoHiddenGraphNodes(autoHideNodesParams: TAutoHideNodesParams) {
     const {
       // prettier-ignore
       autoHideNodes,
       autoHideNodesThreshold,
       autoHideNodesMaxOutputs,
-    } = hideNodesParams;
+    } = autoHideNodesParams;
     const {
       // prettier-ignore
       edgesData,
@@ -114,17 +137,62 @@ export class SankeyAppDataStore {
       graphsData,
       nodesData,
     } = this;
+    // Check if we have data to construct tree...
+    const hasData = !!(
+      edgesData &&
+      edgesData.length &&
+      graphsData &&
+      graphsData.length &&
+      flowsData &&
+      nodesData
+    );
+    const notEmptyConditions =
+      /* autoHideNodesThreshold < 100 && */ autoHideNodesThreshold > 0 ||
+      autoHideNodesMaxOutputs > 0;
+    // NOTE: Clear auto hidden nodes if this feature is disabled or no data has set or got empty conditions...
+    if (!autoHideNodes || !hasData || !notEmptyConditions) {
+      this.autoHiddenGraphNodes = [];
+      return;
+    }
     // DEBUG: Check the corectness of hidden nodes
-    // const demoHideNodes: TGraphId[] = []; // No auto hidden nodes
-    const demoHideNodes: TGraphId[] = [4]; // Hide graphId node 4 (from chain 0 -> 4 -> 10)
-    // const demoHideNodes: TGraphId[] = [1, 2, 3, 4]; // Hide all nodes on the 2nd level (except one graphId 5)
-    const hiddenGraphNodes: typeof SankeyAppDataStore.prototype.hiddenGraphNodes = autoHideNodes
-      ? demoHideNodes
-      : [];
-    console.log('[SankeyAppDataStore:updateHiddenGraphNodes]', {
-      hiddenGraphNodes,
-      'this.hiddenGraphNodes': [...this.hiddenGraphNodes],
-      demoHideNodes,
+    const __doDebug = false;
+    if (__doDebug) {
+      // const demoHideNodes: TGraphId[] = []; // No auto hidden nodes
+      const demoHideNodes: TGraphId[] = [4]; // Hide graphId node 4 (from chain 0 -> 4 -> 10)
+      // const demoHideNodes: TGraphId[] = [1, 2, 3, 4]; // Hide all nodes on the 2nd level (except one graphId 5)
+      const autoHiddenGraphNodes: typeof SankeyAppDataStore.prototype.autoHiddenGraphNodes =
+        autoHideNodes ? demoHideNodes : [];
+      console.log('[SankeyAppDataStore:updateAutoHiddenGraphNodes]: debug', {
+        autoHiddenGraphNodes,
+        'this.autoHiddenGraphNodes': [...this.autoHiddenGraphNodes],
+        demoHideNodes,
+        edgesData,
+        flowsData,
+        graphsData,
+        nodesData,
+        autoHideNodes,
+        autoHideNodesThreshold,
+        autoHideNodesMaxOutputs,
+      });
+      // TODO: Combine auto and manually hidden graph node lists
+      this.autoHiddenGraphNodes = autoHiddenGraphNodes;
+    }
+    // Prepare tree data...
+    // Get graphs map...
+    const graphsMap = getGraphsMap(graphsData);
+    // Chidren nodes data ([parentNodeId]: [chidrenNodeIds...])...
+    const children = getGraphChildren(edgesData);
+    // Root ids to start process...
+    const rootIds = children && getGraphRootIdsByChildren(children, graphsData);
+    // The future list of hidden nodes...
+    const autoHiddenGraphNodes: TGraphId[] = [];
+    const checkedNodes: TGraphId[] = [];
+    console.log('[SankeyAppDataStore:updateAutoHiddenGraphNodes]: start', {
+      children,
+      rootIds,
+      // autoHiddenGraphNodes,
+      // 'this.autoHiddenGraphNodes': [...this.autoHiddenGraphNodes],
+      // demoHideNodes,
       edgesData,
       flowsData,
       graphsData,
@@ -133,7 +201,55 @@ export class SankeyAppDataStore {
       autoHideNodesThreshold,
       autoHideNodesMaxOutputs,
     });
-    // TODO: Combine auto and manually hidden graph node lists
+    // Go through nodes and construct visiblility states...
+    const checkNode = (graphId: TGraphId) => {
+      // Avoid cyclic loops...
+      if (checkedNodes.includes(graphId)) {
+        return;
+      }
+      checkedNodes.push(graphId);
+      const graphChildren = children[graphId];
+      const nodesToHide = shouldGraphNodeToBeAutoHidden({
+        autoHideNodesParams,
+        graphsMap,
+        graphChildren,
+        graphId,
+        graphsData,
+        edgesData,
+      });
+      if (nodesToHide && nodesToHide.length) {
+        nodesToHide.forEach((graphId) => {
+          if (!autoHiddenGraphNodes.includes(graphId)) {
+            autoHiddenGraphNodes.push(graphId);
+          }
+        });
+      }
+      // Process children...
+      if (Array.isArray(graphChildren) && graphChildren.length) {
+        graphChildren.forEach(checkNode);
+      }
+    };
+    // Start the process from root nodes...
+    rootIds.forEach(checkNode);
+    autoHiddenGraphNodes.sort(sortByNumberAsc);
+    // TODO: Compare new nodes list with previous...
+    console.log('[SankeyAppDataStore:updateAutoHiddenGraphNodes]: done', {
+      autoHiddenGraphNodes,
+    });
+    this.autoHiddenGraphNodes = autoHiddenGraphNodes;
+    // TODO: To check update of visible nodes!
+  }
+
+  @action.bound onAutoHiddenGraphNodesChanged(/* autoHiddenGraphNodes: TGraphId */) {
+    const { autoHiddenGraphNodes, userHiddenGraphNodes } = this;
+    const hiddenGraphNodes: TGraphId[] = [];
+    const combinedList = [...autoHiddenGraphNodes, ...userHiddenGraphNodes];
+    combinedList.sort(sortByNumberAsc);
+    combinedList.forEach((graphId) => {
+      if (!hiddenGraphNodes.includes(graphId)) {
+        hiddenGraphNodes.push(graphId);
+      }
+    });
     this.hiddenGraphNodes = hiddenGraphNodes;
   }
 
@@ -212,5 +328,22 @@ export class SankeyAppDataStore {
     this.changedNodes = [];
     this.nodesColorMode = undefined;
     this.hiddenGraphNodes = [];
+  }
+
+  // Reactions...
+
+  setStaticReactions() {
+    this.staticDisposers = [
+      // prettier-ignore
+      reaction(() => this.autoHiddenGraphNodes, this.onAutoHiddenGraphNodesChanged),
+    ];
+  }
+  resetStaticReactions() {
+    const { staticDisposers } = this;
+    // Reset all disposers...
+    if (Array.isArray(staticDisposers) && staticDisposers.length) {
+      staticDisposers.forEach((disposer) => disposer());
+    }
+    this.staticDisposers = undefined;
   }
 }

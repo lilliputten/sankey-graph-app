@@ -24,7 +24,12 @@ export function findNextUnhiddenTargetInEdges(
     );
     if (!edge) {
       // TODO: To monitor/catch these cases?
-      debugger;
+      const error = new Error('Not found edge for source graph id ' + currentGraphId);
+      console.warn('[findNextUnhiddenTargetInEdges]', error.message, {
+        currentGraphId,
+        error,
+      });
+      // debugger;
       return undefined;
     }
     const {
