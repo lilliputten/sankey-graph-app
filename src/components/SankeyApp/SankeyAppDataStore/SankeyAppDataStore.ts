@@ -28,7 +28,7 @@ import {
   getGraphChildren,
   getGraphRootIdsByChildren,
   getGraphsMap,
-  shouldGraphNodeToBeAutoHidden,
+  getNodesToHideList,
   TGraphChidren,
   TGraphIdsList,
 } from 'src/helpers/Sankey';
@@ -209,7 +209,7 @@ export class SankeyAppDataStore {
       }
       checkedNodes.push(graphId);
       const graphChildren = children[graphId];
-      const nodesToHide = shouldGraphNodeToBeAutoHidden({
+      const nodesToHide = getNodesToHideList({
         autoHideNodesParams,
         graphsMap,
         graphChildren,

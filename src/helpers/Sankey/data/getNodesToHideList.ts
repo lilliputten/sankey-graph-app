@@ -45,7 +45,7 @@ function getChildrenValuesHash(
 }
 
 /** Check if graph node should be hidden to meet auto hide conditions */
-export function shouldGraphNodeToBeAutoHidden(
+export function getNodesToHideList(
   params: TShouldGraphNodeToBeAutoHiddenParams,
 ): TGraphId[] | undefined {
   const {
@@ -79,7 +79,7 @@ export function shouldGraphNodeToBeAutoHidden(
     return undefined;
   }
   const value = getGraphValue(graph);
-  console.log('[SankeyAppDataStore:shouldGraphNodeToBeAutoHidden]: start', parentGraphId, {
+  console.log('[SankeyAppDataStore:getNodesToHideList]: start', parentGraphId, {
     parentGraphId,
     graphChildren,
     value,
@@ -106,7 +106,7 @@ export function shouldGraphNodeToBeAutoHidden(
 
   const tresholdValue = (autoHideNodesThreshold * totalValue) / 100;
 
-  console.log('[SankeyAppDataStore:shouldGraphNodeToBeAutoHidden]: data ready', parentGraphId, {
+  console.log('[SankeyAppDataStore:getNodesToHideList]: data ready', parentGraphId, {
     sortedChildren,
     graphChildren,
     childrenValuesHash,
@@ -121,16 +121,12 @@ export function shouldGraphNodeToBeAutoHidden(
     if (tresholdValue) {
       const value = childrenValuesHash[graphId];
       const toInclude = value >= tresholdValue;
-      console.log(
-        '[SankeyAppDataStore:shouldGraphNodeToBeAutoHidden]: filtering children',
-        parentGraphId,
-        {
-          toInclude,
-          value,
-          tresholdValue,
-          childrenValuesHash,
-        },
-      );
+      console.log('[SankeyAppDataStore:getNodesToHideList]: filtering children', parentGraphId, {
+        toInclude,
+        value,
+        tresholdValue,
+        childrenValuesHash,
+      });
       if (!toInclude) {
         return false;
       }
@@ -159,7 +155,7 @@ export function shouldGraphNodeToBeAutoHidden(
     (graphId) => !filteredChildren.includes(graphId),
   );
 
-  console.log('[SankeyAppDataStore:shouldGraphNodeToBeAutoHidden]: done', parentGraphId, {
+  console.log('[SankeyAppDataStore:getNodesToHideList]: done', parentGraphId, {
     graphChildren,
     sortedChildren,
     filteredChildren,
