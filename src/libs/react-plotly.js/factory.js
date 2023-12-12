@@ -273,8 +273,19 @@ export default function plotComponentFactory(Plotly) {
   };
 
   eventNames.forEach((eventName) => {
+    /* console.log('[src/libs/react-plotly.js:factory:DEBUG]', {
+     *   PlotlyComponent,
+     *   // eslint-disable-next-line react/forbid-foreign-prop-types
+     *   'PlotlyComponent.propTypes': PlotlyComponent && PlotlyComponent.propTypes,
+     *   'PropTypes.func': PropTypes && PropTypes.func,
+     * });
+     */
     // eslint-disable-next-line react/forbid-foreign-prop-types
-    PlotlyComponent.propTypes['on' + eventName] = PropTypes.func;
+    if (PlotlyComponent && PlotlyComponent.propTypes) {
+      // NOTE: This code is only for development mode (for types casting)
+      // eslint-disable-next-line react/forbid-foreign-prop-types
+      PlotlyComponent.propTypes['on' + eventName] = PropTypes.func;
+    }
   });
 
   PlotlyComponent.defaultProps = {
