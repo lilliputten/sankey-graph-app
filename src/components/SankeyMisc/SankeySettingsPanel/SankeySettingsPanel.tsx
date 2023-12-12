@@ -7,6 +7,9 @@ import { TPropsWithClassName } from 'src/core/types';
 
 import { EditThemeMode } from './EditThemeMode';
 import { EditVerticalLayout } from './EditVerticalLayout';
+import { EditAutoHideNodes } from './EditAutoHideNodes';
+import { EditAutoHideNodesThreshold } from './EditAutoHideNodesThreshold';
+import { EditAutoHideNodesMaxOutputs } from './EditAutoHideNodesMaxOutputs';
 import { EditNodesColorMode } from './EditNodesColorMode';
 import { EditNodeColors } from './EditNodeColors';
 // import { EditGoJsLineWidthFactor } from './EditGoJsLineWidthFactor';
@@ -24,6 +27,9 @@ export const SankeySettingsPanel: React.FC<TPropsWithClassName> = observer((prop
        */}
       <EditThemeMode />
       <EditVerticalLayout />
+      <EditAutoHideNodes />
+      <EditAutoHideNodesThreshold />
+      <EditAutoHideNodesMaxOutputs />
       <EditNodesColorMode />
       <EditNodeColors />
     </Box>
