@@ -809,6 +809,9 @@ function switchToSankeyFormat(nodes) {
 
 // scene graph
 module.exports = function render(gd, svg, calcData, layout, callbacks) {
+    window.__DEBUG_PLOTLY && window.__DEBUG_PLOTLY.includes('render-generic') && console.log('[render:invoked]', {
+        gd, svg, calcData, layout, callbacks,
+    });
     var isStatic = gd._context.staticPlot;
 
     // To prevent animation on first render
@@ -1086,7 +1089,15 @@ module.exports = function render(gd, svg, calcData, layout, callbacks) {
 
     nodeLabel
         .attr('data-notex', 1) // prohibit tex interpretation until we can handle tex and regular text together
-        .text(function(d) { return d.node.label; })
+        .text(function(d) {
+            var label = d.node.label;
+            var maxLabelLength = 40;
+            if (maxLabelLength && label.length >= maxLabelLength) {
+                // TODO: Use word clipping?
+                label = label.substring(0, maxLabelLength) + '…';
+            }
+            return label;
+        })
         .each(function(d) {
             var e = d3.select(this);
             Drawing.font(e, d.textFont);

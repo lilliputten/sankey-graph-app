@@ -27,8 +27,12 @@ export function useChartLayout(params: TChartLayoutParams) {
       height,
       type: 'sankey',
       // TODO: Store theming colors in config/storage?
-      paper_bgcolor: cssVariables.graphPaperBgLight, // isDarkTheme ? 'black' : 'white',
-      plot_bgcolor: cssVariables.graphPlotBgLight, // isDarkTheme ? '#222' : '#ddd',
+      paper_bgcolor: isLightTheme
+        ? cssVariables.graphPaperBgLightColor
+        : cssVariables.graphPaperBgDarkColor, // isDarkTheme ? 'black' : 'white',
+      plot_bgcolor: isLightTheme
+        ? cssVariables.graphPlotBgLightColor
+        : cssVariables.graphPlotBgDarkColor, // isDarkTheme ? '#222' : '#ddd',
       font: {
         color: isLightTheme
           ? cssVariables.graphPlotFontLightColor
@@ -136,5 +140,11 @@ export function useChartLayout(params: TChartLayoutParams) {
     }),
     [width, height, isLightTheme],
   );
+  /* // DEBUG: Check produced values
+   * console.log('[useChartLayout:DEBUG]', {
+   *   chartLayout,
+   *   cssVariables,
+   * });
+   */
   return chartLayout;
 }
