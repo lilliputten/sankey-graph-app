@@ -17,7 +17,13 @@ import { TPlottlyNodeElement } from 'src/libs/plotly/types';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 import { TChartComponentProps } from 'src/core/types';
 import { useContainerSize } from 'src/ui/hooks';
-import { useChartConfig, useChartData, useChartLayout } from 'src/libs/plotly/hooks';
+import {
+  TChartData,
+  TTargetChartData,
+  useChartConfig,
+  useChartData,
+  useChartLayout,
+} from 'src/libs/plotly/hooks';
 
 import styles from './SankeyPlotlyMain.module.scss';
 
@@ -27,13 +33,14 @@ import styles from './SankeyPlotlyMain.module.scss';
  * @see `plotObj.emit` in `node_modules/plotly.js/src/lib/events.js:70`
  * @see patches/plotly.js+2.27.1.patch
  */
-window.__DEBUG_PLOTLY = undefined; // 'render';
+window.__DEBUG_PLOTLY = undefined; // 'plot_api render'; // 'render';
 
 // @see https://github.com/plotly/react-plotly.js#customizing-the-plotlyjs-bundle
 const CustomReactPlotty = createPlotlyComponent(PlotlyLib);
 
 // TODO: Split solid memo to different ones: for handlers, api handler, etc
 interface TMemo {
+  chartData?: TChartData;
   /** Last active (clicked or dragged) node */
   currentNodePoint?: PlotlyLib.PlotDatum;
   /* [>* Current plotly data (is it used?) <]
@@ -52,6 +59,7 @@ export const SankeyPlotlyMain: React.FC<TChartComponentProps> = observer((props)
 
   // const [currentNodePoint, setCurrentNodePoint] = React.useState<PlotDatum | undefined>();
   const sankeyAppDataStore = useSankeyAppDataStore();
+  const { hiddenGraphNodes } = sankeyAppDataStore;
   const [errorText /* , setErrorText */] = React.useState<string | undefined>();
   // Effect: Show an error...
   React.useEffect(() => {
@@ -68,11 +76,29 @@ export const SankeyPlotlyMain: React.FC<TChartComponentProps> = observer((props)
   const currentSankeyNode = currentSankeyData.node;
 
   // XXX: Temporarily use frozen data (updating only with internal relayouts)
-  const [initialChartData, _setChartData] = React.useState(currentChartData);
-  /* // NOTE: Unused temporarily: Updating full chart data causes completely re-render of the chart and layout reset
-   * // Effect: Update chart data...
-   * React.useEffect(() => _setChartData(currentChartData), [currentChartData]);
-   */
+  const [initialChartData, setChartData] = React.useState<TChartData | undefined>(currentChartData);
+
+  // Effect: Update chart data
+  React.useEffect(() => {
+    console.log('[SankeyPlotlyMain:Effect: Update chart data]', {
+      currentChartData,
+    });
+    /* // NOTE: Unused temporarily: Updating full chart data causes completely
+     * // re-render of the chart and layout reset. See below other partial
+     * // updaters.
+     * setChartData(currentChartData);
+     */
+    memo.chartData = currentChartData;
+  }, [memo, currentChartData]);
+
+  // Effect: Update chart data if hidden nodes list changed
+  React.useEffect(() => {
+    const { chartData } = memo;
+    console.log('[SankeyPlotlyMain:Effect: Update chart data if hidden nodes list changed]', {
+      hiddenGraphNodes,
+    });
+    setChartData(chartData);
+  }, [memo, hiddenGraphNodes]);
 
   const {
     // prettier-ignore
@@ -336,7 +362,7 @@ export const SankeyPlotlyMain: React.FC<TChartComponentProps> = observer((props)
         <CustomReactPlotty
           // prettier-ignore
           className={styles.chart}
-          data={initialChartData as PlotlyLib.SankeyData[]}
+          data={initialChartData as TTargetChartData}
           config={chartConfig}
           layout={chartLayout}
           // NOTE: 'onClick' event works only for flow elements in sankey data mode

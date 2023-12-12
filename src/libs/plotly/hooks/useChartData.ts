@@ -1,5 +1,7 @@
 import React from 'react';
 
+import PlotlyLib from 'src/libs/plotly/core/PlotlyLib';
+
 import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 
 import { useGraphLabelsList } from './useGraphLabelsList';
@@ -38,3 +40,6 @@ export function useChartData() {
   }, [color, label, link, verticalLayout]);
   return chartData;
 }
+
+export type TChartData = ReturnType<typeof useChartData>;
+export type TTargetChartData = PlotlyLib.SankeyData[];

@@ -21,9 +21,9 @@ export type TSankeyAppSessionStoreStatus = undefined | 'dataLoaded' | 'finished'
 const defaultBaseColor: TColor = '#0f0';
 const defaultSecondColor: TColor = '#f00';
 
-const defaultAutoHideNodes: boolean = true;
-const defaultAutoHideNodesThreshold: number = 10;
-const defaultAutoHideNodesMaxOutputs: number = 0;
+const defaultAutoHideNodes: boolean = false;
+const defaultAutoHideNodesThreshold: number = 50;
+const defaultAutoHideNodesMaxOutputs: number = 1;
 
 // TODO 2023.11.26, 22:55 -- Save some data (themeMode, eg) to localStorage?
 
@@ -71,13 +71,13 @@ export class SankeyAppSessionStore {
   @observable secondNodesColor: TColor = defaultSecondColor;
 
   /** Auto hide nodes (see `THideNodesParams` and `updateHiddenGraphNodes` in `SankeyAppDataStore`) */
-  autoHideNodes: boolean = defaultAutoHideNodes;
+  @observable autoHideNodes: boolean = defaultAutoHideNodes;
 
   /** Auto hide nodes threshold value (percents, include children with values more than this treshold) */
-  autoHideNodesThreshold: number = defaultAutoHideNodesThreshold;
+  @observable autoHideNodesThreshold: number = defaultAutoHideNodesThreshold;
 
   /** Auto hide nodes maxmum outputs to show */
-  autoHideNodesMaxOutputs: number = defaultAutoHideNodesMaxOutputs;
+  @observable autoHideNodesMaxOutputs: number = defaultAutoHideNodesMaxOutputs;
 
   // Lifecycle...
 
@@ -173,6 +173,17 @@ export class SankeyAppSessionStore {
 
   // Reactions...
 
+  @bound onAutoHideNodesChanged() {
+    this.updateHiddenGraphNodes();
+  }
+
+  @bound onAutoHideNodesParamsChanged() {
+    const { autoHideNodes } = this;
+    if (autoHideNodes) {
+      this.updateHiddenGraphNodes();
+    }
+  }
+
   @bound onNodesColorModeChanged(nodesColorMode: TNodesColorMode) {
     const { sankeyAppDataStore } = this;
     if (sankeyAppDataStore) {
@@ -241,6 +252,9 @@ export class SankeyAppSessionStore {
   setStaticReactions() {
     this.staticDisposers = [
       // prettier-ignore
+      reaction(() => this.autoHideNodes, this.onAutoHideNodesChanged),
+      reaction(() => this.autoHideNodesThreshold, this.onAutoHideNodesParamsChanged),
+      reaction(() => this.autoHideNodesMaxOutputs, this.onAutoHideNodesParamsChanged),
       reaction(() => this.nodesColorMode, this.onNodesColorModeChanged),
       reaction(() => this.sankeyAppDataStore, this.onSankeyAppDataStore),
     ];
