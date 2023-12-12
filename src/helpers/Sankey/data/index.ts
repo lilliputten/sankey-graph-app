@@ -7,4 +7,4 @@ export * from './getGraphChildren';
 export * from './getGraphForId';
 export * from './getGraphsMap';
 export * from './getNodeForId';
-export * from './shouldGraphNodeToBeAutoHidden';
+export * from './getNodesToHideList';
