@@ -3,10 +3,13 @@ import React from 'react';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 import { TGraphId } from 'src/core/types';
-import { onlyUnique } from 'src/helpers';
+import {
+  getGraphChildren,
+  getGraphRootIdsByChildren,
+  TGraphChidren,
+  TGraphIdsList,
+} from 'src/helpers/Sankey';
 
-type TGraphChidren = Record<TGraphId, TGraphId[]>;
-type TGraphIdsList = TGraphId[];
 type TDepth = number;
 type TGraphDepths = Record<TGraphId, TDepth>;
 
@@ -27,32 +30,16 @@ export function useProgressiveNodeDepths() {
   /** All children lists per graph nodes */
   const children = React.useMemo<TGraphChidren | undefined>(() => {
     if (!isProgressiveMode || !edgesData) {
-      return;
+      return undefined;
     }
-    const children: TGraphChidren = {};
-    edgesData.forEach((edge) => {
-      const {
-        // prettier-ignore
-        consumer_graph_id: fromId, // 0,
-        producer_graph_id: toId, // 2,
-      } = edge;
-      if (!children[fromId]) {
-        children[fromId] = [];
-      }
-      children[fromId].push(toId);
-    });
-    return children;
+    return getGraphChildren(edgesData);
   }, [isProgressiveMode, edgesData]);
   /** Root node ids */
   const rootIds = React.useMemo<TGraphIdsList | undefined>(() => {
     if (!children || !graphsData) {
-      return;
+      return undefined;
     }
-    const allChildren: TGraphIdsList = Object.values(children).flat().filter(onlyUnique);
-    allChildren.sort();
-    const allIds: TGraphIdsList = graphsData.map(({ id_in_graph }) => id_in_graph);
-    const rootIds = allIds.filter((id) => !allChildren.includes(id));
-    return rootIds;
+    return getGraphRootIdsByChildren(children, graphsData);
   }, [children, graphsData]);
   /** Graph node depths */
   const graphDepths = React.useMemo(() => {

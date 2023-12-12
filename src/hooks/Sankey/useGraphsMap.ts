@@ -3,25 +3,22 @@ import React from 'react';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 
 import { TGraphMap } from 'src/core/types';
+import { getGraphsMap } from 'src/helpers/Sankey/data/getGraphsMap';
 
-export function useVisibleGraphsMap(): TGraphMap {
-  const sankeyAppDataStore = useSankeyAppDataStore();
-  const { graphsData, hiddenGraphNodes } = sankeyAppDataStore;
-  // TODO: Detect duplicated ids?
-  const gtaphsMap = React.useMemo<TGraphMap>(() => {
-    if (!graphsData) {
-      return {};
-    }
-    return graphsData
-      .filter(({ id_in_graph: id }) => !hiddenGraphNodes.includes(id))
-      .reduce<TGraphMap>((indices, graph, idx) => {
-        const { id_in_graph: id } = graph;
-        indices[id] = idx;
-        return indices;
-      }, {});
-  }, [graphsData, hiddenGraphNodes]);
-  return gtaphsMap;
-}
+/* // UNUSED: useVisibleGraphsMap
+ * export function useVisibleGraphsMap(): TGraphMap {
+ *   const sankeyAppDataStore = useSankeyAppDataStore();
+ *   const { graphsData, hiddenGraphNodes } = sankeyAppDataStore;
+ *   // TODO: Detect duplicated ids?
+ *   const gtaphsMap = React.useMemo<TGraphMap>(() => {
+ *     if (!graphsData) {
+ *       return {};
+ *     }
+ *     return getGraphsMap(graphsData.filter(({ id_in_graph: id }) => !hiddenGraphNodes.includes(id)));
+ *   }, [graphsData, hiddenGraphNodes]);
+ *   return gtaphsMap;
+ * }
+ */
 
 export function useGraphsMap(): TGraphMap {
   const sankeyAppDataStore = useSankeyAppDataStore();
@@ -31,11 +28,7 @@ export function useGraphsMap(): TGraphMap {
     if (!graphsData) {
       return {};
     }
-    return graphsData.reduce<TGraphMap>((indices, graph, idx) => {
-      const { id_in_graph: id } = graph;
-      indices[id] = idx;
-      return indices;
-    }, {});
+    return getGraphsMap(graphsData);
   }, [graphsData]);
   return gtaphsMap;
 }
