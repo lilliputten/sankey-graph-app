@@ -1014,36 +1014,97 @@ module.exports = function render(gd, svg, calcData, layout, callbacks) {
         // .style('cursor', 'default')
     ;
 
+    var dyPx = 15;
+    var dy = dyPx + 'px';
+    var labelSplitLen = 30;
+
     function setLabelAnchor(d) {
         return (d.horizontal && d.left) ? 'end' : 'start';
     }
-    function setLabelTransformOrig(d) {
+    function setLabelTransformUpdated(d) {
+        var {
+            horizontal,
+            left,
+            nodeLineWidth,
+            textFont,
+            visibleHeight,
+            visibleWidth,
+        } = d;
+        // Set label positions counting mutiline offsets
         var e = d3.select(this);
         // how much to shift a multi-line label to center it vertically.
         var nLines = svgTextUtils.lineCount(e);
-        var blockHeight = d.textFont.size * (
-            (nLines - 1) * LINE_SPACING - CAP_SHIFT
-        );
-
-        var posX = d.nodeLineWidth / 2 + TEXTPAD;
-        var posY = ((d.horizontal ? d.visibleHeight : d.visibleWidth) - blockHeight) / 2;
-        if(d.horizontal) {
-            if(d.left) {
+        var chidrenCount = this.children.length;
+        var blockHeightPx = nLines * dyPx;
+        var blockHeight = textFont.size * (nLines * LINE_SPACING - CAP_SHIFT);
+        var posX = nodeLineWidth / 2 + TEXTPAD;
+        var posY = ((horizontal ? visibleHeight : visibleWidth) - blockHeightPx) / 2;
+        console.log('[render:setLabelTransformUpdated]', {
+            chidrenCount,
+            e,
+            nLines,
+            blockHeightPx,
+            blockHeight,
+            posX,
+            posY,
+            // ...
+            LINE_SPACING,
+            CAP_SHIFT,
+            TEXTPAD,
+            // ...
+            horizontal,
+            left,
+            nodeLineWidth,
+            textFont,
+            visibleHeight,
+            visibleWidth,
+            // ...
+            d,
+        });
+        if (chidrenCount > 1) {
+            debugger;
+        }
+        if(horizontal) {
+            if(left) {
                 posX = -posX;
             } else {
-                posX += d.visibleWidth;
+                posX += visibleWidth;
             }
         }
-
-        var flipText = d.horizontal ? '' : (
+        var flipText = horizontal ? '' : (
             'scale(-1,1)' + strRotate(90)
         );
-
         return strTranslate(
-            d.horizontal ? posX : posY,
-            d.horizontal ? posY : posX
+            horizontal ? posX : posY,
+            horizontal ? posY : posX
         ) + flipText;
     }
+    /* // UNUSED: setLabelTransformOrig
+     * function setLabelTransformOrig(d) {
+     *     var e = d3.select(this);
+     *     // how much to shift a multi-line label to center it vertically.
+     *     var nLines = svgTextUtils.lineCount(e);
+     *     var blockHeight = d.textFont.size * (
+     *         (nLines - 1) * LINE_SPACING - CAP_SHIFT
+     *     );
+     *     var posX = d.nodeLineWidth / 2 + TEXTPAD;
+     *     var posY = ((d.horizontal ? d.visibleHeight : d.visibleWidth) - blockHeight) / 2;
+     *     if(d.horizontal) {
+     *         if(d.left) {
+     *             posX = -posX;
+     *         } else {
+     *             posX += d.visibleWidth;
+     *         }
+     *     }
+     *     var flipText = d.horizontal ? '' : (
+     *         'scale(-1,1)' + strRotate(90)
+     *     );
+     *     return strTranslate(
+     *         d.horizontal ? posX : posY,
+     *         d.horizontal ? posY : posX
+     *     ) + flipText;
+     * }
+     */
     /* // UNUSED: setLabelTransformTry
      * function setLabelTransformTry(d) {
      *     var e = d3.select(this);
@@ -1086,10 +1147,6 @@ module.exports = function render(gd, svg, calcData, layout, callbacks) {
      *     nodeLabel,
      * });
      */
-
-    var dyPx = 15;
-    var dy = dyPx + 'px';
-    var labelSplitLen = 30;
 
     /**
      * @param {string} label
@@ -1182,6 +1239,7 @@ module.exports = function render(gd, svg, calcData, layout, callbacks) {
             for (var chunk of labelChunks) {
                 e
                     .append('tspan')
+                    .classed('line', true)
                     .attr('x', 0)
                     .attr('dy', dy)
                     .text(chunk)
@@ -1251,7 +1309,7 @@ module.exports = function render(gd, svg, calcData, layout, callbacks) {
         .attr('text-anchor', setLabelAnchor) // Original positioning base
         // .attr('text-anchor', 'middle') // Always position by center
         // .attr('transform', setLabelTransformTry)
-        .attr('transform', setLabelTransformOrig) // Original positioning method
+        .attr('transform', setLabelTransformUpdated) // Original positioning method
         /*
         .attr('dy', dy)
         .append('tspan')
