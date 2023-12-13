@@ -379,7 +379,7 @@ export const SankeyPlotlyMain: React.FC<TChartComponentProps> = observer((props)
           // State...
           onInitialized={savePlotlyGraphDiv}
           onUpdate={savePlotlyGraphDiv}
-          onAfterPlot={alignAllNodes} // Re-calculate node positions
+          // onAfterPlot={alignAllNodes} // Re-calculate node positions
         />
       )}
       {/* // Use modal dialog to edit current graph node (TODO?)
