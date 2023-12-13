@@ -17,8 +17,8 @@ import {
   TEdgesData,
   TFlowsData,
   TGraphId,
-  TGraphItem,
-  TGraphMap,
+  // TGraphItem,
+  // TGraphMap,
   TGraphsData,
   TNodeId,
   TNodesColorMode,
@@ -29,12 +29,13 @@ import {
   getGraphRootIdsByChildren,
   getGraphsMap,
   getNodesToHideList,
-  TGraphChidren,
-  TGraphIdsList,
+  // TGraphChidren,
+  // TGraphIdsList,
 } from 'src/helpers/Sankey';
+import { areTwoSortedArraysEqual } from 'src/helpers';
 
 const defaultNodeNames: Record<TNodeId, string> = {
-  [-1]: 'Root', // Default name for root node (TODO: Move default name to constants?)
+  // [-1]: 'Root', // Default name for root node (TODO: Move default name to constants?)
 };
 
 const sortByNumberAsc = (a: number, b: number) => a - b;
@@ -232,15 +233,18 @@ export class SankeyAppDataStore {
     // Start the process from root nodes...
     rootIds.forEach(checkNode);
     autoHiddenGraphNodes.sort(sortByNumberAsc);
-    // TODO: Compare new nodes list with previous...
+    const hasDiffers = !areTwoSortedArraysEqual(this.autoHiddenGraphNodes, autoHiddenGraphNodes);
     console.log('[SankeyAppDataStore:updateAutoHiddenGraphNodes]: done', {
+      hasDiffers,
       autoHiddenGraphNodes,
     });
-    this.autoHiddenGraphNodes = autoHiddenGraphNodes;
-    // TODO: To check update of visible nodes!
+    // Compare new and current arrays and update if they're differ
+    if (hasDiffers) {
+      this.autoHiddenGraphNodes = autoHiddenGraphNodes;
+    }
   }
 
-  @action.bound onAutoHiddenGraphNodesChanged(/* autoHiddenGraphNodes: TGraphId */) {
+  @action.bound updateHiddenGraphNodes() {
     const { autoHiddenGraphNodes, userHiddenGraphNodes } = this;
     const hiddenGraphNodes: TGraphId[] = [];
     const combinedList = [...autoHiddenGraphNodes, ...userHiddenGraphNodes];
@@ -250,7 +254,18 @@ export class SankeyAppDataStore {
         hiddenGraphNodes.push(graphId);
       }
     });
-    this.hiddenGraphNodes = hiddenGraphNodes;
+    // Compare new and current arrays and update if they're differ
+    const hasDiffers = !areTwoSortedArraysEqual(this.hiddenGraphNodes, combinedList);
+    console.log('[SankeyAppDataStore:updateHiddenGraphNodes]', {
+      hasDiffers,
+      combinedList,
+      'this.hiddenGraphNodes': { ...this.hiddenGraphNodes },
+      autoHiddenGraphNodes,
+      userHiddenGraphNodes,
+    });
+    if (hasDiffers) {
+      this.hiddenGraphNodes = combinedList;
+    }
   }
 
   // Status setters...
@@ -335,7 +350,8 @@ export class SankeyAppDataStore {
   setStaticReactions() {
     this.staticDisposers = [
       // prettier-ignore
-      reaction(() => this.autoHiddenGraphNodes, this.onAutoHiddenGraphNodesChanged),
+      reaction(() => this.autoHiddenGraphNodes, this.updateHiddenGraphNodes),
+      reaction(() => this.userHiddenGraphNodes, this.updateHiddenGraphNodes),
     ];
   }
   resetStaticReactions() {

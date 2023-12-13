@@ -11,6 +11,7 @@ import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataSto
 
 import { EditNodeName } from './EditNodeName';
 import { EditGraphColor } from './EditGraphColor';
+import { HideNodeButton } from './HideNodeButton';
 
 import styles from './SankeyPropertiesPanel.module.scss';
 
@@ -28,6 +29,7 @@ const PropertiesContent: React.FC<TPropsWithClassName> = observer(() => {
       {__debugUseDemoData && <Box className={styles.infoBox}>Edit graph id: {selectedGraphId}</Box>}
       <EditNodeName nodeId={nodeId} />
       <EditGraphColor graphId={selectedGraphId} />
+      <HideNodeButton graphId={selectedGraphId} />
     </>
   );
 });
