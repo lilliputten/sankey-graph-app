@@ -1,6 +1,6 @@
 Project: sankey-graph-app
-Version: 0.0.15
-Branch: dev-231211-issue-9-collpase-nodes
-Commit: 9d5a4a4
-Fixed: 2023.12.13, 18:29 GMT+7
-Built: 2023.12.13, 18:31 GMT+7
+Version: 0.0.16
+Branch: dev-231210-issue-16-patch-plotly-lib
+Commit: d85fc91
+Fixed: 2023.12.13, 21:27 GMT+7
+Built: 2023.12.13, 21:45 GMT+7
