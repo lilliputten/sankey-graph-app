@@ -36,6 +36,7 @@ import { areTwoSortedArraysEqual } from 'src/helpers';
 
 const defaultNodeNames: Record<TNodeId, string> = {
   [-1]: 'Root', // Default name for root node (TODO: Move default name to constants?)
+  // [-1]: '$\\alpha \\, F_\\mathrm{test}$', // SvgLaTeX sample (requires MathJax)
 };
 
 const sortByNumberAsc = (a: number, b: number) => a - b;

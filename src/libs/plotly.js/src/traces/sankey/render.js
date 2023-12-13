@@ -1054,7 +1054,7 @@ module.exports = function render(gd, svg, calcData, layout, callbacks) {
      *     );
      *     // TODO: Get thickness parameter to calculate node width
      *     const nodeWidth = d.node.x1 - d.node.x0;
-     *     console.log('[render:setLabelTransformOrig]', {
+     *     console.log('[render:setLabelTransformTry]', {
      *         nodeWidth,
      *         d,
      *     });
@@ -1087,28 +1087,182 @@ module.exports = function render(gd, svg, calcData, layout, callbacks) {
      * });
      */
 
+    var dyPx = 15;
+    var dy = dyPx + 'px';
+    var labelSplitLen = 30;
+
+    /**
+     * @param {string} label
+     * @returns {string[]}
+     */
+    function splitNodeLabel(label) {
+        // TODO: To do this split before render (to store strings list for each node)?
+        try {
+            // Replace all sequential spaces with one space, remove starting and ending ones
+            label = label.replace(/[ \t\n\r\s]{2,}/g, ' ').trim();
+            var origLabel = label;
+            var chunks = [];
+            window.__DEBUG_PLOTLY && window.__DEBUG_PLOTLY.includes('render-split-nodes') &&
+            console.log('[plotly.js:render:splitNodeLabel]', {
+                label,
+                origLabel,
+            });
+            while (label.length > labelSplitLen) {
+                // TODO: Find closest word break...
+                var lastSpacePos = label.lastIndexOf(' ', labelSplitLen);
+                var nextSpacePos = label.indexOf(' ', labelSplitLen);
+                var lastSpaceDiff = labelSplitLen - lastSpacePos;
+                var nextSpaceDiff = nextSpacePos - labelSplitLen;
+                // Check which position is closer: the beginning of the previous word or the end of the next word?
+                var useLast = nextSpacePos < 0 || lastSpaceDiff <= nextSpaceDiff;
+                var spacePos = (useLast) ? lastSpacePos : nextSpacePos;
+                var isSpace = 1;
+                if (spacePos <= 0) {
+                    // Break word apart...
+                    spacePos = labelSplitLen;
+                    isSpace = 0;
+                }
+                var chunk = label.substring(0, spacePos);
+                var prevLabel = label;
+                label = label.substring(spacePos + isSpace);
+                window.__DEBUG_PLOTLY && window.__DEBUG_PLOTLY.includes('render-split-nodes') &&
+                console.log('[plotly.js:render:splitNodeLabel]: iteration', {
+                    chunk,
+                    prevLabel,
+                    useLast,
+                    spacePos,
+                    lastSpacePos,
+                    nextSpacePos,
+                    lastSpaceDiff,
+                    nextSpaceDiff,
+                    label,
+                    chunks,
+                    origLabel,
+                });
+                chunks.push(chunk);
+            }
+            if (label.length) {
+                chunks.push(label);
+            }
+            window.__DEBUG_PLOTLY && window.__DEBUG_PLOTLY.includes('render-split-nodes') &&
+            console.log('[plotly.js:render:splitNodeLabel]: done', {
+                origLabel,
+                chunks,
+            });
+            return chunks;
+        } catch(error) {
+            console.error('[plotly.js:render:splitNodeLabel]', error.message, {
+                error,
+            });
+            // eslint-disable-next-line no-debugger
+            debugger;
+        }
+    }
+    function addNodeLabelSpans(d, thisNode) {
+        try {
+            var node = d.node;
+            var label = node.label;
+            var labelChunks = splitNodeLabel(label);
+            // TODO: Split label for a few lines?
+            var e = d3.select(thisNode); // Get d3 entity for current node
+            console.log('[plotly.js:render:addNodeLabelSpans]', {
+                d,
+                node,
+                label,
+                labelChunks,
+                e,
+                thisNode,
+            });
+            // Set font
+            Drawing.font(e, d.textFont);
+            // svgTextUtils.convertToTspans(e, gd);
+            // Clear content before creating new nodes...
+            thisNode.innerHTML = '';
+            // Here we can add nodes dynamically...
+            for (var chunk of labelChunks) {
+                e
+                    .append('tspan')
+                    .attr('x', 0)
+                    .attr('dy', dy)
+                    .text(chunk)
+                ;
+            }
+        } catch(error) {
+            console.error('[plotly.js:render:addNodeLabelSpans]', error.message, {
+                error,
+            });
+            // eslint-disable-next-line no-debugger
+            debugger;
+        }
+    }
+
     nodeLabel
         .attr('data-notex', 1) // prohibit tex interpretation until we can handle tex and regular text together
-        .text(function(d) {
-            var label = d.node.label;
-            var maxLabelLength = 40;
-            if (maxLabelLength && label.length >= maxLabelLength) {
-                // TODO: Use word clipping?
-                label = label.substring(0, maxLabelLength) + '…';
-            }
-            return label;
-        })
+        // .text(function(d) {
+        //     var label = d.node.label;
+        //     var maxLabelLength = 40;
+        //     if (maxLabelLength && label.length >= maxLabelLength) {
+        //         // TODO: Use word clipping?
+        //         label = label.substring(0, maxLabelLength) + '…';
+        //     }
+        //     return label;
+        // })
+        // .text(function(d) {
+        //     return 'Text 1';
+        // })
         .each(function(d) {
+            addNodeLabelSpans(d, this);
+            /*
+            var node = d.node;
+            var label = node.label;
+            const thisNode = this; // The same as `e[0][0]`
+            // addTSpans(d.node)
             var e = d3.select(this);
+            console.log('[plotly.js:render:nodeLabel:each]', {
+                d,
+                node,
+                label,
+                e,
+                thisNode,
+            });
             Drawing.font(e, d.textFont);
-            svgTextUtils.convertToTspans(e, gd)
-            ;
+            // svgTextUtils.convertToTspans(e, gd);
+            try {
+                // Clear content before creating new nodes...
+                thisNode.innerHTML = '';
+                // Here we can add nodes dynamically...
+                e
+                    .append('tspan')
+                    .attr('x', 0)
+                    .attr('dy', dy)
+                    .text('Text 1')
+                ;
+            } catch(error) {
+                console.error('[plotly.js:render:nodeLabel:each]', error.message, {
+                    error,
+                });
+                debugger;
+            }
+            */
         })
         // .style('text-shadow', svgTextUtils.makeTextShadow(gd._fullLayout.paper_bgcolor))
+        // .attr('textLength', 200)
+        // .attr('lengthAdjust', 'spacingAndGlyphs')
         .attr('text-anchor', setLabelAnchor) // Original positioning base
         // .attr('text-anchor', 'middle') // Always position by center
         // .attr('transform', setLabelTransformTry)
         .attr('transform', setLabelTransformOrig) // Original positioning method
+        /*
+        .attr('dy', dy)
+        .append('tspan')
+        .attr('x', 0)
+        .attr('dy', dy)
+        .text('Text 1')
+        .append('tspan')
+        .attr('x', 0)
+        .attr('dy', '.35em')
+        .text('Text 2')
+        */
     ;
 
     nodeLabel

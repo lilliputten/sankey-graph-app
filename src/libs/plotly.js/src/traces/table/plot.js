@@ -580,6 +580,7 @@ function populateCellText(cellText, tableControlView, allColumnBlock, gd) {
 }
 
 function isLatex(content) {
+    debugger;
     return typeof content === 'string' && content.match(c.latexCheck);
 }
 
