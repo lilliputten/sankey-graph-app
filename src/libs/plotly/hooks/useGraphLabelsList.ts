@@ -10,7 +10,7 @@ import { getNodeForId } from 'src/helpers/Sankey/data';
 import { useNodesHash } from 'src/hooks/Sankey/useNodesHash';
 
 /** Show debug data in the node name */
-const __showDebugInName = true && isDevBrowser;
+const __showDebugInName = false && isDevBrowser;
 
 export function useGraphLabelsList(): PlotlyLib.Datum[] | undefined {
   const sankeyAppDataStore = useSankeyAppDataStore();

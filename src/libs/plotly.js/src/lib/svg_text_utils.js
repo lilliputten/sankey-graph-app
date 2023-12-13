@@ -21,7 +21,7 @@ exports.convertToTspans = function(_context, gd, _callback) {
     var tex = (!_context.attr('data-notex')) &&
         gd && gd._context.typesetMath &&
         (typeof MathJax !== 'undefined') &&
-        str.match(FIND_TEX);
+        str.match(FIND_TEX); // Strings in form '$...$'
 
     var parent = d3.select(_context.node().parentNode);
     if(parent.empty()) return;
@@ -45,7 +45,9 @@ exports.convertToTspans = function(_context, gd, _callback) {
             parent.select('svg.' + svgClass).remove();
         }
         _context.text('')
-            .style('white-space', 'pre');
+            .style('border', '1px solid red')
+            // .style('white-space', 'pre')
+        ;
 
         var hasLink = buildSVGText(_context.node(), str);
 

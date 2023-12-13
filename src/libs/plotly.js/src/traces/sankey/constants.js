@@ -18,5 +18,6 @@ module.exports = {
         nodeRect: 'node-rect',
         nodeLabel: 'node-label',
         nodeLabelRect: 'node-label-rect', // Issue #16: Try to use clipping rect for node labels
+        nodeLabelText: 'node-label-text', // Issue #16: Try to use clipping text for node labels
     }
 };
