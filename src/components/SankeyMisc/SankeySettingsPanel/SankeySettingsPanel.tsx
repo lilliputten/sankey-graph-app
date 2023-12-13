@@ -7,6 +7,7 @@ import { TPropsWithClassName } from 'src/core/types';
 
 import { EditThemeMode } from './EditThemeMode';
 import { EditVerticalLayout } from './EditVerticalLayout';
+import { EditUserHideNodes } from './EditUserHideNodes';
 import { EditAutoHideNodes } from './EditAutoHideNodes';
 import { EditAutoHideNodesThreshold } from './EditAutoHideNodesThreshold';
 import { EditAutoHideNodesMaxOutputs } from './EditAutoHideNodesMaxOutputs';
@@ -27,6 +28,7 @@ export const SankeySettingsPanel: React.FC<TPropsWithClassName> = observer((prop
        */}
       <EditThemeMode />
       <EditVerticalLayout />
+      <EditUserHideNodes />
       <EditAutoHideNodes />
       <EditAutoHideNodesThreshold />
       <EditAutoHideNodesMaxOutputs />
