@@ -35,7 +35,7 @@ import {
 import { areTwoSortedArraysEqual } from 'src/helpers';
 
 const defaultNodeNames: Record<TNodeId, string> = {
-  [-1]: 'Root', // Default name for root node (TODO: Move default name to constants?)
+  [-1]: 'Functional unit', // Default name for root node (TODO: Move default name to constants?)
   // [-1]: '$\\alpha \\, F_\\mathrm{test}$', // SvgLaTeX sample (requires MathJax)
 };
 
@@ -156,29 +156,31 @@ export class SankeyAppDataStore {
       this.autoHiddenGraphNodes = [];
       return;
     }
-    // DEBUG: Check the corectness of hidden nodes
-    const __doDebug = false;
-    if (__doDebug) {
-      // const demoHideNodes: TGraphId[] = []; // No auto hidden nodes
-      const demoHideNodes: TGraphId[] = [4]; // Hide graphId node 4 (from chain 0 -> 4 -> 10)
-      // const demoHideNodes: TGraphId[] = [1, 2, 3, 4]; // Hide all nodes on the 2nd level (except one graphId 5)
-      const autoHiddenGraphNodes: typeof SankeyAppDataStore.prototype.autoHiddenGraphNodes =
-        autoHideNodes ? demoHideNodes : [];
-      console.log('[SankeyAppDataStore:updateAutoHiddenGraphNodes]: debug', {
-        autoHiddenGraphNodes,
-        'this.autoHiddenGraphNodes': [...this.autoHiddenGraphNodes],
-        demoHideNodes,
-        edgesData,
-        flowsData,
-        graphsData,
-        nodesData,
-        autoHideNodes,
-        autoHideNodesThreshold,
-        autoHideNodesMaxOutputs,
-      });
-      // TODO: Combine auto and manually hidden graph node lists
-      this.autoHiddenGraphNodes = autoHiddenGraphNodes;
-    }
+    /* // DEBUG: Check the corectness of hidden nodes
+     * const __doDebug = false;
+     * if (__doDebug) {
+     *   // const demoHideNodes: TGraphId[] = []; // No auto hidden nodes
+     *   const demoHideNodes: TGraphId[] = [4]; // Hide graphId node 4 (from chain 0 -> 4 -> 10)
+     *   // const demoHideNodes: TGraphId[] = [1, 2, 3, 4]; // Hide all nodes on the 2nd level (except one graphId 5)
+     *   const autoHiddenGraphNodes: typeof SankeyAppDataStore.prototype.autoHiddenGraphNodes =
+     *     autoHideNodes ? demoHideNodes : [];
+     *   [> console.log('[SankeyAppDataStore:updateAutoHiddenGraphNodes]: debug', {
+     *    *   autoHiddenGraphNodes,
+     *    *   'this.autoHiddenGraphNodes': [...this.autoHiddenGraphNodes],
+     *    *   demoHideNodes,
+     *    *   edgesData,
+     *    *   flowsData,
+     *    *   graphsData,
+     *    *   nodesData,
+     *    *   autoHideNodes,
+     *    *   autoHideNodesThreshold,
+     *    *   autoHideNodesMaxOutputs,
+     *    * });
+     *    <]
+     *   // TODO: Combine auto and manually hidden graph node lists
+     *   this.autoHiddenGraphNodes = autoHiddenGraphNodes;
+     * }
+     */
     // Prepare tree data...
     // Get graphs map...
     const graphsMap = getGraphsMap(graphsData);
@@ -189,20 +191,21 @@ export class SankeyAppDataStore {
     // The future list of hidden nodes...
     const autoHiddenGraphNodes: TGraphId[] = [];
     const checkedNodes: TGraphId[] = [];
-    console.log('[SankeyAppDataStore:updateAutoHiddenGraphNodes]: start', {
-      children,
-      rootIds,
-      // autoHiddenGraphNodes,
-      // 'this.autoHiddenGraphNodes': [...this.autoHiddenGraphNodes],
-      // demoHideNodes,
-      edgesData,
-      flowsData,
-      graphsData,
-      nodesData,
-      autoHideNodes,
-      autoHideNodesThreshold,
-      autoHideNodesMaxOutputs,
-    });
+    /* console.log('[SankeyAppDataStore:updateAutoHiddenGraphNodes]: start', {
+     *   children,
+     *   rootIds,
+     *   // autoHiddenGraphNodes,
+     *   // 'this.autoHiddenGraphNodes': [...this.autoHiddenGraphNodes],
+     *   // demoHideNodes,
+     *   edgesData,
+     *   flowsData,
+     *   graphsData,
+     *   nodesData,
+     *   autoHideNodes,
+     *   autoHideNodesThreshold,
+     *   autoHideNodesMaxOutputs,
+     * });
+     */
     // Go through nodes and construct visiblility states...
     const checkNode = (graphId: TGraphId) => {
       // Avoid cyclic loops...
@@ -235,10 +238,11 @@ export class SankeyAppDataStore {
     rootIds.forEach(checkNode);
     autoHiddenGraphNodes.sort(sortByNumberAsc);
     const hasDiffers = !areTwoSortedArraysEqual(this.autoHiddenGraphNodes, autoHiddenGraphNodes);
-    console.log('[SankeyAppDataStore:updateAutoHiddenGraphNodes]: done', {
-      hasDiffers,
-      autoHiddenGraphNodes,
-    });
+    /* console.log('[SankeyAppDataStore:updateAutoHiddenGraphNodes]: done', {
+     *   hasDiffers,
+     *   autoHiddenGraphNodes,
+     * });
+     */
     // Compare new and current arrays and update if they're differ
     if (hasDiffers) {
       this.autoHiddenGraphNodes = autoHiddenGraphNodes;
@@ -257,13 +261,14 @@ export class SankeyAppDataStore {
     });
     // Compare new and current arrays and update if they're differ
     const hasDiffers = !areTwoSortedArraysEqual(this.hiddenGraphNodes, combinedList);
-    console.log('[SankeyAppDataStore:updateHiddenGraphNodes]', {
-      hasDiffers,
-      combinedList,
-      'this.hiddenGraphNodes': { ...this.hiddenGraphNodes },
-      autoHiddenGraphNodes,
-      userHiddenGraphNodes,
-    });
+    /* console.log('[SankeyAppDataStore:updateHiddenGraphNodes]', {
+     *   hasDiffers,
+     *   combinedList,
+     *   'this.hiddenGraphNodes': { ...this.hiddenGraphNodes },
+     *   autoHiddenGraphNodes,
+     *   userHiddenGraphNodes,
+     * });
+     */
     if (hasDiffers) {
       this.hiddenGraphNodes = combinedList;
     }

@@ -1,5 +1,3 @@
-import { sampleDataUrlPrefix } from 'src/config/app';
-
 /** Default file names for specific data types */
 export const defaultDataFiles = {
   edges: 'edges.json',
@@ -8,12 +6,21 @@ export const defaultDataFiles = {
   nodes: 'nodes.json',
 };
 
+export const dataUrlPrefix = '/data/';
+const defaultDataPath = 'lignite/';
+const nodesNodesPath = '';
+
 /** Create demo urls list */
 export const autoLoadUrls = Object.keys(defaultDataFiles).reduce<Partial<typeof defaultDataFiles>>(
   (urls, id) => {
-    urls[id as keyof typeof defaultDataFiles] =
-      sampleDataUrlPrefix + defaultDataFiles[id as keyof typeof defaultDataFiles];
+    urls[id as keyof typeof defaultDataFiles] = [
+      dataUrlPrefix,
+      id === 'nodes' ? nodesNodesPath : defaultDataPath,
+      defaultDataFiles[id as keyof typeof defaultDataFiles],
+    ]
+      .filter(Boolean)
+      .join('');
     return urls;
   },
   {},
-);
+) as typeof defaultDataFiles;

@@ -51,7 +51,7 @@ export function getSavedOrQueryParameter<T extends string = string>(
   switch (type) {
     case 'boolean': {
       const falsy = val.toLowerCase();
-      return falsy !== 'false' && falsy !== '0' && Boolean(falsy);
+      return falsy !== 'false' && falsy !== 'no' && falsy !== '0' && Boolean(falsy);
     }
     case 'number': {
       const num = Number(val);
