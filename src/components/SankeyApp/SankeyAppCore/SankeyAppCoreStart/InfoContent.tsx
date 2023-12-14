@@ -4,8 +4,8 @@ import { Box, Typography } from '@mui/material';
 import classNames from 'classnames';
 
 import { TPropsWithClassName } from 'src/core/types';
-import { dataUrlPrefix, defaultDataFiles, autoLoadUrls } from 'src/core/constants/Sankey';
-import { useSankeyAppSessionStore } from '../../SankeyAppSessionStore';
+import { dataUrlPrefix, defaultDataFiles } from 'src/core/constants/Sankey';
+import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 
 import styles from './InfoContent.module.scss';
 
