@@ -23,6 +23,7 @@ import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSess
 
 import styles from './AppHeader.module.scss';
 
+/** The width of mobile menu drawer */
 const drawerWidth = 280;
 
 interface TNavItem {
@@ -34,14 +35,17 @@ export const AppHeader: React.FC<TPropsWithClassName> = observer((props) => {
   const { className } = props;
   const container = document.body;
   const sankeyAppSessionStore = useSankeyAppSessionStore();
-  const { loadNewDataCb } = sankeyAppSessionStore;
+  const { loadNewDataCb, showHelp, sankeyAppDataStore } = sankeyAppSessionStore;
+  const hasData = sankeyAppDataStore?.ready && loadNewDataCb;
   const navItems = React.useMemo<TNavItem[]>(() => {
     return [
-      { id: 'home', text: 'Home' },
-      loadNewDataCb && { id: 'loadNewData', text: 'Load new data' },
-      !loadNewDataCb && { id: 'loadData', text: 'Load data' },
+      // { id: 'home', text: 'Home' },
+      !showHelp && { id: 'showHelp', text: 'Show help' },
+      showHelp && { id: 'hideHelp', text: 'Hide help' },
+      hasData && { id: 'loadData', text: 'Load new data' },
+      !hasData && { id: 'loadData', text: 'Load data' },
     ].filter(Boolean) as TNavItem[];
-  }, [loadNewDataCb]);
+  }, [hasData, showHelp]);
 
   /** Mobile drawer state */
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -63,20 +67,37 @@ export const AppHeader: React.FC<TPropsWithClassName> = observer((props) => {
        * });
        */
       switch (id) {
-        case 'home': {
-          sankeyAppSessionStore.setReady(false);
+        case 'showHelp': {
+          sankeyAppSessionStore.setShowHelp(true);
+          break;
+        }
+        case 'hideHelp': {
+          sankeyAppSessionStore.setShowHelp(false);
           break;
         }
         case 'loadData': {
-          sankeyAppSessionStore.setReady(true);
-          break;
-        }
-        case 'loadNewData': {
+          sankeyAppSessionStore.setShowHelp(false);
           if (loadNewDataCb) {
             loadNewDataCb();
           }
+          sankeyAppSessionStore.setReady(true);
           break;
         }
+        /* // UNUSED: 'home'
+         * case 'home': {
+         *   // UNUSED!
+         *   sankeyAppSessionStore.setReady(false);
+         *   break;
+         * }
+         */
+        /* // UNUSED: 'loadNewData'
+         * case 'loadNewData': {
+         *   if (loadNewDataCb) {
+         *     loadNewDataCb();
+         *   }
+         *   break;
+         * }
+         */
       }
     },
     [sankeyAppSessionStore, loadNewDataCb],
