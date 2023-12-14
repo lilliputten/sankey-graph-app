@@ -1,31 +1,97 @@
-import { makeObservable, observable, action, computed, IReactionDisposer, reaction } from 'mobx';
+import {
+  makeObservable,
+  observable,
+  action,
+  computed,
+  IReactionDisposer,
+  reaction,
+  runInAction,
+} from 'mobx';
 import bound from 'bind-decorator';
 
-import { TMuiThemeMode, defaultMuiThemeMode, TColor } from 'src/core/types';
+import {
+  TMuiThemeMode,
+  validMuiThemeModes,
+  defaultMuiThemeMode,
+  TColor,
+  TUpdatableParameter,
+} from 'src/core/types';
 import {
   defaultNodesColorMode,
   TNodesColorMode,
-  /* // Issue #15: Removed unused libraries
-   * defaultChartLibrary,
-   * TChartLibrary,
-   */
+  validNodesColorModes,
 } from 'src/core/types/SankeyApp';
 import { SankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
+import { getSavedOrQueryParameter } from 'src/helpers/generic/getSavedOrQueryParameter';
 
 export type TSankeyAppSessionStoreStatus = undefined | 'dataLoaded' | 'finished';
 
+const storagePrefix = 'SankeyAppSessionStore:';
+
 // TODO: Move default parameters to constants?
-/* // Issue #15: UNUSED
- * const defaultGoJsLineWidthFactor = 200;
- */
+const defaultShowLeftPanel: boolean = false;
 const defaultBaseColor: TColor = '#0f0';
 const defaultSecondColor: TColor = '#f00';
-
 const defaultAutoHideNodes: boolean = false;
 const defaultAutoHideNodesThreshold: number = 50;
 const defaultAutoHideNodesMaxOutputs: number = 1;
 
-// TODO 2023.11.26, 22:55 -- Save some data (themeMode, eg) to localStorage?
+/** Parameters what could be saved and restored from the local storage (or from url query) */
+const restorableParameters = [
+  // prettier-ignore
+  'showLeftPanel',
+  'themeMode',
+  'verticalLayout',
+  'nodesColorMode',
+  'baseNodesColor',
+  'secondNodesColor',
+  'autoHideNodes',
+  'autoHideNodesThreshold',
+  'autoHideNodesMaxOutputs',
+] as const;
+export type TRestorableParameter = (typeof restorableParameters)[number];
+
+/** Updatable parameters descriptions */
+const updatableParameters: TUpdatableParameter<TRestorableParameter>[] = [
+  {
+    id: 'showLeftPanel',
+    type: 'boolean',
+  },
+  {
+    id: 'themeMode',
+    type: 'string',
+    validValues: validMuiThemeModes,
+  },
+  {
+    id: 'verticalLayout',
+    type: 'boolean',
+  },
+  {
+    id: 'nodesColorMode',
+    type: 'string',
+    validValues: validNodesColorModes,
+  },
+  {
+    id: 'baseNodesColor',
+    type: 'string',
+  },
+  {
+    id: 'secondNodesColor',
+    type: 'string',
+  },
+  {
+    id: 'autoHideNodes',
+    type: 'boolean',
+  },
+  {
+    id: 'autoHideNodesThreshold',
+    type: 'number',
+  },
+  {
+    id: 'autoHideNodesMaxOutputs',
+    type: 'number',
+  },
+];
 
 export class SankeyAppSessionStore {
   // NOTE: remember to clean/reset properties in `clearData` or in `clearSettings`
@@ -40,7 +106,6 @@ export class SankeyAppSessionStore {
   @observable loading: boolean = false;
   @observable status: TSankeyAppSessionStoreStatus;
   @observable error?: Error = undefined;
-  // @observable settingsDone: boolean = false; // ???
 
   /** Callback to go to load new data page */
   @observable loadNewDataCb?: () => void | undefined;
@@ -49,19 +114,14 @@ export class SankeyAppSessionStore {
 
   // Settings...
 
+  /** Show left panel */
+  @observable showLeftPanel: boolean = defaultShowLeftPanel;
+
   /** Application theme */
   @observable themeMode: TMuiThemeMode = defaultMuiThemeMode;
 
   /** Vertical layout */
   @observable verticalLayout: boolean = false;
-
-  /* (Issue #15: UNUSED) [>* Coefficient for multiplying the width of connecting lines between nodes (GoJS only) <]
-   * @observable goJsLineWidthFactor: number = defaultGoJsLineWidthFactor;
-   */
-
-  /** (Issue #15: UNUSED) Library used to display data
-   * @observable chartLibrary: TChartLibrary = defaultChartLibrary;
-   */
 
   /** Chart nodes color mode (could be overriden individually later) */
   @observable nodesColorMode: TNodesColorMode = defaultNodesColorMode;
@@ -85,6 +145,7 @@ export class SankeyAppSessionStore {
   constructor() {
     makeObservable(this);
     this.setStaticReactions();
+    this.initDefaultParams();
   }
 
   async destroy() {
@@ -113,7 +174,8 @@ export class SankeyAppSessionStore {
     } else if (ready) {
       return 'ready';
     } else {
-      return 'welcome'; // UNUSED!
+      return 'waiting';
+      // return 'welcome'; // UNUSED!
     }
   }
 
@@ -122,11 +184,53 @@ export class SankeyAppSessionStore {
     return this.finished;
   }
 
+  // Init settings...
+
+  /** Initialize default parameters */
+  initDefaultParams() {
+    updatableParameters.forEach((paramItem) => {
+      const { id } = paramItem;
+      const val = getSavedOrQueryParameter(paramItem, { storagePrefix, showWarining: true });
+      if (val != null) {
+        // eslint-disable-next-line no-console
+        console.log('[SankeyAppSessionStore:initDefaultParams] Set parameter', id, '=', val);
+        runInAction(() => {
+          // @ts-ignore
+          this[id] = val;
+        });
+      }
+    });
+  }
+
+  /** Save parameter into the storage */
+  saveParameter(id: TRestorableParameter) {
+    const hasLocalStorage = typeof localStorage !== 'undefined';
+    if (hasLocalStorage) {
+      const storageId = [storagePrefix, id].filter(Boolean).join('');
+      const val = this[id];
+      /* console.log('[SankeyAppSessionStore:saveParameter]', {
+       *   id,
+       *   val,
+       *   storageId,
+       * });
+       */
+      localStorage.setItem(storageId, String(val));
+    }
+  }
+
+  /** Initialize settings (reserved for future use */
+  initSettings(): Promise<void> {
+    // TODO?
+    return Promise.resolve();
+  }
+
   // Core setters...
 
-  // @action setSettingDone(settingsDone: typeof SankeyAppSessionStore.prototype.settingsDone) {
-  //   this.settingsDone = settingsDone;
-  // }
+  @action.bound setShowLeftPanel(
+    showLeftPanel: typeof SankeyAppSessionStore.prototype.showLeftPanel,
+  ) {
+    this.showLeftPanel = showLeftPanel;
+  }
 
   @action setInited(inited: typeof SankeyAppSessionStore.prototype.inited) {
     this.inited = inited;
@@ -231,7 +335,6 @@ export class SankeyAppSessionStore {
     // this.loading = false;
     this.status = undefined;
     this.error = undefined;
-    // this.settingsDone = false;
 
     // Reset settings?
     this.clearSettings();
@@ -240,14 +343,9 @@ export class SankeyAppSessionStore {
   // Settings...
 
   @action clearSettings() {
+    this.showLeftPanel = defaultShowLeftPanel;
     this.themeMode = defaultMuiThemeMode;
     this.verticalLayout = false;
-    /* // Issue #15: UNUSED
-     * this.goJsLineWidthFactor = defaultGoJsLineWidthFactor;
-     */
-    /* // Issue #15: Unused
-     * this.chartLibrary = defaultChartLibrary;
-     */
     this.nodesColorMode = defaultNodesColorMode;
     this.baseNodesColor = defaultBaseColor;
     this.secondNodesColor = defaultSecondColor;
@@ -266,6 +364,10 @@ export class SankeyAppSessionStore {
       reaction(() => this.autoHideNodesMaxOutputs, this.onAutoHideNodesParamsChanged),
       reaction(() => this.nodesColorMode, this.onNodesColorModeChanged),
       reaction(() => this.sankeyAppDataStore, this.onSankeyAppDataStore),
+      // Add reactions to save all the saveable parameters to the local storage...
+      ...restorableParameters.map((id) =>
+        reaction(() => this[id], this.saveParameter.bind(this, id)),
+      ),
     ];
   }
   resetStaticReactions() {

@@ -10,11 +10,12 @@ import {
   List,
   ListItem,
   ListItemButton,
+  ListItemIcon,
   ListItemText,
   Toolbar,
   Typography,
 } from '@mui/material';
-import { Menu } from '@mui/icons-material';
+import { Menu, HelpOutline, DriveFolderUpload, SvgIconComponent } from '@mui/icons-material';
 import classNames from 'classnames';
 
 import { TPropsWithClassName } from 'src/core/types';
@@ -27,6 +28,7 @@ import styles from './AppHeader.module.scss';
 const drawerWidth = 280;
 
 interface TNavItem {
+  icon?: SvgIconComponent;
   id: string;
   text: string;
 }
@@ -39,11 +41,11 @@ export const AppHeader: React.FC<TPropsWithClassName> = observer((props) => {
   const hasData = sankeyAppDataStore?.ready && loadNewDataCb;
   const navItems = React.useMemo<TNavItem[]>(() => {
     return [
-      // { id: 'home', text: 'Home' },
-      !showHelp && { id: 'showHelp', text: 'Show help' },
-      showHelp && { id: 'hideHelp', text: 'Hide help' },
-      hasData && { id: 'loadData', text: 'Load new data' },
-      !hasData && { id: 'loadData', text: 'Load data' },
+      // { id: 'home', text: 'Home', icon: Home }, // UNUSED!
+      hasData && { id: 'loadData', text: 'Load new data', icon: DriveFolderUpload },
+      !hasData && { id: 'loadData', text: 'Load data', icon: DriveFolderUpload },
+      !showHelp && { id: 'showHelp', text: 'Show help', icon: HelpOutline },
+      showHelp && { id: 'hideHelp', text: 'Hide help', icon: HelpOutline },
     ].filter(Boolean) as TNavItem[];
   }, [hasData, showHelp]);
 
@@ -111,8 +113,13 @@ export const AppHeader: React.FC<TPropsWithClassName> = observer((props) => {
       <Divider />
       <List>
         {navItems.map((item) => (
-          <ListItem key={item.id} disablePadding>
-            <ListItemButton id={item.id} sx={{ textAlign: 'center' }} onClick={handleNavItemClick}>
+          <ListItem key={item.id} disablePadding className={styles.drawerListItem}>
+            <ListItemButton id={item.id} onClick={handleNavItemClick}>
+              {item.icon && (
+                <ListItemIcon>
+                  <item.icon />
+                </ListItemIcon>
+              )}
               <ListItemText primary={item.text} />
             </ListItemButton>
           </ListItem>
@@ -141,13 +148,14 @@ export const AppHeader: React.FC<TPropsWithClassName> = observer((props) => {
           >
             {appTitle}
           </Typography>
-          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+          <Box sx={{ display: { xs: 'none', sm: 'flex' } }} className={styles.navButtons}>
             {navItems.map((item) => (
               <Button
                 key={item.id}
                 id={item.id}
                 sx={{ color: 'white' }}
                 onClick={handleNavItemClick}
+                startIcon={item.icon && <item.icon />}
               >
                 {item.text}
               </Button>

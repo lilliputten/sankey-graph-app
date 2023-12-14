@@ -3,7 +3,8 @@ import { observer } from 'mobx-react-lite';
 import { Box } from '@mui/material';
 import classNames from 'classnames';
 
-// import { isDevBrowser } from 'src/config/build';
+import { showError } from 'src/ui/Basic';
+import { getErrorText } from 'src/helpers';
 import { TPropsWithClassName, TMuiThemeMode } from 'src/core/types';
 import {
   SankeyAppSessionStore,
@@ -18,17 +19,14 @@ import { SankeyAppRootWelcome } from './SankeyAppRootWelcome';
 
 import styles from './SankeyAppRoot.module.scss';
 
-/* [>* DEBUG: Don't wait for user action <]
- * const __debugEmulateSessionReady = false && isDevBrowser;
- */
-
-// DEBUG!
+// DEBUG: Unimplemented component stubs!
 const PlaceholderComponent = (id: string) => () => (
   <Box className={classNames('SankeyAppRootPlaceholder', id)}>
     Placeholder component: <strong>{id}</strong>
   </Box>
 );
 const SankeyAppRootFinished = PlaceholderComponent('SankeyAppRootFinished');
+const ShowAppHelp = PlaceholderComponent('ShowAppHelp');
 
 interface TCurrentComponentProps {
   rootState: typeof SankeyAppSessionStore.prototype.rootState;
@@ -45,26 +43,53 @@ const RenderCurrentComponent: React.FC<TCurrentComponentProps> = (props) => {
   switch (rootState) {
     case 'waiting':
       return <SankeyAppRootWaiter />;
+    case 'showHelp':
+      return <ShowAppHelp />;
     case 'finished':
       return <SankeyAppRootFinished />;
     case 'ready':
       return <SankeyAppCore themeMode={themeMode} />;
-    case 'welcome':
-      return <SankeyAppRootWelcome />;
+    // case 'welcome': // UNUSED!
+    //   return <SankeyAppRootWelcome />;
   }
 };
 
-/** Choose & render suitable application part */
-const RenderLayout: React.FC = observer(() => {
+function useSankeyAppSessionInit() {
   const sankeyAppSessionStore = useSankeyAppSessionStore();
   React.useEffect(() => {
     // Init store...
     sankeyAppSessionStore.setInited(true);
-    sankeyAppSessionStore.setReady(true);
-    // if (__debugEmulateSessionReady) {
-    //   sankeyAppSessionStore.setReady(true);
-    // }
+    // Init options, parameters and settings...
+    sankeyAppSessionStore
+      .initSettings()
+      .then(() => {
+        sankeyAppSessionStore.setReady(true);
+      })
+      .catch((error) => {
+        const errMsg = [
+          // prettier-ignore
+          'Cannot to initialize app session store settings',
+          getErrorText(error),
+        ]
+          .filter(Boolean)
+          .join(': ');
+        const err = new Error(errMsg);
+        console.error('[SankeyAppRoot:useSankeyAppSessionStore]', errMsg, {
+          err,
+          error,
+        });
+        // eslint-disable-next-line no-debugger
+        debugger;
+        showError(err);
+        // throw error;
+      });
   }, [sankeyAppSessionStore]);
+}
+
+/** Choose & render suitable application part */
+const RenderLayout: React.FC = observer(() => {
+  useSankeyAppSessionInit();
+  const sankeyAppSessionStore = useSankeyAppSessionStore();
   const { rootState } = sankeyAppSessionStore;
   // TODO: Get theme mode from config, session or the local storage?
   const { themeMode } = sankeyAppSessionStore;
