@@ -7,8 +7,8 @@
 
 Sankey graph viewer and editor application.
 
-- Version: 0.0.17
-- Last changes timestamp: 2023.12.13, 22:06 GMT+7
+- Version: 0.0.18
+- Last changes timestamp: 2023.12.15, 01:47 GMT+7
 
 TODO: Add project description.
 

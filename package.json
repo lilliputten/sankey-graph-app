@@ -1,8 +1,8 @@
 {
   "name": "sankey-graph-app",
-  "version": "0.0.17",
-  "timetag": "231213-2206",
-  "timestamp": "2023.12.13, 22:06 GMT+7",
+  "version": "0.0.18",
+  "timetag": "231215-0147",
+  "timestamp": "2023.12.15, 01:47 GMT+7",
   "changed": "2023.11.13, 00:02",
   "private": true,
   "eslint-unused-rules": {
