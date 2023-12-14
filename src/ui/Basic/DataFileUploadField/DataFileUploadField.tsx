@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Button, ButtonOwnProps, CircularProgress } from '@mui/material';
-import { Check, CloudUpload } from '@mui/icons-material';
+import { Check, DriveFolderUpload } from '@mui/icons-material';
 import classNames from 'classnames';
 
 import { TPropsWithClassName } from 'src/core/types';
@@ -266,7 +266,7 @@ export const DataFileUploadField = <T extends unknown>(props: TDataFileUploadFie
         />
       );
     } else {
-      return <CloudUpload />;
+      return <DriveFolderUpload />;
     }
   }, [isLoading, isLoaded, loadingProgress]);
   return (

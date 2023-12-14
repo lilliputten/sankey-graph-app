@@ -1027,44 +1027,46 @@ module.exports = function render(gd, svg, calcData, layout, callbacks) {
             horizontal,
             left,
             nodeLineWidth,
-            textFont,
             visibleHeight,
             visibleWidth,
+            // textFont,
         } = d;
         // Set label positions counting mutiline offsets
         var e = d3.select(this);
         // how much to shift a multi-line label to center it vertically.
         var nLines = svgTextUtils.lineCount(e);
-        var chidrenCount = this.children.length;
         var blockHeightPx = nLines * dyPx;
-        var blockHeight = textFont.size * (nLines * LINE_SPACING - CAP_SHIFT);
         var posX = nodeLineWidth / 2 + TEXTPAD;
         var posY = ((horizontal ? visibleHeight : visibleWidth) - blockHeightPx) / 2;
-        console.log('[render:setLabelTransformUpdated]', {
-            chidrenCount,
-            e,
-            nLines,
-            blockHeightPx,
-            blockHeight,
-            posX,
-            posY,
-            // ...
-            LINE_SPACING,
-            CAP_SHIFT,
-            TEXTPAD,
-            // ...
-            horizontal,
-            left,
-            nodeLineWidth,
-            textFont,
-            visibleHeight,
-            visibleWidth,
-            // ...
-            d,
-        });
-        if (chidrenCount > 1) {
-            debugger;
-        }
+        /* // DEBUG
+         * var chidrenCount = this.children.length;
+         * var blockHeight = textFont.size * (nLines * LINE_SPACING - CAP_SHIFT);
+         * console.log('[render:setLabelTransformUpdated]', {
+         *     // chidrenCount,
+         *     e,
+         *     nLines,
+         *     blockHeightPx,
+         *     // blockHeight,
+         *     posX,
+         *     posY,
+         *     // ...
+         *     LINE_SPACING,
+         *     CAP_SHIFT,
+         *     TEXTPAD,
+         *     // ...
+         *     horizontal,
+         *     left,
+         *     nodeLineWidth,
+         *     textFont,
+         *     visibleHeight,
+         *     visibleWidth,
+         *     // ...
+         *     d,
+         * });
+         * if (chidrenCount > 1) {
+         *     debugger;
+         * }
+         */
         if(horizontal) {
             if(left) {
                 posX = -posX;
@@ -1223,14 +1225,15 @@ module.exports = function render(gd, svg, calcData, layout, callbacks) {
             var labelChunks = splitNodeLabel(label);
             // TODO: Split label for a few lines?
             var e = d3.select(thisNode); // Get d3 entity for current node
-            console.log('[plotly.js:render:addNodeLabelSpans]', {
-                d,
-                node,
-                label,
-                labelChunks,
-                e,
-                thisNode,
-            });
+            /* console.log('[plotly.js:render:addNodeLabelSpans]', {
+             *     d,
+             *     node,
+             *     label,
+             *     labelChunks,
+             *     e,
+             *     thisNode,
+             * });
+             */
             // Set font
             Drawing.font(e, d.textFont);
             // svgTextUtils.convertToTspans(e, gd);

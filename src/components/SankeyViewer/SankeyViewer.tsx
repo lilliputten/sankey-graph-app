@@ -3,8 +3,8 @@ import { observer } from 'mobx-react-lite';
 import classNames from 'classnames';
 
 import { TPropsWithClassName } from 'src/core/types';
-// import { useSankeyAppSessionStore } from '../SankeyApp/SankeyAppSessionStore';
-import { useSankeyAppDataStore } from '../SankeyApp/SankeyAppDataStore';
+import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
+import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 import { TPanelParams, WithSidePanels } from 'src/components/ui/WithSidePanels';
 import { SankeySettingsPanel } from 'src/components/SankeyMisc/SankeySettingsPanel';
 import { SankeyPropertiesPanel } from 'src/components/SankeyMisc/SankeyPropertiesPanel';
@@ -32,15 +32,17 @@ export const SankeyViewer: React.FC<TSankeyViewerProps> = observer((props) => {
     defaultShowLeftPanel = true,
     defaultShowRightPanel = false,
   } = props;
+  const sankeyAppSessionStore = useSankeyAppSessionStore();
+  const { showLeftPanel } = sankeyAppSessionStore;
   const sankeyAppDataStore = useSankeyAppDataStore();
   const { selectedGraphId } = sankeyAppDataStore;
   // const [useRightPanel, setUseRightPanel] = React.useState(false);
+  // const [showLeftPanel, setShowLeftPanel] = React.useState(defaultShowLeftPanel); // TODO: If we need controlled left panel
   const leftPanelContent = React.useMemo(
     () => useLeftPanel && <SankeySettingsPanel />,
     [useLeftPanel],
   );
   const rightPanelContent = React.useMemo(() => useRightPanel && <SankeyPropertiesPanel />, []);
-  // const [showLeftPanel, setShowLeftPanel] = React.useState(defaultShowLeftPanel); // TDO: If we nned controlled left panel
   const [showRightPanel, setShowRightPanel] = React.useState(defaultShowRightPanel);
   React.useEffect(() => {
     const showRightPanel = selectedGraphId !== undefined;
@@ -58,15 +60,17 @@ export const SankeyViewer: React.FC<TSankeyViewerProps> = observer((props) => {
         headerTitle: 'Settings',
         toggleTitle: 'Toggle settings panel',
         scrollableContent: true,
-        // show: showLeftPanel,
-        // setShow: setShowLeftPanel,
+        show: showLeftPanel,
+        setShow: sankeyAppSessionStore.setShowLeftPanel,
       };
     }
   }, [
+    // prettier-ignore
     useLeftPanel,
+    showLeftPanel,
     leftPanelContent,
     defaultShowLeftPanel,
-    // showLeftPanel,
+    sankeyAppSessionStore,
   ]);
   const rightPanelParams = React.useMemo<TPanelParams | undefined>(() => {
     if (useRightPanel) {
