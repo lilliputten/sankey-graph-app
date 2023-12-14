@@ -9,6 +9,7 @@ import {
 } from 'mobx';
 import bound from 'bind-decorator';
 
+import { autoLoadUrls } from 'src/core/constants/Sankey';
 import {
   TMuiThemeMode,
   validMuiThemeModes,
@@ -24,6 +25,8 @@ import {
 import { SankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 import { getSavedOrQueryParameter } from 'src/helpers/generic/getSavedOrQueryParameter';
 
+console.log('autoLoadUrls', autoLoadUrls);
+
 export type TSankeyAppSessionStoreStatus = undefined | 'dataLoaded' | 'finished';
 
 const storagePrefix = 'SankeyAppSessionStore:';
@@ -36,7 +39,8 @@ const defaultAutoHideNodes: boolean = false;
 const defaultAutoHideNodesThreshold: number = 50;
 const defaultAutoHideNodesMaxOutputs: number = 1;
 
-/** Parameters what could be saved and restored from the local storage (or from url query) */
+/** Parameters what could be saved (via `saveParameter`) and restored from the
+ * local storage (or from url query, via `restoreParameters`) */
 const restorableParameters = [
   // prettier-ignore
   'showLeftPanel',
@@ -48,49 +52,39 @@ const restorableParameters = [
   'autoHideNodes',
   'autoHideNodesThreshold',
   'autoHideNodesMaxOutputs',
+  // These parameters will be excluded from `saveableParameters` (only to initialize from url query)...
+  'doAutoLoad',
+  'autoLoadUrlEdges',
+  'autoLoadUrlFlows',
+  'autoLoadUrlGraphs',
+  'autoLoadUrlNodes',
 ] as const;
 export type TRestorableParameter = (typeof restorableParameters)[number];
 
+/** Parameters to save to the local storage */
+const saveableParameters = restorableParameters.filter(
+  (id) =>
+    // Exclude auto load urls...
+    !id.startsWith('autoLoadUrl') && id !== 'doAutoLoad',
+);
+
 /** Updatable parameters descriptions */
 const updatableParameters: TUpdatableParameter<TRestorableParameter>[] = [
-  {
-    id: 'showLeftPanel',
-    type: 'boolean',
-  },
-  {
-    id: 'themeMode',
-    type: 'string',
-    validValues: validMuiThemeModes,
-  },
-  {
-    id: 'verticalLayout',
-    type: 'boolean',
-  },
-  {
-    id: 'nodesColorMode',
-    type: 'string',
-    validValues: validNodesColorModes,
-  },
-  {
-    id: 'baseNodesColor',
-    type: 'string',
-  },
-  {
-    id: 'secondNodesColor',
-    type: 'string',
-  },
-  {
-    id: 'autoHideNodes',
-    type: 'boolean',
-  },
-  {
-    id: 'autoHideNodesThreshold',
-    type: 'number',
-  },
-  {
-    id: 'autoHideNodesMaxOutputs',
-    type: 'number',
-  },
+  { id: 'showLeftPanel', type: 'boolean' },
+  { id: 'themeMode', type: 'string', validValues: validMuiThemeModes },
+  { id: 'verticalLayout', type: 'boolean' },
+  { id: 'nodesColorMode', type: 'string', validValues: validNodesColorModes },
+  { id: 'baseNodesColor', type: 'string' },
+  { id: 'secondNodesColor', type: 'string' },
+  { id: 'autoHideNodes', type: 'boolean' },
+  { id: 'autoHideNodesThreshold', type: 'number' },
+  { id: 'autoHideNodesMaxOutputs', type: 'number' },
+  // Auto load...
+  { id: 'doAutoLoad', type: 'boolean' },
+  { id: 'autoLoadUrlEdges', type: 'string' },
+  { id: 'autoLoadUrlFlows', type: 'string' },
+  { id: 'autoLoadUrlGraphs', type: 'string' },
+  { id: 'autoLoadUrlNodes', type: 'string' },
 ];
 
 export class SankeyAppSessionStore {
@@ -140,12 +134,20 @@ export class SankeyAppSessionStore {
   /** Auto hide nodes maxmum outputs to show */
   @observable autoHideNodesMaxOutputs: number = defaultAutoHideNodesMaxOutputs;
 
+  // Default auto load values...
+
+  @observable doAutoLoad: boolean = false;
+  @observable autoLoadUrlEdges: string = autoLoadUrls.edges;
+  @observable autoLoadUrlFlows: string = autoLoadUrls.flows;
+  @observable autoLoadUrlGraphs: string = autoLoadUrls.graphs;
+  @observable autoLoadUrlNodes: string = autoLoadUrls.nodes;
+
   // Lifecycle...
 
   constructor() {
     makeObservable(this);
     this.setStaticReactions();
-    this.initDefaultParams();
+    this.restoreParameters();
   }
 
   async destroy() {
@@ -187,17 +189,17 @@ export class SankeyAppSessionStore {
   // Init settings...
 
   /** Initialize default parameters */
-  initDefaultParams() {
+  restoreParameters() {
     updatableParameters.forEach((paramItem) => {
       const { id } = paramItem;
       const val = getSavedOrQueryParameter(paramItem, { storagePrefix, showWarining: true });
       if (val != null) {
-        // eslint-disable-next-line no-console
-        console.log('[SankeyAppSessionStore:initDefaultParams] Set parameter', id, '=', val);
         runInAction(() => {
           // @ts-ignore
           this[id] = val;
         });
+        // eslint-disable-next-line no-console
+        console.log('[SankeyAppSessionStore:restoreParameters] Restored parameter', id, '=', val);
       }
     });
   }
@@ -343,6 +345,7 @@ export class SankeyAppSessionStore {
   // Settings...
 
   @action clearSettings() {
+    // TODO: Use saved on initialization default values and list of resetable parameters...
     this.showLeftPanel = defaultShowLeftPanel;
     this.themeMode = defaultMuiThemeMode;
     this.verticalLayout = false;
@@ -352,6 +355,11 @@ export class SankeyAppSessionStore {
     this.autoHideNodes = defaultAutoHideNodes;
     this.autoHideNodesThreshold = defaultAutoHideNodesThreshold;
     this.autoHideNodesMaxOutputs = defaultAutoHideNodesMaxOutputs;
+    this.doAutoLoad = false;
+    this.autoLoadUrlEdges = autoLoadUrls.edges;
+    this.autoLoadUrlFlows = autoLoadUrls.flows;
+    this.autoLoadUrlGraphs = autoLoadUrls.graphs;
+    this.autoLoadUrlNodes = autoLoadUrls.nodes;
   }
 
   // Reactions...
@@ -365,7 +373,7 @@ export class SankeyAppSessionStore {
       reaction(() => this.nodesColorMode, this.onNodesColorModeChanged),
       reaction(() => this.sankeyAppDataStore, this.onSankeyAppDataStore),
       // Add reactions to save all the saveable parameters to the local storage...
-      ...restorableParameters.map((id) =>
+      ...saveableParameters.map((id) =>
         reaction(() => this[id], this.saveParameter.bind(this, id)),
       ),
     ];
