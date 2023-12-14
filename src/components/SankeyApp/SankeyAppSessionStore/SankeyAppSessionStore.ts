@@ -35,6 +35,7 @@ export class SankeyAppSessionStore {
 
   @observable inited: boolean = false;
   @observable finished: boolean = false;
+  @observable showHelp: boolean = false;
   @observable ready: boolean = false;
   @observable loading: boolean = false;
   @observable status: TSankeyAppSessionStoreStatus;
@@ -93,6 +94,7 @@ export class SankeyAppSessionStore {
 
   // Core getters...
 
+  /** The root state: what component show to the user */
   @computed get rootState() {
     const {
       // prettier-ignore
@@ -100,15 +102,18 @@ export class SankeyAppSessionStore {
       loading,
       ready,
       finished,
+      showHelp,
     } = this;
     if (!inited || loading) {
       return 'waiting';
     } else if (finished) {
       return 'finished';
+    } else if (showHelp) {
+      return 'showHelp';
     } else if (ready) {
       return 'ready';
     } else {
-      return 'welcome';
+      return 'welcome'; // UNUSED!
     }
   }
 
@@ -129,6 +134,10 @@ export class SankeyAppSessionStore {
 
   @action setFinished(finished: typeof SankeyAppSessionStore.prototype.finished) {
     this.finished = finished;
+  }
+
+  @action setShowHelp(showHelp: typeof SankeyAppSessionStore.prototype.showHelp) {
+    this.showHelp = showHelp;
   }
 
   @action setReady(ready: typeof SankeyAppSessionStore.prototype.ready) {
