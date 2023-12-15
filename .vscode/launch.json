@@ -76,10 +76,7 @@
       "type": "python",
       "request": "launch",
       "program": "${file}",
-      "console": "integratedTerminal",
-      "args": [
-        "--use-public"
-      ]
+      "console": "integratedTerminal"
     },
     {
       "name": "Python: Run start-app.py",
@@ -88,7 +85,7 @@
       "program": "start-app.py",
       "console": "integratedTerminal",
       "args": [
-        "--use-public",
+        "--dev",
         "--data-set-folder", "sweet-corn",
         "--omit-date-tag"
       ]
