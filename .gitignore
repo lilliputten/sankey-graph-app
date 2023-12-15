@@ -44,6 +44,7 @@ tsconfig.tsbuildinfo
 ~$*.doc
 *crashed-session*
 *.session
+/temp*
 
 # Special exclusions
 !__mocks__

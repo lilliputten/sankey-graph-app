@@ -70,6 +70,28 @@
       // "outputCapture" : "std",
       // "protocol": "inspector",
       "console": "integratedTerminal"
+    },
+    {
+      "name": "Python: Run file",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "args": [
+        "--use-public"
+      ]
+    },
+    {
+      "name": "Python: Run start-app.py",
+      "type": "python",
+      "request": "launch",
+      "program": "start-app.py",
+      "console": "integratedTerminal",
+      "args": [
+        "--use-public",
+        "--data-folder",
+        "sweet-corn"
+      ]
     }
   ]
 }

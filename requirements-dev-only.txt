@@ -1,0 +1,8 @@
+# Additional requirements for dev-environment; see also `.flaskenv*` files.
+# @changed 2023.12.15, 17:03
+# vim: ft=conf
+
+python-dotenv==1.0.0
+flake8==6.1.0
+pylint==3.0.3
+autopep8==2.0.4

@@ -3,7 +3,7 @@
   "version": "0.0.18",
   "timetag": "231215-0147",
   "timestamp": "2023.12.15, 01:47 GMT+7",
-  "changed": "2023.11.13, 00:02",
+  "changed": "2023.12.15, 17:04",
   "private": true,
   "eslint-unused-rules": {
     "eqeqeq": [
@@ -136,6 +136,7 @@
     "start-cra-UNUSED": "echo --Start dev server-- && react-scripts start",
     "test": "craco test --watchAll=false",
     "test-watch": "craco test",
+    "start-app": "echo --Start dev server /with .venv/-- && python start-app.py --use-public",
     "help": "echo --List all available script commands-- && npm-package-user-scripts-list"
   }
 }
