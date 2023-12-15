@@ -5,29 +5,38 @@ from os import path
 import json
 import sys
 import datetime
-
-# Get command line arguments (shared global)
-cliArgs = list(sys.argv)[1:]
-
-# TODO: Print short help if no arguments passed
-# Examples:
-# - python start-app.py --use-public --data-set-folder sweet-corn --omit-date-tag --target-folder target
+import argparse
+from typing import TypedDict
 
 
-# Helpers...
+# Data types...
 
-def posixPath(pathName):
+class TargetFileNames(TypedDict):
+    edges: str
+    flows: str
+    graphs: str
+    nodes: str
+
+class AppData(TypedDict):
+    edgesData: any
+    flowsData: any
+    graphsData: any
+    nodesData: any
+
+
+# Basic helpers...
+
+def posixPath(pathName: str):
     return pathName.replace('\\', '/')
 
-
-def loadJson(filename):
+def loadJson(filename: str):
     if not path.isfile(filename):
         print('Not found file ', filename)
         exit(1)
     with open(filename, encoding='utf-8') as fh:
         return json.load(fh)
 
-def writeJson(filename, data):
+def writeJson(filename: str, data: any):
     jsonStr = json.dumps(data, indent=2)
     with open(filename, 'wb') as fh:
         fh.write(jsonStr.encode('utf-8'))
@@ -40,64 +49,50 @@ def getDateTag(now=None):
     return dateTag
 
 
-# Global shared root path...
-rootPath = posixPath(path.dirname(path.abspath(__file__)))
+# Global shared params...
+rootPath: str = posixPath(path.dirname(path.abspath(__file__)))
 
-def loadDemoData():
+
+# Default options...
+defaultDataFolder: str = 'data'
+defaultDataSetFolder: str = 'hardwood-forestry'
+defaultTargetFolder: str = 'temp'
+
+
+# Command line parameters...
+parser = argparse.ArgumentParser(description='Launch app from python script demo.')
+parser.add_argument('--use-public', dest='usePublic', action=argparse.BooleanOptionalAction, help='Use "public" folder prefix (for non-built dev environment)')
+parser.add_argument('--data-folder', dest='dataFolder', metavar='{dataFolder}', action='store', default=defaultDataFolder, help='Data folder name (default: "' + defaultDataFolder + '")')
+parser.add_argument('--data-set-folder', dest='dataSetFolder', metavar='{dataSetFolder}', action='store', default=defaultDataSetFolder, help='Data set folder name (default: "' + defaultDataSetFolder + '")')
+parser.add_argument('--target-folder', dest='targetFolder', metavar='{targetFolder}', action='store', default=defaultTargetFolder, help='Target folder name (default: "' + defaultTargetFolder + '")')
+parser.add_argument('--omit-date-tag', dest='omitDateTag', action=argparse.BooleanOptionalAction, help='Omit date tag postfix for auto-generated target folder name')
+options = parser.parse_args()
+
+
+# Data processing routines...
+
+def loadDemoAppData() -> AppData:
     """
-    Loading demo data.
+    Loading demo data from external files.
 
     Uses global variables:
     - rootPath
-    - cliArgs
-
-    TODO: Command line params:
-    --use-public
-    --data-folder
-    --data-set-folder
-
-    Returns dictionary with keys:
-    - edgesData
-    - flowsData
-    - graphsData
-    - nodesData
+    - options
     """
 
-    # Initialize parameters...
-    usePublic = '--use-public' in cliArgs
-
-    # Get data folder...
-    dataFolder = 'data'
-    hasDataFolder = '--data-folder' in cliArgs
-    if hasDataFolder:
-        p = cliArgs.index('--data-folder')
-        dataFolder = cliArgs[p + 1]
-        if not dataFolder or dataFolder.startswith('--'):
-            print('Invalid or empty data folder argument:', dataFolder)
-            exit(1)
-
-    # Get data set folder...
-    dataSetFolder = 'hardwood-forestry'
-    hasDataSetFolder = '--data-set-folder' in cliArgs
-    if hasDataSetFolder:
-        p = cliArgs.index('--data-set-folder')
-        dataSetFolder = cliArgs[p + 1]
-        if not dataSetFolder or dataSetFolder.startswith('--'):
-            print('Invalid or empty data set folder argument:', dataSetFolder)
-            exit(1)
-
-    print('dataFolder:', dataFolder)
-    print('dataSetFolder:', dataSetFolder)
+    print('usePublic:', options.usePublic)
+    print('dataFolder:', options.dataFolder)
+    print('dataSetFolder:', options.dataSetFolder)
 
     dataPathParts = [
-        'public' if usePublic else None,  # For pre-build environment, when 'public' hasn't served at root of build files yet.
-        dataFolder,
+        'public' if options.usePublic else None,  # For pre-build environment, when 'public' hasn't served at root of build files yet.
+        options.dataFolder,
     ]
-    dataPath = posixPath(path.join(rootPath, '/'.join(list(filter(None, dataPathParts)))))
-    dataSetPath = posixPath(path.join(dataPath, dataSetFolder))
+    dataFolder = '/'.join(list(filter(None, dataPathParts)))
+    dataSetFolder = options.dataSetFolder
 
-    print('dataPath:', dataPath)
-    print('dataSetPath:', dataSetPath)
+    dataPath = posixPath(path.join(rootPath, dataFolder))
+    dataSetPath = posixPath(path.join(dataPath, dataSetFolder))
 
     # Set input file names...
     edgesFile = posixPath(path.join(dataSetPath, 'edges.json'))
@@ -117,84 +112,70 @@ def loadDemoData():
     nodesData = loadJson(nodesFile)
 
     return {
-        'edgesData': edgesData,
-        'flowsData': flowsData,
-        'graphsData': graphsData,
-        'nodesData': nodesData,
+        'edges': edgesData,
+        'flows': flowsData,
+        'graphs': graphsData,
+        'nodes': nodesData,
     }
 
-demoData = loadDemoData()
-
-#  print('Data:')
-#  print('edgesData:', demoData['edgesData'])
-#  print('flowsData:', demoData['flowsData'])
-#  print('graphsData:', demoData['graphsData'])
-#  print('nodesData:', demoData['nodesData'])
-
-def writeTempData(demoData):
-    """
-    Expected data dictionary with keys:
-    - edgesData
-    - flowsData
-    - graphsData
-    - nodesData
-
-    Uses global variables:
-    - rootPath
-    - cliArgs
-
-    TODO: Command line params:
-    --omit-date-tag - To omit date tag postfix in auto-generated target folder name
-    --target-folder
-    """
-
-    # Default target folder prefix
-    targetFolder = 'temp'
-
-    # Get data set folder...
-    hasTargetFolder = '--target-folder' in cliArgs
-    if hasTargetFolder:
-        p = cliArgs.index('--target-folder')
-        targetFolder = cliArgs[p + 1]
-        if not targetFolder or targetFolder.startswith('--'):
-            print('Invalid or empty target folder argument:', targetFolder)
-            exit(1)
-
-    omitDateTag = '--omit-date-tag' in cliArgs
-    if not omitDateTag:
+def getTargetFolder() -> str:
+    targetFolder = options.targetFolder
+    if not options.omitDateTag:
         targetFolder += '-' + getDateTag()
+    return targetFolder
 
-    print('targetFolder:', targetFolder)
-
+def ensureTargetFolder(targetFolder: str):
     targetPath = posixPath(path.join(rootPath, targetFolder))
-    print('targetPath:', targetPath)
-
     # Ensure target path exists
     if not path.exists(targetPath):
         # TODO: To catch possible fs/io errors?
         os.makedirs(targetPath)
 
+def getTargetFileNames(targetFolder: str) -> TargetFileNames:
     # Create target file names...
-    edgesTempFile = posixPath(path.join(targetPath, 'edges.json'))
-    flowsTempFile = posixPath(path.join(targetPath, 'flows.json'))
-    graphsTempFile = posixPath(path.join(targetPath, 'graphs.json'))
-    nodesTempFile = posixPath(path.join(targetPath, 'nodes.json'))
+    targetFileNames: TargetFileNames = {
+        'edges': posixPath(path.join(targetFolder, 'edges.json')),
+        'flows': posixPath(path.join(targetFolder, 'flows.json')),
+        'graphs': posixPath(path.join(targetFolder, 'graphs.json')),
+        'nodes': posixPath(path.join(targetFolder, 'nodes.json')),
+    }
 
-    #  print('Target files:')
-    #  print('edgesTempFile', edgesTempFile)
-    #  print('flowsTempFile', flowsTempFile)
-    #  print('graphsTempFile', graphsTempFile)
-    #  print('nodesTempFile', nodesTempFile)
+    return targetFileNames
 
-    # Write files...
-    print('Writting target files...')
-    writeJson(edgesTempFile, demoData['edgesData'])
-    writeJson(flowsTempFile, demoData['flowsData'])
-    writeJson(graphsTempFile, demoData['graphsData'])
-    writeJson(nodesTempFile, demoData['nodesData'])
+def writeAppData(appData: AppData, targetFileNames: TargetFileNames):
+    """
+    Write app data to later use in launched app.
+    """
+    print('Writting target files:')
+    print('Writting', targetFileNames['edges'], '...')
+    writeJson(posixPath(path.join(rootPath, targetFileNames['edges'])), appData['edges'])
+    print('Writting', targetFileNames['flows'], '...')
+    writeJson(posixPath(path.join(rootPath, targetFileNames['flows'])), appData['flows'])
+    print('Writting', targetFileNames['graphs'], '...')
+    writeJson(posixPath(path.join(rootPath, targetFileNames['graphs'])), appData['graphs'])
+    print('Writting', targetFileNames['nodes'], '...')
+    writeJson(posixPath(path.join(rootPath, targetFileNames['nodes'])), appData['nodes'])
     print('Done')
 
-writeTempData(demoData)
+
+# Start processing...
+
+# DEBUG: Get demo data from files. Provide real data here.
+appData = loadDemoAppData()
+
+targetFolder = getTargetFolder()
+
+ensureTargetFolder(targetFolder)
+
+targetFileNames = getTargetFileNames(targetFolder)
+
+#  print('App data:')
+#  print('edgesData:', appData['edgesData'])
+#  print('flowsData:', appData['flowsData'])
+#  print('graphsData:', appData['graphsData'])
+#  print('nodesData:', appData['nodesData'])
+
+writeAppData(appData, targetFileNames)
 
 # TODO:
 # - Launch server for app and data.
