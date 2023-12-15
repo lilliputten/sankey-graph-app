@@ -1,0 +1,17 @@
+astroid==3.0.2
+autopep8==2.0.4
+colorama==0.4.6
+DateTime==5.3
+dill==0.3.7
+flake8==6.1.0
+isort==5.13.2
+mccabe==0.7.0
+platformdirs==4.1.0
+pycodestyle==2.11.1
+pyflakes==3.1.0
+pylint==3.0.3
+python-dotenv==1.0.0
+pytz==2023.3.post1
+setuptools==69.0.2
+tomlkit==0.12.3
+zope.interface==6.1
