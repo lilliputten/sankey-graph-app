@@ -103,5 +103,3 @@ options:
   --dev, --no-dev       Use "public" folder prefix for demo data files and "build" for local web
                         server (for non-built dev environment)
 ```
-
-
