@@ -15,7 +15,7 @@ import { FullScreenPageLayout } from 'src/ui/layouts/FullScreenPageLayout';
 
 import { SankeyAppCore } from 'src/components/SankeyApp/SankeyAppCore';
 import { SankeyAppRootWaiter } from './SankeyAppRootWaiter/SankeyAppRootWaiter';
-import { SankeyAppRootWelcome } from './SankeyAppRootWelcome';
+import { HelpModal } from 'src/components/SankeyMisc/HelpModal';
 
 import styles from './SankeyAppRoot.module.scss';
 
@@ -43,8 +43,6 @@ const RenderCurrentComponent: React.FC<TCurrentComponentProps> = (props) => {
   switch (rootState) {
     case 'waiting':
       return <SankeyAppRootWaiter />;
-    case 'showHelp':
-      return <ShowAppHelp />;
     case 'finished':
       return <SankeyAppRootFinished />;
     case 'ready':
@@ -74,6 +72,7 @@ function useSankeyAppSessionInit() {
           .filter(Boolean)
           .join(': ');
         const err = new Error(errMsg);
+        // eslint-disable-next-line no-console
         console.error('[SankeyAppRoot:useSankeyAppSessionStore]', errMsg, {
           err,
           error,
@@ -102,6 +101,7 @@ const RenderLayout: React.FC = observer(() => {
         rootState={rootState}
         themeMode={themeMode}
       />
+      <HelpModal />
     </FullScreenPageLayout>
   );
 });

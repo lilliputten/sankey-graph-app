@@ -27,11 +27,7 @@ const PlaceholderComponent = (id: string) => () => (
     Placeholder for component: <strong>{id}</strong>
   </Box>
 );
-// const SankeyAppCoreWaiter = PlaceholderComponent('SankeyAppCoreWaiter');
-// const SankeyAppCoreReady = PlaceholderComponent('SankeyAppCoreReady');
-// const SankeyAppCoreStart = PlaceholderComponent('SankeyAppCoreStart');
 const SankeyAppCoreFinished = PlaceholderComponent('SankeyAppCoreFinished');
-const ShowAppHelp = PlaceholderComponent('ShowAppHelp');
 
 interface TSankeyAppCoreProps {
   className?: string;
@@ -43,7 +39,6 @@ interface TCurrentComponentProps {
   loading: boolean;
   ready: boolean;
   finished: boolean;
-  showHelp: boolean;
   themeMode: TMuiThemeMode;
 }
 
@@ -55,15 +50,12 @@ const RenderCurrentComponent: React.FC<TCurrentComponentProps> = (props) => {
     loading,
     ready,
     finished,
-    showHelp,
   } = props;
   // TODO: Show an error?
   if (!inited || loading) {
     return <SankeyAppCoreWaiter />;
   } else if (finished) {
     return <SankeyAppCoreFinished />;
-  } else if (showHelp) {
-    return <ShowAppHelp />;
   } else if (ready) {
     return <SankeyViewer />;
   } else {
@@ -103,7 +95,6 @@ const RenderLayout: React.FC<TSankeyAppCoreProps> = observer((props) => {
       sankeyAppSessionStore.setLoadNewDataCb(undefined);
     };
   }, [sankeyAppDataStore, sankeyAppSessionStore, loadNewData]);
-  const { showHelp } = sankeyAppSessionStore;
   const { inited, loading, ready, finished } = sankeyAppDataStore;
   return (
     <RenderCurrentComponent
@@ -111,7 +102,6 @@ const RenderLayout: React.FC<TSankeyAppCoreProps> = observer((props) => {
       loading={loading}
       ready={ready}
       finished={finished}
-      showHelp={showHelp}
       themeMode={themeMode}
     />
   );
