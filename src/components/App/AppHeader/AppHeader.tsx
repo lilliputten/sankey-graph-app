@@ -37,17 +37,16 @@ export const AppHeader: React.FC<TPropsWithClassName> = observer((props) => {
   const { className } = props;
   const container = document.body;
   const sankeyAppSessionStore = useSankeyAppSessionStore();
-  const { loadNewDataCb, showHelp, sankeyAppDataStore } = sankeyAppSessionStore;
+  const { loadNewDataCb, sankeyAppDataStore } = sankeyAppSessionStore;
   const hasData = sankeyAppDataStore?.ready && loadNewDataCb;
   const navItems = React.useMemo<TNavItem[]>(() => {
     return [
       // { id: 'home', text: 'Home', icon: Home }, // UNUSED!
       hasData && { id: 'loadData', text: 'Load new data', icon: DriveFolderUpload },
       !hasData && { id: 'loadData', text: 'Load data', icon: DriveFolderUpload },
-      !showHelp && { id: 'showHelp', text: 'Show help', icon: HelpOutline },
-      showHelp && { id: 'hideHelp', text: 'Hide help', icon: HelpOutline },
+      { id: 'showHelp', text: 'Help', icon: HelpOutline },
     ].filter(Boolean) as TNavItem[];
-  }, [hasData, showHelp]);
+  }, [hasData]);
 
   /** Mobile drawer state */
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -174,6 +173,7 @@ export const AppHeader: React.FC<TPropsWithClassName> = observer((props) => {
           }}
           sx={{
             display: { xs: 'block', sm: 'none' },
+            // TODO: Move to style's module
             '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
           }}
         >
