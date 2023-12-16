@@ -25,8 +25,6 @@ import {
 import { SankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 import { getSavedOrQueryParameter } from 'src/helpers/generic/getSavedOrQueryParameter';
 
-console.log('autoLoadUrls', autoLoadUrls);
-
 export type TSankeyAppSessionStoreStatus = undefined | 'dataLoaded' | 'finished';
 
 const storagePrefix = 'SankeyAppSessionStore:';
@@ -165,14 +163,11 @@ export class SankeyAppSessionStore {
       loading,
       ready,
       finished,
-      showHelp,
     } = this;
     if (!inited || loading) {
       return 'waiting';
     } else if (finished) {
       return 'finished';
-    } else if (showHelp) {
-      return 'showHelp';
     } else if (ready) {
       return 'ready';
     } else {
@@ -242,7 +237,7 @@ export class SankeyAppSessionStore {
     this.finished = finished;
   }
 
-  @action setShowHelp(showHelp: typeof SankeyAppSessionStore.prototype.showHelp) {
+  @action.bound setShowHelp(showHelp: typeof SankeyAppSessionStore.prototype.showHelp) {
     this.showHelp = showHelp;
   }
 
