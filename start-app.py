@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-# @changed 2023.12.16, 21:28
+# @changed 2023.12.16, 21:57
 
 import os
 from os import path
@@ -46,10 +46,10 @@ class TargetFileNames(TypedDict):
     nodes: str
 
 class AppData(TypedDict):
-    edgesData: any
-    flowsData: any
-    graphsData: any
-    nodesData: any
+    edges: any
+    flows: any
+    graphs: any
+    nodes: any
 
 
 # Basic helpers...
@@ -123,12 +123,14 @@ def loadDemoAppData() -> AppData:
     graphsData = loadJson(graphsFile)
     nodesData = loadJson(nodesFile)
 
-    return {
+    appData: AppData = {
         'edges': edgesData,
         'flows': flowsData,
         'graphs': graphsData,
         'nodes': nodesData,
     }
+
+    return appData
 
 def getTargetFolder() -> str:
     targetFolder = options.targetFolder
