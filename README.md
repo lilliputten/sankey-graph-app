@@ -1,6 +1,6 @@
 <!--
 @since 2023.11.12, 00:38
-@changed 2023.11.12, 01:50
+@changed 2023.12.17, 01:10
 -->
 
 # sankey-graph-app
@@ -63,21 +63,35 @@ Builds published into the `publish` branch. See utilities configuration in
 
 ## Run application under python script
 
+You can start the application from the command line with your own data using python script (since v.0.0.20).
+
+To do it, download recent build (eg, for v.0.0.20) [from build page](https://github.com/lilliputten/sankey-graph-app/releases/tag/publish.0.0.20).
+
+Or via [direct zip archive link](https://github.com/lilliputten/sankey-graph-app/archive/refs/tags/publish.0.0.20.zip).
+
+Then unpack it, go tohe build folder and start the script with command:
+
+```
+python start-app.py --data-set-folder sweet-corn
+```
+
+It will load sample data from the folder `data/sweet-corn/` (but shared `nodes.json` will be loaded from `data/` folder).
+
+You can use any other prepared folder inside the `data` folder or use your own files.
+
+Also you can modify the script and pass your own data into the `writeTempAppData(appData, targetFileNames)` call.
+
+Here `appData` and `targetFileNames` have `AppData` and `TargetFileNames` types respectively (both contain keys: 'edges', 'flows', 'graphs', 'nodes').
+
 In dev mode (when python file is locatied in the project root) -- use `--dev` key:
 
 ```
 python start-app.py --dev --data-set-folder sweet-corn
 ```
 
-Data will be taken and written from/to source subfolders in `public/` folder.
+In tghis case data will be taken and written from/to respective subfolders in `public/` folder.
 
-For already built/published project use it without that option:
-
-```
-python start-app.py --data-set-folder sweet-corn
-```
-
-Available options' references could be obtained with `--help` parameter:
+Available script command line options could be obtained with `--help` parameter:
 
 ```
 $python start-app.py --help
@@ -97,7 +111,8 @@ options:
   --target-folder {targetFolder}
                         Target folder name (default: "temp")
   --omit-date-tag, --no-omit-date-tag
-                        Omit date tag postfix for auto-generated target folder name (datetime module required)
+                        Omit date tag postfix for auto-generated target folder name (datetime
+                        module required)
   --web-port {webPort}  Web server port (default: "8080")
   --dev, --no-dev       Use "public" folder prefix for demo data files and "build" for local web
                         server (for non-built dev environment)
