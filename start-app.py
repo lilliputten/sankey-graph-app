@@ -14,7 +14,6 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from time import sleep
 import webbrowser
 
-devBuildFolder = 'build'
 # Constants...
 browserUrlPrefix = 'http://localhost:'
 devBuildFolder = 'build'
