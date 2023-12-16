@@ -61,7 +61,6 @@ npm run publish
 Builds published into the `publish` branch. See utilities configuration in
 `utils/config.sh`.
 
-
 ## Run application under python script
 
 In dev mode (when python file is locatied in the project root) -- use `--dev` key:

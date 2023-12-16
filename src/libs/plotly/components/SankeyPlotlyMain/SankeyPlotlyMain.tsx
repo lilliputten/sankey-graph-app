@@ -80,9 +80,10 @@ export const SankeyPlotlyMain: React.FC<TChartComponentProps> = observer((props)
 
   // Effect: Update chart data
   React.useEffect(() => {
-    console.log('[SankeyPlotlyMain:Effect: Update chart data]', {
-      currentChartData,
-    });
+    /* console.log('[SankeyPlotlyMain:Effect: Update chart data]', {
+     *   currentChartData,
+     * });
+     */
     /* // NOTE: Unused temporarily: Updating full chart data causes completely
      * // re-render of the chart and layout reset. See below other partial
      * // updaters.
@@ -94,9 +95,10 @@ export const SankeyPlotlyMain: React.FC<TChartComponentProps> = observer((props)
   // Effect: Update chart data if hidden nodes list changed
   React.useEffect(() => {
     const { chartData } = memo;
-    console.log('[SankeyPlotlyMain:Effect: Update chart data if hidden nodes list changed]', {
-      hiddenGraphNodes,
-    });
+    /* console.log('[SankeyPlotlyMain:Effect: Update chart data if hidden nodes list changed]', {
+     *   hiddenGraphNodes,
+     * });
+     */
     setChartData(chartData);
   }, [memo, hiddenGraphNodes]);
 
@@ -258,7 +260,7 @@ export const SankeyPlotlyMain: React.FC<TChartComponentProps> = observer((props)
   );
 
   /** Example of update of node label attributes: positions, for example */
-  const alignAllNodes = React.useCallback(() => {
+  const _alignAllNodes = React.useCallback(() => {
     const forcePos = true;
     const textPad = 3;
     type TPosition = 'left' | 'right' | 'center';
@@ -275,11 +277,12 @@ export const SankeyPlotlyMain: React.FC<TChartComponentProps> = observer((props)
       const nodes = Array.from(
         graphDiv.getElementsByClassName('sankey-node'),
       ) as TPlottlyNodeElement[];
-      console.log('[SankeyPlotlyMain:alignAllNodes]', {
-        nodes,
-        graphDiv,
-        memo,
-      });
+      /* console.log('[SankeyPlotlyMain:alignAllNodes]', {
+       *   nodes,
+       *   graphDiv,
+       *   memo,
+       * });
+       */
 
       for (const node of nodes) {
         const d = node.__data__;

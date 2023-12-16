@@ -3,9 +3,9 @@ import { Box, Button, Container, Typography } from '@mui/material';
 import classNames from 'classnames';
 
 import { TPropsWithClassName } from 'src/core/types';
+import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 
 import styles from './SankeyAppRootWelcome.module.scss';
-import { useSankeyAppSessionStore } from '../../SankeyAppSessionStore';
 
 type TSankeyAppRootWelcomeProps = TPropsWithClassName;
 
