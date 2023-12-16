@@ -12,7 +12,6 @@ export function useGraphColorsList(): TColor[] {
     // prettier-ignore
     graphsData, // TGraphsData;
     nodeColors, // Record<TNodeId, string>
-    hiddenGraphNodes,
   } = sankeyAppDataStore;
   const {
     // prettier-ignore
@@ -25,10 +24,11 @@ export function useGraphColorsList(): TColor[] {
     if (!graphsData) {
       return [];
     }
-    console.log('[useGraphColorsList:colors] memo start', {
-      graphsData: [...graphsData],
-      hiddenGraphNodes: [...hiddenGraphNodes],
-    });
+    /* console.log('[useGraphColorsList:colors] memo start', {
+     *   graphsData: [...graphsData],
+     *   hiddenGraphNodes: [...hiddenGraphNodes],
+     * });
+     */
     return graphsData.map((graph) => {
       const {
         id_in_graph: graphId, // -1, self index
@@ -67,7 +67,6 @@ export function useGraphColorsList(): TColor[] {
     nodesColorMode,
     secondNodesColor,
     progressiveColorsData,
-    hiddenGraphNodes,
   ]);
   return colors;
 }

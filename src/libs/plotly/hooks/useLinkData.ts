@@ -6,7 +6,6 @@ import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataSto
 import { useGraphsMap } from 'src/hooks/Sankey/useGraphsMap';
 import { TGraphId } from 'src/core/types';
 import { findNextUnhiddenTargetInEdges } from 'src/libs/plotly/helpers';
-// import { useGraphLabelsList } from './useGraphLabelsList'; // DEBUG: Using for verify data processing algorithms
 
 interface TGraphEdgesItem {
   sourceGraphId: TGraphId;
@@ -27,11 +26,12 @@ export function useLinkData(): Partial<SankeyLink> | undefined {
   } = sankeyAppDataStore;
 
   const graphsMap = useGraphsMap();
-  /* // UNUSED: Hash to get final indices
-   * const visibleGraphsMap = useVisibleGraphsMap();
-   */
+
+  // TODO: Should we keep the old code until we've already tested this functionality?
 
   /* // OLD_CODE: valuesList
+   * // UNUSED: Hash to get final indices
+   * const visibleGraphsMap = useVisibleGraphsMap();
    * const valuesList = React.useMemo(
    *   () =>
    *     edgesData &&
@@ -90,10 +90,11 @@ export function useLinkData(): Partial<SankeyLink> | undefined {
             _idx, // DEBUG: Check indices
           ) => {
             if (hiddenGraphNodes.includes(sourceGraphId)) {
-              console.log('[useLinkData:graphEdgesList] hidden source (omit)', {
-                sourceGraphId,
-                origTargetGraphId,
-              });
+              /* console.log('[useLinkData:graphEdgesList] hidden source (omit)', {
+               *   sourceGraphId,
+               *   origTargetGraphId,
+               * });
+               */
               // Just remove edges with hidden sources.
               return null;
             }
@@ -107,12 +108,13 @@ export function useLinkData(): Partial<SankeyLink> | undefined {
                 hiddenGraphNodes,
               );
               // NOTE: What shall we to do if no unhidden target found (targetGraphId is undefined)?
-              console.log('[useLinkData:graphEdgesList] hidden target (replace)', {
-                _idx,
-                sourceGraphId,
-                origTargetGraphId,
-                targetGraphId,
-              });
+              /* console.log('[useLinkData:graphEdgesList] hidden target (replace)', {
+               *   _idx,
+               *   sourceGraphId,
+               *   origTargetGraphId,
+               *   targetGraphId,
+               * });
+               */
             }
             const targetDataGraphIdx = targetGraphId !== undefined ? graphsMap[targetGraphId] : -1;
             const targetGraphIdx = targetDataGraphIdx;
@@ -147,10 +149,8 @@ export function useLinkData(): Partial<SankeyLink> | undefined {
         .filter((id) => id != null) as TGraphEdgesItem[]),
     [edgesData, graphsData, graphsMap, hiddenGraphNodes],
   );
-  /* To construct from graphEdgesList:
 
-  /*
-   * // OLD_CODE: Don't take into account hidden elements
+  /* // OLD_CODE: Don't take into account hidden elements
    * const sourceGraphIdsList = React.useMemo<TGraphId[] | undefined>(
    *   () => edgesData && edgesData.map(({ consumer_graph_id: sourceGraphId }) => sourceGraphId),
    *   [edgesData],
@@ -284,11 +284,12 @@ export function useLinkData(): Partial<SankeyLink> | undefined {
        * label: [] as SankeyLink['label'],
        */
     };
-    console.log('[useLinkData:linkData] (Final data for plotly lib)', {
-      sourceGraphPosList,
-      targetGraphPosList,
-      valuesList,
-    });
+    /* console.log('[useLinkData:linkData] (Final data for plotly lib)', {
+     *   sourceGraphPosList,
+     *   targetGraphPosList,
+     *   valuesList,
+     * });
+     */
     return linkData;
   }, [
     // prettier-ignore

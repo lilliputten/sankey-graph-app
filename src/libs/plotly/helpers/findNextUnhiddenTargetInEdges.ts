@@ -5,15 +5,16 @@ export function findNextUnhiddenTargetInEdges(
   edgesData: TEdgesData,
   hiddenGraphNodes: TGraphId[],
 ): TGraphId | undefined {
-  console.log('[findNextUnhiddenTargetInEdges] start', {
-    graphId,
-    edgesData,
-    hiddenGraphNodes,
-  });
+  /* console.log('[findNextUnhiddenTargetInEdges] start', {
+   *   graphId,
+   *   edgesData,
+   *   hiddenGraphNodes,
+   * });
+   */
   // ...
   let currentGraphId: TGraphId | undefined = graphId;
-  // DEBUG
-  let iterationCount = 0;
+  // DEBUG: Count iterations
+  // let _iterationCount = 0;
   while (currentGraphId !== undefined) {
     const edge = edgesData.find(
       // eslint-disable-next-line no-loop-func
@@ -25,6 +26,7 @@ export function findNextUnhiddenTargetInEdges(
     if (!edge) {
       // TODO: To monitor/catch these cases?
       const error = new Error('Not found edge for source graph id ' + currentGraphId);
+      // eslint-disable-next-line no-console
       console.warn('[findNextUnhiddenTargetInEdges]', error.message, {
         currentGraphId,
         error,
@@ -34,25 +36,26 @@ export function findNextUnhiddenTargetInEdges(
     }
     const {
       // prettier-ignore
-      consumer_graph_id: sourceGraphId,
+      // consumer_graph_id: sourceGraphId,
       producer_graph_id: targetGraphId,
     } = edge;
     const hasFoundUnhiddenTarget = !hiddenGraphNodes.includes(targetGraphId);
-    console.log(
-      '[findNextUnhiddenTargetInEdges] iteration (id, count, result)',
-      graphId,
-      iterationCount,
-      hasFoundUnhiddenTarget,
-      {
-        iterationCount,
-        hasFoundUnhiddenTarget,
-        sourceGraphId,
-        targetGraphId,
-        edge: { ...edge },
-        currentGraphId,
-        graphId,
-      },
-    );
+    /* console.log(
+     *   '[findNextUnhiddenTargetInEdges] iteration (id, count, result)',
+     *   graphId,
+     *   _iterationCount,
+     *   hasFoundUnhiddenTarget,
+     *   {
+     *     _iterationCount,
+     *     hasFoundUnhiddenTarget,
+     *     // sourceGraphId,
+     *     targetGraphId,
+     *     edge: { ...edge },
+     *     currentGraphId,
+     *     graphId,
+     *   },
+     * );
+     */
     // debugger;
     if (hasFoundUnhiddenTarget) {
       // OK: The next unhidden target has alreadfy found!
@@ -60,13 +63,12 @@ export function findNextUnhiddenTargetInEdges(
     }
     // Go to the next iteration...
     currentGraphId = targetGraphId;
-    iterationCount++;
+    // _iterationCount++; // DEBUG: Count iterations
   }
-  console.log('[findNextUnhiddenTargetInEdges] done', {
-    graphId,
-    edgesData,
-    hiddenGraphNodes,
-  });
-  // debugger;
-  // return currentGraphId;
+  /* console.log('[findNextUnhiddenTargetInEdges] done', {
+   *   graphId,
+   *   edgesData,
+   *   hiddenGraphNodes,
+   * });
+   */
 }
