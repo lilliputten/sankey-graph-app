@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+# @changed 2023.12.16, 21:28
 
 import os
 from os import path
@@ -30,7 +31,7 @@ parser = argparse.ArgumentParser(description='Launch app from python script demo
 parser.add_argument('--data-folder', dest='dataFolder', metavar='{dataFolder}', action='store', default=defaultDataFolder, help='Data folder name (default: "' + defaultDataFolder + '")')
 parser.add_argument('--data-set-folder', dest='dataSetFolder', metavar='{dataSetFolder}', action='store', default=defaultDataSetFolder, help='Data set folder name (default: "' + defaultDataSetFolder + '")')
 parser.add_argument('--target-folder', dest='targetFolder', metavar='{targetFolder}', action='store', default=defaultTargetFolder, help='Target folder name (default: "' + defaultTargetFolder + '")')
-parser.add_argument('--omit-date-tag', dest='omitDateTag', action=argparse.BooleanOptionalAction, help='Omit date tag postfix for auto-generated target folder name')
+parser.add_argument('--omit-date-tag', dest='omitDateTag', action=argparse.BooleanOptionalAction, help='Omit date tag postfix for auto-generated target folder name (datetime module required)')
 parser.add_argument('--web-port', dest='webPort', metavar='{webPort}', type=int, action='store', default=defaultWebPort, help='Web server port (default: "' + str(defaultWebPort) + '")')
 parser.add_argument('--dev', dest='isDev', action=argparse.BooleanOptionalAction, help='Use "public" folder prefix for demo data files and "' + devBuildFolder + '" for local web server (for non-built dev environment)')
 options = parser.parse_args()
@@ -78,6 +79,12 @@ def getDateTag(now=None):
 
 # Global shared params...
 rootPath: str = posixPath(path.dirname(path.abspath(__file__)))
+
+
+# Derived parameters...
+
+webServerRootPath = posixPath(path.join(rootPath, devBuildFolder if options.isDev else ''))
+print("Web server path:", webServerRootPath)
 
 
 # Data processing routines...
@@ -229,8 +236,7 @@ class WebServer(threading.Thread):
 
 class WebHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
-        webRoot = devBuildFolder if options.isDev else ''
-        super().__init__(*args, directory=webRoot, **kwargs)
+        super().__init__(*args, directory=webServerRootPath, **kwargs)
 
 def launchBrowser():
     """

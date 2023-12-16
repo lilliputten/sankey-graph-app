@@ -90,12 +90,23 @@ function writeBuildInfo(cb) {
   fs.writeFile('build/build.txt', buildInfoText, cb);
 }
 
+function copyPythonScripts() {
+  return gulp
+    .src([
+      // prettier-ignore
+      '*.py',
+      'requirements-general.txt',
+    ])
+    .pipe(gulp.dest('build/'));
+}
+
 gulp.task('writeBuildInfo', writeBuildInfo);
 /* // UNUSED: For relative paths processing...
  * gulp.task('processRelativeStyleUrls', processRelativeStyleUrls);
  * gulp.task('processRelativeHtmlUrls', processRelativeHtmlUrls);
  */
 gulp.task('prettifyHtml', prettifyHtml); // NOTE: This patch causes nextjs hydration error
+gulp.task('copyPythonScripts', copyPythonScripts);
 
 const patchBuildTasks = [
   /* // UNUSED: For relative paths processing...
@@ -104,6 +115,7 @@ const patchBuildTasks = [
    */
   'writeBuildInfo',
   'prettifyHtml',
+  'copyPythonScripts',
 ].filter(Boolean);
 
 gulp.task('patchBuild', gulp.parallel.apply(gulp, patchBuildTasks));
