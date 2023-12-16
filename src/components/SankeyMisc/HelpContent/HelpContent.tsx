@@ -1,9 +1,8 @@
 import React from 'react';
-import { Box, Button, Container, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import classNames from 'classnames';
 
 import { TPropsWithClassName } from 'src/core/types';
-import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 
 import styles from './HelpContent.module.scss';
 

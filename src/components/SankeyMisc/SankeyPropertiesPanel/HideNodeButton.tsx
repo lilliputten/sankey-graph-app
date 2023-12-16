@@ -2,12 +2,10 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
 import { FormControl, FormHelperText, FormLabel, Switch } from '@mui/material';
-import { MuiColorInput } from 'mui-color-input';
 import classNames from 'classnames';
 
-import { TColor, TPropsWithClassName } from 'src/core/types';
+import { TPropsWithClassName } from 'src/core/types';
 import { TGraphId } from 'src/core/types/SankeyApp';
-import { useGraphColor } from 'src/hooks/Sankey';
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 
 interface THideNodeButtonProps extends TPropsWithClassName {
@@ -40,12 +38,13 @@ export const HideNodeButton: React.FC<THideNodeButtonProps> = observer((props) =
         updatedList = userHiddenGraphNodes.filter((id) => id !== graphId);
       }
     }
-    console.log('[HideNodeButton:handleHideNodeButton]', {
-      isNodeHidden,
-      hideNode,
-      updatedList,
-      userHiddenGraphNodes,
-    });
+    /* console.log('[HideNodeButton:handleHideNodeButton]', {
+     *   isNodeHidden,
+     *   hideNode,
+     *   updatedList,
+     *   userHiddenGraphNodes,
+     * });
+     */
     runInAction(() => {
       if (updatedList) {
         sankeyAppDataStore.userHiddenGraphNodes = updatedList;

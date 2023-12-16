@@ -18,19 +18,20 @@ export function useGraphLabelsList(): PlotlyLib.Datum[] | undefined {
     // prettier-ignore
     graphsData, // TGraphsData
     nodeNames, // Record<TNodeId, string>
-    hiddenGraphNodes,
+    // hiddenGraphNodes,
   } = sankeyAppDataStore;
   const nodesHash = useNodesHash();
   const labels = React.useMemo<PlotlyLib.Datum[] | undefined>(() => {
     if (!graphsData) {
       return undefined;
     }
-    console.log('[useGraphLabelsList] memo start', {
-      graphsData, // TGraphsData
-      nodeNames, // Record<TNodeId, string>
-      nodesHash,
-      hiddenGraphNodes,
-    });
+    /* console.log('[useGraphLabelsList] memo start', {
+     *   graphsData, // TGraphsData
+     *   nodeNames, // Record<TNodeId, string>
+     *   nodesHash,
+     *   hiddenGraphNodes,
+     * });
+     */
     const labels = graphsData
       .map((graph, _idx) => {
         const {
@@ -79,7 +80,6 @@ export function useGraphLabelsList(): PlotlyLib.Datum[] | undefined {
     graphsData, // TGraphsData
     nodeNames, // Record<TNodeId, string>
     nodesHash,
-    hiddenGraphNodes,
   ]);
   return labels;
 }

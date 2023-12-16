@@ -78,17 +78,20 @@ export function getNodesToHideList(
     // TODO: Throw an error?
     return undefined;
   }
-  const value = getGraphValue(graph);
-  console.log('[SankeyAppDataStore:getNodesToHideList]: start', parentGraphId, {
-    parentGraphId,
-    graphChildren,
-    value,
-    graphIdx,
-    graph,
-    autoHideNodesThreshold,
-    autoHideNodesMaxOutputs,
-    autoHideNodesParams,
-  });
+
+  /* // DEBUG
+   * const value = getGraphValue(graph);
+   * console.log('[SankeyAppDataStore:getNodesToHideList]: start', parentGraphId, {
+   *   parentGraphId,
+   *   graphChildren,
+   *   value,
+   *   graphIdx,
+   *   graph,
+   *   autoHideNodesThreshold,
+   *   autoHideNodesMaxOutputs,
+   *   autoHideNodesParams,
+   * });
+   */
 
   const childrenValuesHash = getChildrenValuesHash({
     graphsMap,
@@ -106,27 +109,29 @@ export function getNodesToHideList(
 
   const tresholdValue = (autoHideNodesThreshold * totalValue) / 100;
 
-  console.log('[SankeyAppDataStore:getNodesToHideList]: data ready', parentGraphId, {
-    sortedChildren,
-    graphChildren,
-    childrenValuesHash,
-    childrenValues: Object.values(childrenValuesHash),
-    tresholdValue,
-    totalValue,
-    autoHideNodesThreshold,
-    autoHideNodesMaxOutputs,
-  });
+  /* console.log('[SankeyAppDataStore:getNodesToHideList]: data ready', parentGraphId, {
+   *   sortedChildren,
+   *   graphChildren,
+   *   childrenValuesHash,
+   *   childrenValues: Object.values(childrenValuesHash),
+   *   tresholdValue,
+   *   totalValue,
+   *   autoHideNodesThreshold,
+   *   autoHideNodesMaxOutputs,
+   * });
+   */
 
   const filteredChildren = sortedChildren.filter((graphId) => {
     if (tresholdValue) {
       const value = childrenValuesHash[graphId];
       const toInclude = value >= tresholdValue;
-      console.log('[SankeyAppDataStore:getNodesToHideList]: filtering children', parentGraphId, {
-        toInclude,
-        value,
-        tresholdValue,
-        childrenValuesHash,
-      });
+      /* console.log('[SankeyAppDataStore:getNodesToHideList]: filtering children', parentGraphId, {
+       *   toInclude,
+       *   value,
+       *   tresholdValue,
+       *   childrenValuesHash,
+       * });
+       */
       if (!toInclude) {
         return false;
       }
@@ -155,14 +160,13 @@ export function getNodesToHideList(
     (graphId) => !filteredChildren.includes(graphId),
   );
 
-  console.log('[SankeyAppDataStore:getNodesToHideList]: done', parentGraphId, {
-    graphChildren,
-    sortedChildren,
-    filteredChildren,
-    nodesToHide,
-  });
-  // debugger;
-  // if (graphChildren.length > 2) {
-  // }
+  /* console.log('[SankeyAppDataStore:getNodesToHideList]: done', parentGraphId, {
+   *   graphChildren,
+   *   sortedChildren,
+   *   filteredChildren,
+   *   nodesToHide,
+   * });
+   */
+
   return nodesToHide;
 }

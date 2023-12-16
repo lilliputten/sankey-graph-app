@@ -26,7 +26,6 @@ const PlaceholderComponent = (id: string) => () => (
   </Box>
 );
 const SankeyAppRootFinished = PlaceholderComponent('SankeyAppRootFinished');
-const ShowAppHelp = PlaceholderComponent('ShowAppHelp');
 
 interface TCurrentComponentProps {
   rootState: typeof SankeyAppSessionStore.prototype.rootState;
