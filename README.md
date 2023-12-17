@@ -69,7 +69,7 @@ To do it, download recent build (eg, for v.0.0.20) [from build page](https://git
 
 Or via [direct zip archive link](https://github.com/lilliputten/sankey-graph-app/archive/refs/tags/publish.0.0.20.zip).
 
-Then unpack it, go tohe build folder and start the script with command:
+Then unpack it, go to the build folder and start the script with command:
 
 ```
 python start-app.py --data-set-folder sweet-corn
@@ -89,7 +89,7 @@ In dev mode (when python file is locatied in the project root) -- use `--dev` ke
 python start-app.py --dev --data-set-folder sweet-corn
 ```
 
-In tghis case data will be taken and written from/to respective subfolders in `public/` folder.
+In this case data will be taken and written from/to respective subfolders in `public/` folder.
 
 Available script command line options could be obtained with `--help` parameter:
 

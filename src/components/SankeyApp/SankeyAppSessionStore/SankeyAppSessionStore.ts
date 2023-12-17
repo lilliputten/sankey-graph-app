@@ -38,7 +38,9 @@ const defaultAutoHideNodesThreshold: number = 50;
 const defaultAutoHideNodesMaxOutputs: number = 1;
 
 /** Parameters what could be saved (via `saveParameter`) and restored from the
- * local storage (or from url query, via `restoreParameters`) */
+ * local storage (or from url query, via `restoreParameters`)
+ * TODO: To derive it from `updatableParameters`?
+ */
 const restorableParameters = [
   // prettier-ignore
   'showLeftPanel',
@@ -129,7 +131,7 @@ export class SankeyAppSessionStore {
   /** Auto hide nodes threshold value (percents, include children with values more than this treshold) */
   @observable autoHideNodesThreshold: number = defaultAutoHideNodesThreshold;
 
-  /** Auto hide nodes maxmum outputs to show */
+  /** Show the number of descendants no more than this value */
   @observable autoHideNodesMaxOutputs: number = defaultAutoHideNodesMaxOutputs;
 
   // Default auto load values...
