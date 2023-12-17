@@ -50,9 +50,9 @@ function useHelpContent() {
 
 ## Main navigation menu
 
-<img src="${topAppMenu}" alt="Application navigation menu" />
+<img src="${topAppMenu}" alt="Application navigation menu" title="Application navigation menu" />
 
-At the top of the application window (or inside the hamburger button controlled side bar) is the main application menu with the following buttons:
+At the top of the application window (or inside the hamburger button controlled side bar menu) is the main application menu with the following buttons:
 
 - **Load data**: go to data loading page.
 - **Help**: show this help reference.
@@ -60,7 +60,7 @@ At the top of the application window (or inside the hamburger button controlled 
 
 ## Data loading step
 
-The first thing the application needs are the data files. They can be uploaded manually from your local storage or downloaded loaded in a semi- or fully-automatically way from the server (even if it's hosted by an automation script, loke \`start-app.py\` script does).
+The first thing the application needs are the data files. They can be uploaded manually from your local device or downloaded in a semi- or fully-automatically way from the server (even if it's hosted by an automation script, like \`start-app.py\` script does).
 
 Current default data file names:
 
@@ -69,28 +69,28 @@ Current default data file names:
 - Graphs: **${defaultDataFiles.graphs}** ('*${autoLoadUrlGraphs}*')
 - Nodes: **${defaultDataFiles.nodes}** ('*${autoLoadUrlNodes}*')
 
-**Load demo data** button loads demo data files (as in default data files,
+**Load default datasets** button loads demo data files (as in default data files,
 stored in project folder "public${dataUrlPrefix}", hosted as built app folder
 "${dataUrlPrefix}") from the project for the empty data slots.
 
-<img src="${dataLoadSlots}" alt="Data load slots" />
+<img src="${dataLoadSlots}" alt="Data load slots" title="Data load slots" />
 
 If you opened the app in the "automation" mode (eg, from the python script, see the "Launching the application with python script" section), the data will be loaded automatically (if the parameter \`doAutoLoad\` has passed).
 
 When the data has already been loaded, the statistics for the uploaded datasets are displayed, and the "Visualize" button becomes available: now you can go to the visualization of the graph.
 
-<img src="${dataLoadedSuccessfully}" alt="Successfully loaded data" />
+<img src="${dataLoadedSuccessfully}" alt="Successfully loaded data" title="Successfully loaded data" />
 
-By clicking on the "Visualize" button the application will open the main chart visualizing area.
+By clicking on the "Visualize" button the application will open the main chart visualizing screen.
 
 
-## Basic chart area and side panels
+## Basic chart screen and side panels
 
-<img src="${mainWindowQuarter}" alt="Main apllication window" />
+<img src="${mainWindowQuarter}" alt="Main apllication window" title="Main apllication window" />
 
-The main application windows consists of three areas: the generic settings panel is at the left, the node properties panel is at the right, and the chart area is at the center. On the top of window is main tollbar with application navigation menu.
+The main application windows consists of three areas: the generic settings panel is at the left, the currently selected node properties panel is at the right, and the chart area is at the center. At the top of the window there's a main panel with a navigation menu for the application.
 
-<img src="${topChartPanel}" alt="Top center part of the chart visualization area" />
+<img src="${topChartPanel}" alt="Top center part of the chart visualization area" title="Top center part of the chart visualization area" />
 
 The chart control buttons are located in the upper central part of the chart area.
 
@@ -111,23 +111,23 @@ The settings panel situated at the left side of the application window.
 
 It contains main application settings and actions.
 
-<img src="${settingsTheme}" alt="Settings: theme" />
+<img src="${settingsTheme}" alt="Settings: theme" title="Settings: theme" />
 
 The user can choose a theme for the application.
 
-<img src="${settingsLayout}" alt="Settings: layout" />
+<img src="${settingsLayout}" alt="Settings: layout" title="Settings: layout" />
 
 Sankey diagrams can be shown in horizontal and vertical modes.
 
-<img src="${settingsRestoreHiddenNodes}" alt="Settings: restore hidden nodes" />
+<img src="${settingsRestoreHiddenNodes}" alt="Settings: restore hidden nodes" title="Settings: restore hidden nodes" />
 
 If the user had hiddensome nodes nodes manually they can restore them back here.
 
-<img src="${settingsAutoHideNodes}" alt="Settings: auto hide nodes" />
+<img src="${settingsAutoHideNodes}" alt="Settings: auto hide nodes" title="Settings: auto hide nodes" />
 
 Automatic node hidding controls block.
 
-<img src="${settingsColorMode}" alt="Settings: color mode" />
+<img src="${settingsColorMode}" alt="Settings: color mode" title="Settings: color mode" />
 
 Color mode for the chart. Available options:
 
@@ -140,26 +140,26 @@ Color mode for the chart. Available options:
 
 The properties panel in the right side of the window contains current (selected) node properties. User can change node's name, coloor and to hide it from the chart (it's possible to restore it later by "Restore nodes" button in the settings panel).
 
-<img src="${propertiesPanel}" alt="Properties panel" />
+<img src="${propertiesPanel}" alt="Properties panel" title="Properties panel" />
 
 Node color selection:
 
-<img src="${colorSelectionInAction}" alt="Node color selection" />
+<img src="${colorSelectionInAction}" alt="Node color selection" title="Node color selection" />
 
 
 ## Chart area
 
-<img src="${chartArea}" alt="Sankey graph" />
+<img src="${chartArea}" alt="Sankey graph" title="Sankey graph" />
 
 The main chart area displays the visualized data in the form of a Sankey graph, with edges and nodes.
 
 By hovering the node or edge the user can see a popup with a detailed information.
 
-<img src="${edgeHovering}" alt="Edge hovering" />
+<img src="${edgeHovering}" alt="Edge hovering" title="Edge hovering" />
 
-<img src="${nodeHovering}" alt="Node hovering" />
+<img src="${nodeHovering}" alt="Node hovering" title="Node hovering" />
 
-By clicking on a node, the user can open the properties panel, where they can edit the node data or hide it from the chart (se the section "Properties panel").
+By clicking on a node, the user can open the properties panel, where they can edit the node data or hide it from the chart (see the section "Properties panel").
 
 
 ## Url query parameters
@@ -175,7 +175,7 @@ The application accepts all the user-controlled settings from the url query.
 - **autoHideNodes** (*boolean*) -- Auto hide nodes, using following parameteres.
 - **autoHideNodesThreshold** (*number*, %) -- Auto hide nodes threshold value (percents, include children with values more than this treshold).
 - **autoHideNodesMaxOutputs** (*number*) -- Show the number of descendants no more than this value.
-- **doAutoLoad** (*boolean*) -- Start automatic loading of the default data set.
+- **doAutoLoad** (*boolean*) -- Start automatic loading of the default data set (see specific data file options below).
 - **autoLoadUrlEdges** (*string*) -- Default file url for 'edges.json' data.
 - **autoLoadUrlFlows** (*string*) -- Default file url for 'flows.json' data.
 - **autoLoadUrlGraphs** (*string*) -- Default file url for 'graphs.json' ('nodes-supply-chain.json') data.
