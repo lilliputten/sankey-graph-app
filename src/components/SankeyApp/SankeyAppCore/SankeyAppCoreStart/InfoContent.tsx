@@ -49,7 +49,7 @@ export const InfoContent: React.FC<TPropsWithClassName> = observer(({ className 
         Demo data:
       </Typography>
       <Typography variant="body1" gutterBottom>
-        <strong>Load demo data</strong> button loads demo data files (as in default data files,
+        <strong>Load default datasets</strong> button loads demo data files (as in default data files,
         stored in project folder `public{dataUrlPrefix}`, hosted as built app folder `
         {dataUrlPrefix}`) from the project for the empty data slots.
       </Typography>
