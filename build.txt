@@ -1,6 +1,6 @@
 Project: sankey-graph-app
-Version: 0.0.21
+Version: 0.0.22
 Branch: dev-231216-21-create-help-tutorial-page
-Commit: 8a06c12
-Fixed: 2023.12.17, 01:02 GMT+7
-Built: 2023.12.17, 01:04 GMT+7
+Commit: 587f394
+Fixed: 2023.12.17, 22:56 GMT+7
+Built: 2023.12.17, 23:00 GMT+7
