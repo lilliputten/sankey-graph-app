@@ -1,4 +1,3 @@
-import Plotly from 'plotly.js';
+import PlotlyLib from 'src/libs/plotly/core/PlotlyLib';
 
-export type TPlotlyData = Partial<Plotly.SankeyData>[];
-// export type TPlotlyData = Plotly.Data[];
+export type TPlotlyData = Partial<PlotlyLib.SankeyData>[];
