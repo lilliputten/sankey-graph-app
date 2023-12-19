@@ -22,10 +22,11 @@ module.exports = {
         // Enable core nodejs polyfills (like 'buffer' etc) for webpack 5
         new NodePolyfillPlugin(),
         // Build analyzer
-        startAnalyzer && new BundleAnalyzerPlugin({
-          // @see: https://www.npmjs.com/package/webpack-bundle-analyzer#options-for-plugin
-          analyzerMode: 'server',
-        }),
+        startAnalyzer &&
+          new BundleAnalyzerPlugin({
+            // @see: https://www.npmjs.com/package/webpack-bundle-analyzer#options-for-plugin
+            analyzerMode: 'server',
+          }),
       ].filter(Boolean),
     },
   },

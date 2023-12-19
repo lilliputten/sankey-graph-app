@@ -2,36 +2,14 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { Box } from '@mui/material';
 import classNames from 'classnames';
-import rehypeRaw from 'rehype-raw';
 import Markdown from 'react-markdown';
+// import rehypeRaw from 'rehype-raw';
 
 import { TPropsWithClassName } from 'src/core/types';
 import { dataUrlPrefix, defaultDataFiles } from 'src/core/constants/Sankey';
 import { useSankeyAppSessionStore } from 'src/components/SankeyApp/SankeyAppSessionStore';
 
 import styles from './HelpContent.module.scss';
-
-// Import images...
-
-// import colorModeProgressive from './images/colorModeProgressive.png';
-import colorSelectionInAction from './images/colorSelectionInAction.png';
-// import colorSelector from './images/colorSelector.png';
-import dataLoadSlots from './images/dataLoadSlots.png';
-import chartArea from './images/chartArea.png';
-import dataLoadedSuccessfully from './images/dataLoadedSuccessfully.png';
-import edgeHovering from './images/edgeHovering.png';
-import nodeHovering from './images/nodeHovering.png';
-import propertiesPanel from './images/propertiesPanel.png';
-import settingsAutoHideNodes from './images/settingsAutoHideNodes.png';
-import settingsColorMode from './images/settingsColorMode.png';
-import settingsLayout from './images/settingsLayout.png';
-// import settingsPanel from './images/settingsPanel.png';
-import settingsRestoreHiddenNodes from './images/settingsRestoreHiddenNodes.png';
-import settingsTheme from './images/settingsTheme.png';
-import topAppMenu from './images/topAppMenu.png';
-import topChartPanel from './images/topChartPanel.png';
-
-import mainWindowQuarter from './images/mainWindowQuarter.png';
 
 type THelpContentProps = TPropsWithClassName;
 
@@ -50,7 +28,7 @@ function useHelpContent() {
 
 ## Main navigation menu
 
-<img src="${topAppMenu}" alt="Application navigation menu" title="Application navigation menu" />
+![Application navigation menu](/images/help/topAppMenu.png "Application navigation menu")
 
 At the top of the application window (or inside the hamburger button controlled side bar menu) is the main application menu with the following buttons:
 
@@ -73,24 +51,24 @@ Current default data file names:
 stored in project folder "public${dataUrlPrefix}", hosted as built app folder
 "${dataUrlPrefix}") from the project for the empty data slots.
 
-<img src="${dataLoadSlots}" alt="Data load slots" title="Data load slots" />
+![Data load slots](/images/help/dataLoadSlots.png "Data load slots")
 
 If you opened the app in the "automation" mode (eg, from the python script, see the "Launching the application with python script" section), the data will be loaded automatically (if the parameter \`doAutoLoad\` has passed).
 
 When the data has already been loaded, the statistics for the uploaded datasets are displayed, and the "Visualize" button becomes available: now you can go to the visualization of the graph.
 
-<img src="${dataLoadedSuccessfully}" alt="Successfully loaded data" title="Successfully loaded data" />
+![Successfully loaded data](/images/help/dataLoadedSuccessfully.png "Successfully loaded data")
 
 By clicking on the "Visualize" button the application will open the main chart visualizing screen.
 
 
 ## Basic chart screen and side panels
 
-<img src="${mainWindowQuarter}" alt="Main apllication window" title="Main apllication window" />
+![Main apllication window](/images/help/mainWindowQuarter.png "Main apllication window")
 
 The main application windows consists of three areas: the generic settings panel is at the left, the currently selected node properties panel is at the right, and the chart area is at the center. At the top of the window there's a main panel with a navigation menu for the application.
 
-<img src="${topChartPanel}" alt="Top center part of the chart visualization area" title="Top center part of the chart visualization area" />
+![Top center part of the chart visualization area](/images/help/topChartPanel.png "Top center part of the chart visualization area")
 
 The chart control buttons are located in the upper central part of the chart area.
 
@@ -111,23 +89,23 @@ The settings panel situated at the left side of the application window.
 
 It contains main application settings and actions.
 
-<img src="${settingsTheme}" alt="Settings: theme" title="Settings: theme" />
+![Settings: theme](/images/help/settingsTheme.png "Settings: theme")
 
 The user can choose a theme for the application.
 
-<img src="${settingsLayout}" alt="Settings: layout" title="Settings: layout" />
+![Settings: layout](/images/help/settingsLayout.png "Settings: layout")
 
 Sankey diagrams can be shown in horizontal and vertical modes.
 
-<img src="${settingsRestoreHiddenNodes}" alt="Settings: restore hidden nodes" title="Settings: restore hidden nodes" />
+![Settings: restore hidden nodes](/images/help/settingsRestoreHiddenNodes.png "Settings: restore hidden nodes")
 
 If the user had hiddensome nodes nodes manually they can restore them back here.
 
-<img src="${settingsAutoHideNodes}" alt="Settings: auto hide nodes" title="Settings: auto hide nodes" />
+![Settings: auto hide nodes](/images/help/settingsAutoHideNodes.png "Settings: auto hide nodes")
 
 Automatic node hidding controls block.
 
-<img src="${settingsColorMode}" alt="Settings: color mode" title="Settings: color mode" />
+![Settings: color mode](/images/help/settingsColorMode.png "Settings: color mode")
 
 Color mode for the chart. Available options:
 
@@ -140,24 +118,24 @@ Color mode for the chart. Available options:
 
 The properties panel in the right side of the window contains current (selected) node properties. User can change node's name, coloor and to hide it from the chart (it's possible to restore it later by "Restore nodes" button in the settings panel).
 
-<img src="${propertiesPanel}" alt="Properties panel" title="Properties panel" />
+![Properties panel](/images/help/propertiesPanel.png "Properties panel")
 
 Node color selection:
 
-<img src="${colorSelectionInAction}" alt="Node color selection" title="Node color selection" />
+![Node color selection](/images/help/colorSelectionInAction.png "Node color selection")
 
 
 ## Chart area
 
-<img src="${chartArea}" alt="Sankey graph" title="Sankey graph" />
+![Sankey graph](/images/help/chartArea.png "Sankey graph")
 
 The main chart area displays the visualized data in the form of a Sankey graph, with edges and nodes.
 
 By hovering the node or edge the user can see a popup with a detailed information.
 
-<img src="${edgeHovering}" alt="Edge hovering" title="Edge hovering" />
+![Edge hovering](/images/help/edgeHovering.png "Edge hovering")
 
-<img src="${nodeHovering}" alt="Node hovering" title="Node hovering" />
+![Node hovering](/images/help/nodeHovering.png "Node hovering")
 
 By clicking on a node, the user can open the properties panel, where they can edit the node data or hide it from the chart (see the section "Properties panel").
 
@@ -278,7 +256,7 @@ export const HelpContent: React.FC<THelpContentProps> = observer((props) => {
     >
       <Markdown
         // prettier-ignore
-        rehypePlugins={[rehypeRaw]}
+        // rehypePlugins={[rehypeRaw]} // Use it to process html tags in the markdown. It can couse a lot of "source not found" errors, of source maps has enabled.
         className={classNames(styles.content)}
       >
         {content}
