@@ -3,7 +3,7 @@
   "version": "0.0.22",
   "timetag": "231218-0156",
   "timestamp": "2023.12.18, 01:56 GMT+7",
-  "changed": "2023.12.19, 14:55",
+  "changed": "2023.12.19, 15:32",
   "private": true,
   "eslint-unused-rules": {
     "eqeqeq": [
@@ -106,7 +106,8 @@
     "stylelint-scss": "^5.3.1",
     "tinycolor2": "^1.6.0",
     "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "webpack-bundle-analyzer": "^4.10.1"
   },
   "unusedPlotlyDependencies": {
     "@types/plotly.js": "^2.12.30",
@@ -151,12 +152,10 @@
     "patch-build": "echo --Patch build-- && gulp patchBuild",
     "serve-build": "echo --Serve build /at alternate port 3003/-- && serve build -l 3003",
     "cra-build": "echo --CRA build-- && craco build",
-    "cra-build-cra-UNUSED": "echo --CRA build-- && react-scripts build",
     "build": "echo --Make build-- && npm-run-all cra-build patch-build",
+    "start-analyzer": "echo --Start build analyzer-- && cross-env START_ANALYZER=yes npm-run-all cra-build",
     "start-https": "echo --Start dev server with https- && cross-env HTTPS=true craco start",
-    "start-https-cra-UNUSED": "echo --Start dev server with https- && cross-env HTTPS=true react-scripts start",
-    "start": "echo --Start dev server-- && craco start",
-    "start-cra-UNUSED": "echo --Start dev server-- && react-scripts start",
+    "start": "echo --Start dev server-- && cross-env GENERATE_SOURCEMAP=false craco start",
     "test": "craco test --watchAll=false",
     "test-watch": "craco test",
     "start-app": "echo --Start dev server /with .venv/-- && python start-app.py --use-public",
