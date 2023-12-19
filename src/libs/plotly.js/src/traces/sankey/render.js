@@ -21,9 +21,9 @@ var svgTextUtils = require('../../lib/svg_text_utils');
 
 var Registry = require('../../registry');
 
-var alignmentConstants = require('../../constants/alignment');
-var CAP_SHIFT = alignmentConstants.CAP_SHIFT;
-var LINE_SPACING = alignmentConstants.LINE_SPACING;
+// var alignmentConstants = require('../../constants/alignment');
+// var CAP_SHIFT = alignmentConstants.CAP_SHIFT;
+// var LINE_SPACING = alignmentConstants.LINE_SPACING;
 var TEXTPAD = 3;
 
 // view models

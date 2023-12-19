@@ -1,5 +1,5 @@
 import React from 'react';
-import { SankeyLink } from 'plotly.js/lib/traces/sankey';
+import { SankeyLink } from 'src/libs/plotly.js/lib/traces/sankey';
 
 import { useSankeyAppDataStore } from 'src/components/SankeyApp/SankeyAppDataStore';
 
