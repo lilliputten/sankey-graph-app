@@ -95,6 +95,7 @@ function copyPythonScripts() {
     .src([
       // prettier-ignore
       '*.py',
+      '*.html',
       'requirements-general.txt',
     ])
     .pipe(gulp.dest('build/'));

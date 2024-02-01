@@ -1,0 +1,57 @@
+<!--
+  @changed 2024.02.01, 23:42
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sankey Graph</title>
+    <script>
+      const search = window.location.search;
+      const paramsPairs = search && search.substring(1).split('&');
+      const params =
+        paramsPairs ?
+        paramsPairs.reduce((obj, pair) => {
+          const [id, val] = pair.split('=').map(decodeURIComponent);
+          obj[id] = val;
+          return obj;
+        }, {}) : {};
+      const { url = '/' } = params;
+      const testData = { test: 1, string: 'Text' };
+      console.log('Start', {
+        params,
+        testData,
+        url,
+      });
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(testData),
+      }).then((res) => {
+        console.log('Done', {
+          res,
+          url,
+          params,
+        });
+        return res.text();
+      }).then((text) => {
+        console.log('Done: content', {
+          text,
+          url,
+          params,
+        });
+      }).catch((error) => {
+        console.error('Error', error.message, {
+          error,
+          url,
+          params,
+        });
+        debugger;
+      });
+    </script>
+  </head>
+  <body></body>
+</html>
