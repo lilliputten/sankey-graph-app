@@ -86,8 +86,8 @@
       "console": "integratedTerminal",
       "args": [
         "--dev",
-        "--data-set-folder", "sweet-corn",
-        "--omit-date-tag"
+        "--demo-files-data-set-folder", "sweet-corn",
+        "--demo-files-omit-date-tag"
       ]
     }
   ]
