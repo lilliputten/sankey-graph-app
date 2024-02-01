@@ -25,7 +25,7 @@ export function loadDataFile<T = unknown>(file: File, opts: TLoadDataFileOptions
     // size: fileSize,
   } = file;
   const { onProgress, onLoaded, onError, timeout } = opts;
-  return new Promise(function loadDataFile_promise(resolve, reject) {
+  return new Promise<T>(function loadDataFile_promise(resolve, reject) {
     const fileReader = new FileReader();
     /* console.log('[loadDataFile:onloadend] start', {
      *   fileReader,
@@ -128,7 +128,7 @@ export function loadDataFile<T = unknown>(file: File, opts: TLoadDataFileOptions
       try {
         const rawResult = target?.result as string;
         // TODO: Catch parse errors...
-        const data = rawResult && JSON.parse(rawResult);
+        const data: T = rawResult && JSON.parse(rawResult);
         /* console.log('[loadDataFile] onloadend', {
          *   data,
          *   rawResult,

@@ -1,5 +1,5 @@
 module.exports = {
-  // NOTE: See duplications in 'config.*.sh'
+  // Timezone for timestamps (GMT, Europe/Moscow, Asia/Bangkok, etc)
+  // NOTE: See duplications in 'config.sh'
   timeZone: 'Asia/Bangkok',
-  // 'GMT', 'Europe/Moscow', 'Asia/Bangkok', etc
 };

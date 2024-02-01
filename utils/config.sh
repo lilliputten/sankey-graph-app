@@ -15,6 +15,6 @@ SRC_TAG_PREFIX="v" # "v" for default tags like "v.X.Y.Z"
 PUBLISH_FOLDER="publish" # "$DIST_BRANCH"
 PUBLISH_TAG_ID="publish" # "$DIST_BRANCH"
 
-# Timezone for timestamps (Europe/Moscow, GMT, etc)
+# Timezone for timestamps (GMT, Europe/Moscow, Asia/Bangkok, etc)
 # NOTE: See duplications in 'config.js'
-TIMEZONE="Europe/Moscow"
+TIMEZONE="Asia/Bangkok"
