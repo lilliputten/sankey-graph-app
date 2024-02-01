@@ -27,6 +27,7 @@ export const SankeyAppCoreStart: React.FC<TPropsWithClassName> = observer((props
   const {
     // prettier-ignore
     doAutoLoad: defaultAutoLoad,
+    doAutoStart, // : defaultAutoStart,
     autoLoadUrlEdges,
     autoLoadUrlFlows,
     autoLoadUrlGraphs,
@@ -40,7 +41,8 @@ export const SankeyAppCoreStart: React.FC<TPropsWithClassName> = observer((props
     graphsData,
     nodesData,
   } = sankeyAppDataStore;
-  const [doAutoLoad, setAutoLoad] = React.useState(defaultAutoLoad); // __debugDoAutoLoadData
+  const [doAutoLoad, setAutoLoad] = React.useState(defaultAutoLoad);
+  // const [doAutoStart, setAutoStart] = React.useState(defaultAutoStart);
   /** If data has already loaded then it's possible to go to core visualizer/editor */
   const [isAllDataLoaded, setAllDataLoaded] = React.useState(false);
   const [isSomeDataLoaded, setSomeDataLoaded] = React.useState(false);
@@ -93,6 +95,12 @@ export const SankeyAppCoreStart: React.FC<TPropsWithClassName> = observer((props
     setAllDataLoaded(isAllDataLoaded);
     setSomeDataLoaded(isSomeDataLoaded);
   }, [edgesData, flowsData, graphsData, nodesData]);
+  // Auto start visualization...
+  React.useEffect(() => {
+    if (isAllDataLoaded && doAutoStart) {
+      doVisualize();
+    }
+  }, [isAllDataLoaded, doAutoStart, doVisualize]);
   return (
     <Container className={classNames(className, styles.root)} maxWidth="md">
       <Box className={classNames(styles.section, styles.content)}>
