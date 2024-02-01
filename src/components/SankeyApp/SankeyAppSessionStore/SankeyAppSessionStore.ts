@@ -54,6 +54,7 @@ const restorableParameters = [
   'autoHideNodesMaxOutputs',
   // These parameters will be excluded from `saveableParameters` (only to initialize from url query)...
   'doAutoLoad',
+  'doAutoStart',
   'autoLoadUrlEdges',
   'autoLoadUrlFlows',
   'autoLoadUrlGraphs',
@@ -65,7 +66,7 @@ export type TRestorableParameter = (typeof restorableParameters)[number];
 const saveableParameters = restorableParameters.filter(
   (id) =>
     // Exclude auto load urls...
-    !id.startsWith('autoLoadUrl') && id !== 'doAutoLoad',
+    !id.startsWith('autoLoadUrl') && id !== 'doAutoLoad' && id !== 'doAutoStart',
 );
 
 /** Updatable parameters descriptions */
@@ -81,6 +82,7 @@ const updatableParameters: TUpdatableParameter<TRestorableParameter>[] = [
   { id: 'autoHideNodesMaxOutputs', type: 'number' },
   // Auto load...
   { id: 'doAutoLoad', type: 'boolean' },
+  { id: 'doAutoStart', type: 'boolean' },
   { id: 'autoLoadUrlEdges', type: 'string' },
   { id: 'autoLoadUrlFlows', type: 'string' },
   { id: 'autoLoadUrlGraphs', type: 'string' },
@@ -137,6 +139,7 @@ export class SankeyAppSessionStore {
   // Default auto load values...
 
   @observable doAutoLoad: boolean = false;
+  @observable doAutoStart: boolean = false;
   @observable autoLoadUrlEdges: string = autoLoadUrls.edges;
   @observable autoLoadUrlFlows: string = autoLoadUrls.flows;
   @observable autoLoadUrlGraphs: string = autoLoadUrls.graphs;
@@ -353,6 +356,7 @@ export class SankeyAppSessionStore {
     this.autoHideNodesThreshold = defaultAutoHideNodesThreshold;
     this.autoHideNodesMaxOutputs = defaultAutoHideNodesMaxOutputs;
     this.doAutoLoad = false;
+    this.doAutoStart = false;
     this.autoLoadUrlEdges = autoLoadUrls.edges;
     this.autoLoadUrlFlows = autoLoadUrls.flows;
     this.autoLoadUrlGraphs = autoLoadUrls.graphs;

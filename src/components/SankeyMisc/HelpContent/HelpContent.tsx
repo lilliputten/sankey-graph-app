@@ -154,6 +154,7 @@ The application accepts all the user-controlled settings from the url query.
 - **autoHideNodesThreshold** (*number*, %) -- Auto hide nodes threshold value (percents, include children with values more than this treshold).
 - **autoHideNodesMaxOutputs** (*number*) -- Show the number of descendants no more than this value.
 - **doAutoLoad** (*boolean*) -- Start automatic loading of the default data set (see specific data file options below).
+- **doAutoStart** (*boolean*) -- Don't wait for user action when data has already loaded (immediately go to the main app).
 - **autoLoadUrlEdges** (*string*) -- Default file url for 'edges.json' data.
 - **autoLoadUrlFlows** (*string*) -- Default file url for 'flows.json' data.
 - **autoLoadUrlGraphs** (*string*) -- Default file url for 'graphs.json' ('nodes-supply-chain.json') data.
