@@ -1,0 +1,122 @@
+<!--
+  @descr Demo html to test 'post data redirects' to the served sankey page.
+  @changed 2024.02.02, 21:41
+
+  NOTE: The data has taken from the 'minimal' dataset.
+-->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sankey Graph Post Redirect Demo</title>
+    <style type="text/css">
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      textarea {
+        width: 100%;
+        height: 10em;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="/cgi-bin/accept-post-data" method="post">
+      <label for="edges">Edges</label>
+      <textarea id="edges" name="edges">
+[
+  {
+    "producer_graph_id": 20,
+    "consumer_graph_id": 60,
+    "amount": 20
+  },
+  {
+    "producer_graph_id": 40,
+    "consumer_graph_id": 60,
+    "amount": 40
+  }
+]
+</textarea
+      >
+
+      <label for="flows">Flows</label>
+      <textarea id="flows" name="flows">
+[
+  {
+    "id_in_database": 1992,
+    "process_id_in_graph": 0,
+    "process_id_in_database": 18039,
+    "amount": 0.0029800001066178083,
+    "score": 2.950200074388016e-09
+  },
+  {
+    "id_in_database": 4702,
+    "process_id_in_graph": 0,
+    "process_id_in_database": 18039,
+    "amount": 0.0006539999740198255,
+    "score": 1.9734906702993553e-09
+  },
+  {
+    "id_in_database": 4691,
+    "process_id_in_graph": 0,
+    "process_id_in_database": 18039,
+    "amount": 0.0034600000362843275,
+    "score": 7.265999939845262e-10
+  },
+  {
+    "id_in_database": 4706,
+    "process_id_in_graph": 0,
+    "process_id_in_database": 18039,
+    "amount": 7.699999696342275e-05,
+    "score": 5.344123195097007e-11
+  }
+]
+</textarea
+      >
+
+      <label for="graphs">Graphs</label>
+      <textarea id="graphs" name="graphs">
+[
+  {
+    "id_in_graph": 20,
+    "id_in_database": 20,
+    "product_id_in_database": 20,
+    "product_scaling_amount": 1.0,
+    "process_amount": 1.0,
+    "score_through_supply_chain": 9.981936043202016e-09,
+    "score_of_node": 0.0
+  },
+  {
+    "id_in_graph": 40,
+    "id_in_database": 40,
+    "product_id_in_database": 40,
+    "product_scaling_amount": 1.0,
+    "process_amount": 1.0,
+    "score_through_supply_chain": 9.981936043202015e-09,
+    "score_of_node": 5.703731970622867e-09
+  },
+  {
+    "id_in_graph": 60,
+    "id_in_database": 60,
+    "product_id_in_database": 60,
+    "product_scaling_amount": 1.0,
+    "process_amount": 9.999999960041972e-12,
+    "score_through_supply_chain": 2.826552776147551e-10,
+    "score_of_node": 0.0
+  }
+]
+</textarea
+      >
+
+      <label for="nodes">Nodes</label>
+      <textarea id="nodes" name="nodes">
+[]
+</textarea
+      >
+
+      <button type="submit">Submit</button>
+    </form>
+  </body>
+</html>
