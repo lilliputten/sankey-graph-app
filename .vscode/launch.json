@@ -87,7 +87,7 @@
       "args": [
         "--dev",
         "--demo-files-data-set-folder", "sweet-corn",
-        "--demo-files-omit-date-tag"
+        "--no-demo-files-omit-date-tag"
       ]
     }
   ]

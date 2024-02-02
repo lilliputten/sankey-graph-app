@@ -213,32 +213,42 @@ Available script command line options could be obtained with \`--help\` paramete
 $python start-app.py --help
 \`\`\`
 
-**usage:** start-app.py [-h] [--data-folder {dataFolder}] [--data-set-folder {dataSetFolder}]
-                    [--target-folder {targetFolder}] [--omit-date-tag | --no-omit-date-tag]
-                    [--web-port {webPort}] [--dev | --no-dev]
+**usage:** start-app.py [-h] [--web-port {webPort}] [--demo-post | --no-demo-post]
+                    [--demo-files | --no-demo-files]
+                    [--demo-files-data-folder {demoFilesDataFolder}]
+                    [--demo-files-data-set-folder {demoFilesDataSetFolder}]
+                    [--demo-files-target-folder {demoFilesTargetFolder}]
+                    [--demo-files-omit-date-tag | --no-demo-files-omit-date-tag]
+                    [--dev | --no-dev]
 
-Launch app from python script demo.
+Launch web server for the app.
 
 **options:**
 
 **-h, --help**
 show this help message and exit
 
-**--data-folder {dataFolder}**
-Data folder name (default: "data")
-
-**--data-set-folder {dataSetFolder}**
-Data set folder name (default: "hardwood-forestry")
-
-**--target-folder {targetFolder}**
-Target folder name (default: "temp")
-
-**--omit-date-tag, --no-omit-date-tag**
-Omit date tag postfix for auto-generated target folder name (datetime
-module required)
-
 **--web-port {webPort}**
 Web server port (default: "8080")
+
+**--demo-post, --no-demo-post**
+Make demo POST request
+
+**--demo-files, --no-demo-files**
+Open the app with links to demo files
+
+**--demo-files-data-folder {demoFilesDataFolder}**
+Data folder name (default: "data")
+
+**--demo-files-data-set-folder {demoFilesDataSetFolder}**
+Data set folder name (default: "hardwood-forestry")
+
+**--demo-files-target-folder {demoFilesTargetFolder}**
+Target folder name (default: "temp")
+
+**--demo-files-omit-date-tag, --no-demo-files-omit-date-tag**
+Omit date tag postfix for auto-generated target folder name (datetime
+module required)
 
 **--dev, --no-dev**
 Use "public" folder prefix for demo data files and "build" for local web

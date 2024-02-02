@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 # @since 2024.02.01, 20:08
-# @changed 2024.02.01, 20:08
+# @changed 2024.02.02, 22:08
 
 import os
 from os import path
@@ -14,11 +14,19 @@ import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from time import sleep
 import webbrowser
-import threading
+import traceback
+import re
+import json
+
+# NOTE: We've got a warning here:
+# DeprecationWarning: 'cgi' is deprecated and slated for removal in Python 3.13
+import cgi
 
 # Constants...
 browserUrlPrefix = 'http://localhost:'
 devBuildFolder = 'build'
+
+acceptPostDataUrl = '/cgi-bin/accept-post-data'
 
 # Default options...
 defaultDataFolder: str = 'data'
@@ -157,13 +165,15 @@ def ensureTargetFolder(targetFolder: str):
         # TODO: To catch possible fs/io errors?
         os.makedirs(targetPath)
 
-def getTargetFileNames(targetFolder: str) -> TargetFileNames:
+def getTargetFileNames(targetFolder: str, id: str = '') -> TargetFileNames:
+    prefix = (id + '-' if id else '');
+    postfix = '.json';
     # Create target file names...
     targetFileNames: TargetFileNames = {
-        'edges': posixPath(path.join(targetFolder, 'edges.json')),
-        'flows': posixPath(path.join(targetFolder, 'flows.json')),
-        'graphs': posixPath(path.join(targetFolder, 'graphs.json')),
-        'nodes': posixPath(path.join(targetFolder, 'nodes.json')),
+        'edges': posixPath(path.join(targetFolder, prefix + 'edges' + postfix)),
+        'flows': posixPath(path.join(targetFolder, prefix + 'flows' + postfix)),
+        'graphs': posixPath(path.join(targetFolder, prefix + 'graphs' + postfix)),
+        'nodes': posixPath(path.join(targetFolder, prefix + 'nodes' + postfix)),
     }
     return targetFileNames
 
@@ -214,7 +224,7 @@ def removeTempAppData(targetFolder: str,targetFileNames: TargetFileNames):
 
 # Web server...
 
-def getUrlQuery(targetFileNames: TargetFileNames):
+def getAppUrlQuery(targetFileNames: TargetFileNames):
     return '&'.join([
         'doAutoLoad=yes',
         'doAutoStart=yes',
@@ -223,7 +233,6 @@ def getUrlQuery(targetFileNames: TargetFileNames):
         'autoLoadUrlGraphs=' + targetFileNames['graphs'],
         'autoLoadUrlNodes=' + targetFileNames['nodes'],
     ])
-
 
 class WebServer(threading.Thread):
     def __init__(self):
@@ -248,9 +257,128 @@ class WebServer(threading.Thread):
         print('Closing thread...')
         self.join()
 
-class WebHandler(http.server.SimpleHTTPRequestHandler):
+class WebHandler(http.server.CGIHTTPRequestHandler):  # Instead of `SimpleHTTPRequestHandler` in order to serve post requests
+    # TODO: do_HEAD, do_POST
+    # @see:
+    # - https://docs.python.org/3/library/http.server.html
+    # - https://copyprogramming.com/howto/python-python-cgi-get-post-data-code-example
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=webServerRootPath, **kwargs)
+
+    # Process post requests...
+    def do_POST(self):
+        global options
+        try:
+            url = self.path
+            if url != acceptPostDataUrl:
+                self.send_error(404, message='Route not found')
+                self.end_headers()
+                return
+            #  print('do_POST: start', {
+            #      'command': self.command,
+            #      'directory': self.directory,
+            #      'self': self,
+            #  })
+            # Headers...
+            headers = self.headers
+            headerKeys = headers.keys()
+            origin = headers.get('origin')
+            referer = headers.get('referer')
+            # Prepare unique file id...
+            fileId = ('post-' + referer)
+            fileId = re.sub(r'[^\w]+', ' ', fileId).strip();
+            fileId = re.sub(r'[ \s]+', '-', fileId)
+            if not options.demoFilesOmitDateTag:
+                fileId += '-' + getDateTag()
+            logPrefix = 'POST ' + acceptPostDataUrl + ':'
+            print(logPrefix, 'Starting to prepare data in folder "' + targetFolder + '" with data id: "' + fileId + '"')
+            dataLength = int(headers.get('content-length'))
+            # Form...
+            form = cgi.FieldStorage(
+                fp=self.rfile,
+                headers=headers,
+                environ={'REQUEST_METHOD': 'POST'}
+            )
+            formType = form.type
+            formKeys = form.keys()
+            # NOTE: Get data contents for data:
+            # - edges
+            # - flows
+            # - graphs
+            # - nodes
+            # ...and write it to data files...
+            edges = form.getvalue('edges')
+            flows = form.getvalue('flows')
+            graphs = form.getvalue('graphs')
+            nodes = form.getvalue('nodes')
+            # Check data existency...
+            if not edges or not flows or not graphs or not nodes:
+                raise Exception('One of four required data sets (edges, flows, graphs, nodes) hasn\'t been defined!')
+            # Prepare file names and app url query...
+            targetFileNames = getTargetFileNames(targetFolder, fileId)
+            urlQuery = getAppUrlQuery(targetFileNames)
+            # Create data storage...
+            try:
+                edgesData = json.loads(edges)
+            except Exception as error:
+                raise Exception('Edges json data parse error: ' + str(error))
+            try:
+                flowsData = json.loads(flows)
+            except Exception as error:
+                raise Exception('Flows json data parse error: ' + str(error))
+            try:
+                graphsData = json.loads(graphs)
+            except Exception as error:
+                raise Exception('Graphs json data parse error: ' + str(error))
+            try:
+                nodesData = json.loads(nodes)
+            except Exception as error:
+                raise Exception('Nodes json data parse error: ' + str(error))
+            appData: AppData = {
+                'edges': edgesData,
+                'flows': flowsData,
+                'graphs': graphsData,
+                'nodes': nodesData,
+            }
+            #  print('do_POST: got params', {
+            #      # Headers...
+            #      'headers': headers,
+            #      'headerKeys': headerKeys,
+            #      'dataLength': dataLength,
+            #      # Form...
+            #      'form': form,
+            #      'formType': formType,
+            #      'formKeys': formKeys,
+            #      # Data...
+            #      'edges': edges,
+            #      'flows': flows,
+            #      'graphs': graphs,
+            #      'nodes': nodes,
+            #      # Prepared data
+            #      'fileId': fileId,
+            #      'targetFileNames': targetFileNames,
+            #      'urlQuery': urlQuery,
+            #      'appData': appData,
+            #  })
+            # Write files...
+            ensureTargetFolder(targetFolder)
+            writeTempAppData(appData, targetFileNames)
+            # TODO: Set delayed 'garbage collector' here to remove unused files after some period of time?
+            # OK. Finish the response with redirect to the app page...
+            print(logPrefix, 'Data with id "' + fileId + '" has been successfully created, redirecting to the main app')
+            self.send_response(303)
+            self.send_header('Status', '303 Going to main app page')
+            self.send_header('Location', '/?' + urlQuery)
+            self.end_headers()
+            #  self.wfile.write('Response content'.encode())
+
+        except Exception as error:
+            sTraceback = str(traceback.format_exc())
+            sError = str(error)
+            # 'Server error occured. See server log for more details.'
+            self.send_error(400, message=sError, explain=sTraceback)
+            self.end_headers()
 
 
 # Web client...
@@ -259,19 +387,12 @@ def launchBrowserWithFiles():
     """
     Launch browser and pass created file names in url query.
     """
-    # TODO: Make POST request...
-    urlQuery = getUrlQuery(targetFileNames)
+    global targetFileNames
+    urlQuery = getAppUrlQuery(targetFileNames)
     url = browserUrlPrefix + str(options.webPort) + '/?' + urlQuery
     print('Opening browser with url:', url)
     webbrowser.open(url, new=0, autoraise=True)
 
-
-# Set variables...
-
-targetFolder = getTargetFolder()
-targetFileNames = getTargetFileNames(targetFolder)
-
-webServer = None
 
 # Server helpers...
 
@@ -279,7 +400,7 @@ def isDemoMode():
     return options.demoPost or options.demoFiles
 
 def waitForKeyboardInterrrupt():
-    global targetFolder, targetFileNames, webServer
+    global targetFolder, demoTargetFileNames, webServer
     while True:
         try:
             sleep(1)
@@ -292,18 +413,27 @@ def waitForKeyboardInterrrupt():
             # Clean previously written files (if run demo mode)...
             isDemo = isDemoMode()
             if isDemo:
-                removeTempAppData(targetFolder, targetFileNames)
+                removeTempAppData(targetFolder, demoTargetFileNames)
             # TODO: Use callbacks?
             exit(0)
 
 def launchServer():
-    global targetFolder, targetFileNames, webServer
+    global targetFolder, webServer
     """
     Launch local web server to open app in background.
     """
     print('Starting the web server')
     webServer = WebServer()
     webServer.start()
+
+
+# Set global variables...
+
+targetFolder = getTargetFolder()
+demoTargetFileNames = getTargetFileNames(targetFolder, 'demo')
+
+webServer = None
+
 
 # Start...
 
@@ -315,7 +445,7 @@ if isDemo:
     appData = loadDemoAppData()
 
     ensureTargetFolder(targetFolder)
-    writeTempAppData(appData, targetFileNames)
+    writeTempAppData(appData, demoTargetFileNames)
 
 # Start web server (in a separate thread)...
 
@@ -330,7 +460,7 @@ if options.demoPost:
 elif options.demoFiles:
     launchBrowserWithFiles()
 elif isDemo:
-    removeTempAppData(targetFolder, targetFileNames)
+    removeTempAppData(targetFolder, demoTargetFileNames)
 
 # Waiting for Ctrl-C to finish the web server...
 waitForKeyboardInterrrupt()
