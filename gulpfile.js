@@ -90,7 +90,7 @@ function writeBuildInfo(cb) {
   fs.writeFile('build/build.txt', buildInfoText, cb);
 }
 
-function copyPythonScripts() {
+function copyExtraFiles() {
   return gulp
     .src([
       // prettier-ignore
@@ -107,7 +107,7 @@ gulp.task('writeBuildInfo', writeBuildInfo);
  * gulp.task('processRelativeHtmlUrls', processRelativeHtmlUrls);
  */
 gulp.task('prettifyHtml', prettifyHtml); // NOTE: This patch causes nextjs hydration error
-gulp.task('copyPythonScripts', copyPythonScripts);
+gulp.task('copyExtraFiles', copyExtraFiles);
 
 const patchBuildTasks = [
   /* // UNUSED: For relative paths processing...
@@ -116,7 +116,7 @@ const patchBuildTasks = [
    */
   'writeBuildInfo',
   'prettifyHtml',
-  'copyPythonScripts',
+  'copyExtraFiles',
 ].filter(Boolean);
 
 gulp.task('patchBuild', gulp.parallel.apply(gulp, patchBuildTasks));
