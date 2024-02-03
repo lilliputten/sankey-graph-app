@@ -25,4 +25,3 @@ File names here formed with request headers' origin string and current timestamp
 Don't forget to close the browser or release the page before stopping the server.
 
 If you want to made changes in server files, it's possible to start a dynamic updater with `sh start-app-watch.sh`.
-

@@ -1,12 +1,13 @@
 <!--
   @descr Demo html to test 'post data redirects' to the served sankey page.
-  @changed 2024.02.02, 21:41
+  @changed 2024.02.03, 23:28
 
   NOTE: The data has taken from the 'minimal' dataset.
 
   Start with dev server:
 
   http://localhost:8080/start-app-demo-post.html
+  http://localhost:3000/start-app-demo-post.html
 
 -->
 <!doctype html>
@@ -41,7 +42,14 @@
     </style>
   </head>
   <body>
-    <form action="/cgi-bin/accept-post-data?redirect=yes" method="POST">
+    <form id="form" data-action="/cgi-bin/accept-post-data?redirect=yes" method="POST">
+      <label for="serverUrl">Server url</label>
+      <input type="text" id="serverUrl" name="serverUrl" value="" />
+
+      <div class="useServerUrlWrapper">
+        <input type="checkbox" id="useServerUrl" name="useServerUrl" checked />
+        <label for="useServerUrl">Use server url</label>
+      </div>
 
       <label for="edges">Edges</label>
       <textarea id="edges" name="edges">
@@ -135,16 +143,25 @@
 </textarea
       >
       <div class="actions">
-        <button type="submit">Submit form and redirect to the app</button>
-        <button onClick="window.sendPostDataRequest(); return false">Send post request and get url to redirect</button>
-        <button id="goToReceivedUrl" class="hidden" onClick="window.goToReceivedUrl(); return false">Go to received url</button>
+        <button onClick="return window.updateFormAction()" type="submit">
+          Submit form and redirect to the app
+        </button>
+        <button onClick="window.sendPostDataRequest(); return false">
+          Send post request and get url to redirect
+        </button>
+        <button
+          id="goToReceivedUrl"
+          class="hidden"
+          onClick="window.goToReceivedUrl(); return false"
+        >
+          Go to received url
+        </button>
       </div>
 
       <div id="resultWrapper" class="resultWrapper hidden">
         <h3>Result</h3>
         <div id="result"></div>
       </div>
-
     </form>
   </body>
 </html>
