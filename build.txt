@@ -1,6 +1,6 @@
 Project: sankey-graph-app
 Version: 0.0.25
-Branch: 29-open-the-app-in-2-steps
-Commit: 0d43f31
+Branch: main
+Commit: 392c353
 Fixed: 2024.02.04, 00:31 GMT+7
-Built: 2024.02.04, 00:34 GMT+7
+Built: 2024.02.04, 00:42 GMT+7
