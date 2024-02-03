@@ -1,10 +1,9 @@
 # -*- coding:utf-8 -*-
 # @since 2024.02.01, 20:08
-# @changed 2024.02.02, 22:08
+# @changed 2024.02.03, 22:53
 
 import os
 from os import path
-import json
 import sys
 import datetime
 import argparse
@@ -17,6 +16,7 @@ import webbrowser
 import traceback
 import re
 import json
+import urllib.parse
 
 # NOTE: We've got a warning here:
 # DeprecationWarning: 'cgi' is deprecated and slated for removal in Python 3.13
@@ -226,13 +226,192 @@ def removeTempAppData(targetFolder: str,targetFileNames: TargetFileNames):
 
 def getAppUrlQuery(targetFileNames: TargetFileNames):
     return '&'.join([
+        'autoLoadUrlEdges=' + urllib.parse.quote(targetFileNames['edges']),
+        'autoLoadUrlFlows=' + urllib.parse.quote(targetFileNames['flows']),
+        'autoLoadUrlGraphs=' + urllib.parse.quote(targetFileNames['graphs']),
+        'autoLoadUrlNodes=' + urllib.parse.quote(targetFileNames['nodes']),
         'doAutoLoad=yes',
         'doAutoStart=yes',
-        'autoLoadUrlEdges=' + targetFileNames['edges'],
-        'autoLoadUrlFlows=' + targetFileNames['flows'],
-        'autoLoadUrlGraphs=' + targetFileNames['graphs'],
-        'autoLoadUrlNodes=' + targetFileNames['nodes'],
     ])
+
+def isEmptyData(data):
+    if data == None or data == '':
+        return True
+    return False
+
+def getPostedAppData(self) -> AppData:
+    #  \<\(edges\|flows\|graphs\|nodes\)\>
+    try:
+        # Parameters...
+        headers = self.headers
+        dataLength = int(headers.get('content-length', 0))
+        headerKeys = headers.keys()
+        origin = headers.get('origin')
+        referer = headers.get('referer')
+        contentType = headers.get('Content-Type')
+        # Data...
+        edges = None
+        flows = None
+        graphs = None
+        nodes = None
+        if contentType == 'application/json':
+            postJson = self.rfile.read(dataLength)
+            postData = json.loads(postJson)
+            edges = postData['edges']
+            flows = postData['flows']
+            graphs = postData['graphs']
+            nodes = postData['nodes']
+        elif contentType == 'application/x-www-form-urlencoded':
+            form = cgi.FieldStorage(
+                fp=self.rfile,
+                headers=headers,
+                environ={'REQUEST_METHOD': 'POST'}
+            )
+            edges = form.getvalue('edges')
+            flows = form.getvalue('flows')
+            graphs = form.getvalue('graphs')
+            nodes = form.getvalue('nodes')
+            if not edges or not flows or not graphs or not nodes:
+                raise Exception('One of four required data sets (edges, flows, graphs, nodes) hasn\'t been defined!')
+        else:
+            raise Exception('Unknown request content type: ' + contentType)
+
+        # Parse data if strings received...
+        try:
+            edges = json.loads(edges) if type(edges) == str else edges
+        except Exception as error:
+            raise Exception('Edges json data parse error: ' + str(error))
+        try:
+            flows = json.loads(flows) if type(flows) == str else flows
+        except Exception as error:
+            raise Exception('Flows json data parse error: ' + str(error))
+        try:
+            graphs = json.loads(graphs) if type(graphs) == str else graphs
+        except Exception as error:
+            raise Exception('Graphs json data parse error: ' + str(error))
+        try:
+            nodes = json.loads(nodes) if type(nodes) == str else nodes
+        except Exception as error:
+            raise Exception('Nodes json data parse error: ' + str(error))
+
+        # Check data existency...
+        if isEmptyData(edges) or isEmptyData(flows) or isEmptyData(graphs) or isEmptyData(nodes):
+           raise Exception('One of four required data sets (edges, flows, graphs, nodes) hasn\'t been defined!')
+        appData: AppData = {
+            'edges': edges,
+            'flows': flows,
+            'graphs': graphs,
+            'nodes': nodes,
+        }
+        return appData
+    except Exception as error:
+        sTraceback = str(traceback.format_exc())
+        sError = str(error)
+        print('[getPostedAppData] error', sError, sTraceback)
+        raise error
+
+def getPostedDataId(self) -> str:
+    global options
+    # Get parameters...
+    ipAddress = self.client_address[0]
+    headers = self.headers
+    referer = headers.get('referer')
+    dataId = '-'.join(list(filter(None, [getDateTag() if not options.demoFilesOmitDateTag else '', ipAddress, referer])))
+    dataId = re.sub(r'[^\w]+', ' ', dataId).strip();
+    dataId = re.sub(r'[ \s]+', '-', dataId)
+    return dataId
+
+def doPostRequest(self): # : WebHandler):
+    global options
+    try:
+        # Parse url...
+        origUrl = self.path
+        url = origUrl
+        queryParams = {}
+        if '?' in origUrl:
+            [url, query] = origUrl.split('?')
+            pairs = query.split('&') if '&' in query else [query]
+            for pair in pairs:
+                if '=' in pair:
+                    [id, val] = pair.split('=')
+                    queryParams[id] = val
+                else:
+                    queryParams[pair] = True
+        # Get boolean `redirect` parameter
+        redirectParam = queryParams['redirect'].lower() if 'redirect' in queryParams else ''
+        redirectParam = True if redirectParam != 'no' and redirectParam != '0' and redirectParam != 'false' else False
+        # Check url...
+        if url != acceptPostDataUrl:
+            self.send_error(404, message='Route not found')
+            self.end_headers()
+            return
+        # Get parameters...
+        # ipAddress = self.client_address[0]
+        # Headers...
+        headers = self.headers
+        dataLength = int(headers.get('content-length', 0))
+        headerKeys = headers.keys()
+        # origin = headers.get('origin')
+        # referer = headers.get('referer')
+        # contentType = headers.get('Content-Type')
+        # Data...
+        print('doPostRequest: start', {
+            #  'self': self,
+            # 'headerKeys': headerKeys,
+            # 'origin': origin,
+            # 'referer': referer,
+            # 'contentType': contentType,
+        })
+        # Prepare unique file id...
+        dataId = getPostedDataId(self)
+        logPrefix = 'POST ' + acceptPostDataUrl + ':'
+        print(logPrefix, 'Starting to prepare data in folder "' + targetFolder + '" with data id: "' + dataId + '"')
+        # Prepare file names and app url query...
+        print(logPrefix, 'Preparing file names and query...')
+        targetFileNames = getTargetFileNames(targetFolder, dataId)
+        urlQuery = '/?' + getAppUrlQuery(targetFileNames)
+        # Create data...
+        appData: AppData = getPostedAppData(self)
+        print('doPostRequest: got params', {
+            # Headers...
+            #  'headers': headers,
+            'headerKeys': headerKeys,
+            'dataLength': dataLength,
+            # Prepared data
+            'dataId': dataId,
+            #  'targetFileNames': targetFileNames,
+            'urlQuery': urlQuery,
+            #  'appData': appData,
+        })
+        # Write files...
+        ensureTargetFolder(targetFolder)
+        writeTempAppData(appData, targetFileNames)
+        # TODO: Set delayed 'garbage collector' here to remove unused files after some period of time?
+        # OK. Finish the response with redirect to the app page...
+        print(logPrefix, 'Data with id "' + dataId + '" has been successfully created')
+        if redirectParam:
+            print(logPrefix, 'Redirecting with 303...')
+            self.send_response(303)
+            self.send_header('Status', '303 Redirect to main app page')
+            self.send_header('Location', urlQuery)
+            self.end_headers()
+        else:
+            print(logPrefix, 'Returning url to the client...')
+            self.send_response(200)
+            #  self.send_header('Content-Type', 'application/json')
+            self.send_header('Content-Type', 'text/plain')
+            returnData = { 'url': urlQuery }
+            returnJson = json.dumps(returnData)
+            #  result = '{"ok":1}'  # .encode()
+            self.end_headers()
+            self.wfile.write(returnJson.encode())
+    except Exception as error:
+        sTraceback = str(traceback.format_exc())
+        sError = str(error)
+        print('[doPostRequest] error', sError, sTraceback)
+        # 'Server error occured. See server log for more details.'
+        self.send_error(400, message=sError, explain=sTraceback)
+        self.end_headers()
 
 class WebServer(threading.Thread):
     def __init__(self):
@@ -268,118 +447,18 @@ class WebHandler(http.server.CGIHTTPRequestHandler):  # Instead of `SimpleHTTPRe
 
     # Process post requests...
     def do_POST(self):
-        global options
-        try:
-            url = self.path
-            if url != acceptPostDataUrl:
-                self.send_error(404, message='Route not found')
-                self.end_headers()
-                return
-            #  print('do_POST: start', {
-            #      'command': self.command,
-            #      'directory': self.directory,
-            #      'self': self,
-            #  })
-            # Headers...
-            headers = self.headers
-            headerKeys = headers.keys()
-            origin = headers.get('origin')
-            referer = headers.get('referer')
-            # Prepare unique file id...
-            fileId = ('post-' + referer)
-            fileId = re.sub(r'[^\w]+', ' ', fileId).strip();
-            fileId = re.sub(r'[ \s]+', '-', fileId)
-            if not options.demoFilesOmitDateTag:
-                fileId += '-' + getDateTag()
-            logPrefix = 'POST ' + acceptPostDataUrl + ':'
-            print(logPrefix, 'Starting to prepare data in folder "' + targetFolder + '" with data id: "' + fileId + '"')
-            dataLength = int(headers.get('content-length'))
-            # Form...
-            form = cgi.FieldStorage(
-                fp=self.rfile,
-                headers=headers,
-                environ={'REQUEST_METHOD': 'POST'}
-            )
-            formType = form.type
-            formKeys = form.keys()
-            # NOTE: Get data contents for data:
-            # - edges
-            # - flows
-            # - graphs
-            # - nodes
-            # ...and write it to data files...
-            edges = form.getvalue('edges')
-            flows = form.getvalue('flows')
-            graphs = form.getvalue('graphs')
-            nodes = form.getvalue('nodes')
-            # Check data existency...
-            if not edges or not flows or not graphs or not nodes:
-                raise Exception('One of four required data sets (edges, flows, graphs, nodes) hasn\'t been defined!')
-            # Prepare file names and app url query...
-            targetFileNames = getTargetFileNames(targetFolder, fileId)
-            urlQuery = getAppUrlQuery(targetFileNames)
-            # Create data storage...
-            try:
-                edgesData = json.loads(edges)
-            except Exception as error:
-                raise Exception('Edges json data parse error: ' + str(error))
-            try:
-                flowsData = json.loads(flows)
-            except Exception as error:
-                raise Exception('Flows json data parse error: ' + str(error))
-            try:
-                graphsData = json.loads(graphs)
-            except Exception as error:
-                raise Exception('Graphs json data parse error: ' + str(error))
-            try:
-                nodesData = json.loads(nodes)
-            except Exception as error:
-                raise Exception('Nodes json data parse error: ' + str(error))
-            appData: AppData = {
-                'edges': edgesData,
-                'flows': flowsData,
-                'graphs': graphsData,
-                'nodes': nodesData,
-            }
-            #  print('do_POST: got params', {
-            #      # Headers...
-            #      'headers': headers,
-            #      'headerKeys': headerKeys,
-            #      'dataLength': dataLength,
-            #      # Form...
-            #      'form': form,
-            #      'formType': formType,
-            #      'formKeys': formKeys,
-            #      # Data...
-            #      'edges': edges,
-            #      'flows': flows,
-            #      'graphs': graphs,
-            #      'nodes': nodes,
-            #      # Prepared data
-            #      'fileId': fileId,
-            #      'targetFileNames': targetFileNames,
-            #      'urlQuery': urlQuery,
-            #      'appData': appData,
-            #  })
-            # Write files...
-            ensureTargetFolder(targetFolder)
-            writeTempAppData(appData, targetFileNames)
-            # TODO: Set delayed 'garbage collector' here to remove unused files after some period of time?
-            # OK. Finish the response with redirect to the app page...
-            print(logPrefix, 'Data with id "' + fileId + '" has been successfully created, redirecting to the main app')
-            self.send_response(303)
-            self.send_header('Status', '303 Going to main app page')
-            self.send_header('Location', '/?' + urlQuery)
-            self.end_headers()
-            #  self.wfile.write('Response content'.encode())
+        doPostRequest(self)
 
-        except Exception as error:
-            sTraceback = str(traceback.format_exc())
-            sError = str(error)
-            # 'Server error occured. See server log for more details.'
-            self.send_error(400, message=sError, explain=sTraceback)
-            self.end_headers()
-
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'X-Requested-With')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.send_header('Access-Control-Allow-Headers', 'Access-Control-Allow-Origin')
+        self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate')
+        #  self.send_header('Access-Control-Allow-Credentials', 'true')
+        self.end_headers()
 
 # Web client...
 
