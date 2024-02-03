@@ -388,13 +388,15 @@ def doPostRequest(self): # : WebHandler):
         writeTempAppData(appData, targetFileNames)
         # TODO: Set delayed 'garbage collector' here to remove unused files after some period of time?
         # OK. Finish the response with redirect to the app page...
-        print(logPrefix, 'Data with id "' + dataId + '" has been successfully created, redirecting to the main app')
+        print(logPrefix, 'Data with id "' + dataId + '" has been successfully created')
         if redirectParam:
+            print(logPrefix, 'Redirecting with 303...')
             self.send_response(303)
             self.send_header('Status', '303 Redirect to main app page')
             self.send_header('Location', urlQuery)
             self.end_headers()
         else:
+            print(logPrefix, 'Returning url to the client...')
             self.send_response(200)
             #  self.send_header('Content-Type', 'application/json')
             self.send_header('Content-Type', 'text/plain')
@@ -446,6 +448,17 @@ class WebHandler(http.server.CGIHTTPRequestHandler):  # Instead of `SimpleHTTPRe
     # Process post requests...
     def do_POST(self):
         doPostRequest(self)
+
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'X-Requested-With')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.send_header('Access-Control-Allow-Headers', 'Access-Control-Allow-Origin')
+        self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate')
+        #  self.send_header('Access-Control-Allow-Credentials', 'true')
+        self.end_headers()
 
 # Web client...
 

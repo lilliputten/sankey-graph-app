@@ -3,12 +3,27 @@
  * @changed 2024.02.03, 21:15
  */
 
+let defaultServerUrl = 'http://localhost:8080';
+
 const postRequestUrl = '/cgi-bin/accept-post-data?redirect=false';
 
 let receivedUrl;
 
 function onLoad() {
   console.log('[start-app-demo-watch:onLoad]');
+  const serverUrlNode = document.getElementById('serverUrl');
+  if (serverUrlNode) {
+    serverUrlNode.value = defaultServerUrl;
+  }
+}
+
+function getServerUrl() {
+  const useServerUrlNode = document.getElementById('useServerUrl');
+  if (useServerUrlNode && !useServerUrlNode.checked) {
+    return '';
+  }
+  const serverUrlNode = document.getElementById('serverUrl');
+  return serverUrlNode?.value || '';
 }
 
 function sendPostDataRequest() {
@@ -29,6 +44,7 @@ function sendPostDataRequest() {
     credentials: 'same-origin', // include, *same-origin, omit
     headers: {
       'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*', // Server header
     },
     // redirect: 'follow', // manual, *follow, error
     // referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
@@ -36,17 +52,39 @@ function sendPostDataRequest() {
   };
   const resultNode = document.getElementById('result');
   const resultWrapperNode = document.getElementById('resultWrapper');
+  const serverUrl = getServerUrl();
+  const url = serverUrl + postRequestUrl;
   console.log('[start-app-demo-watch:sendPostDataRequest] start', {
-    resultNode,
+    url,
+    serverUrl,
     postRequestUrl,
     fetchParams,
   });
-  fetch(postRequestUrl, fetchParams)
+  fetch(url, fetchParams)
     .then((res) => {
-      const { ok, body } = res;
+      const { ok, body, status, statusText } = res;
       if (!ok) {
         return res.text().then((text) => {
-          throw new Error(text);
+          const errText = [
+            'Error:',
+            statusText || (status && String(status)),
+            '(see details in log)',
+            // text?.message || String(text),
+          ]
+            .filter(Boolean)
+            .join(' ');
+          const error = new Error(errText);
+          console.error('[start-app-demo-watch:sendPostDataRequest] response with error', errText, {
+            error,
+            text,
+            ok,
+            body,
+            status,
+            statusText,
+          });
+          // eslint-disable-next-line no-debugger
+          debugger;
+          throw error;
         });
       }
       console.log('[start-app-demo-watch:sendPostDataRequest] response', {
@@ -119,13 +157,35 @@ function sendPostDataRequest() {
 }
 
 function goToReceivedUrl() {
+  const serverUrl = getServerUrl();
+  const url = serverUrl + receivedUrl;
   console.log('[start-app-demo-watch:goToReceivedUrl]', {
+    url,
+    serverUrl,
     receivedUrl,
   });
-  window.location.href = receivedUrl;
+  window.location.href = url;
+}
+
+function updateFormAction() {
+  const formNode = document.getElementById('form');
+  const dataAction = formNode.getAttribute('data-action');
+  const serverUrl = getServerUrl();
+  const actionUrl = serverUrl + dataAction;
+  formNode.setAttribute('action', actionUrl);
+  console.log('[start-app-demo-watch:goToReceivedUrl]', {
+    actionUrl,
+    dataAction,
+    formNode,
+    serverUrl,
+    receivedUrl,
+  });
+  debugger;
+  return false;
 }
 
 window.sendPostDataRequest = sendPostDataRequest;
 window.goToReceivedUrl = goToReceivedUrl;
+window.updateFormAction = updateFormAction;
 
 window.addEventListener('load', onLoad);
