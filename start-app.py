@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 # @since 2024.02.01, 20:08
-# @changed 2024.02.03, 22:53
+# @changed 2024.02.04, 01:16
 
 import os
 from os import path
@@ -240,7 +240,13 @@ def isEmptyData(data):
     return False
 
 def getPostedAppData(self) -> AppData:
-    #  \<\(edges\|flows\|graphs\|nodes\)\>
+    """
+    Extract data fields (edges, flows, graphs, nodes) from request.
+    Here are supported 2 different types of data form posted:
+    - application/json
+    - application/x-www-form-urlencoded
+    """
+    # Helper regex: \<\(edges\|flows\|graphs\|nodes\)\>
     try:
         # Parameters...
         headers = self.headers
@@ -297,6 +303,8 @@ def getPostedAppData(self) -> AppData:
         # Check data existency...
         if isEmptyData(edges) or isEmptyData(flows) or isEmptyData(graphs) or isEmptyData(nodes):
            raise Exception('One of four required data sets (edges, flows, graphs, nodes) hasn\'t been defined!')
+
+        # Create target data...
         appData: AppData = {
             'edges': edges,
             'flows': flows,
@@ -311,6 +319,9 @@ def getPostedAppData(self) -> AppData:
         raise error
 
 def getPostedDataId(self) -> str:
+    """
+    Creates an 'unique' id to safe store data files.
+    """
     global options
     # Get parameters...
     ipAddress = self.client_address[0]
@@ -346,14 +357,9 @@ def doPostRequest(self): # : WebHandler):
             self.end_headers()
             return
         # Get parameters...
-        # ipAddress = self.client_address[0]
-        # Headers...
         headers = self.headers
         dataLength = int(headers.get('content-length', 0))
         headerKeys = headers.keys()
-        # origin = headers.get('origin')
-        # referer = headers.get('referer')
-        # contentType = headers.get('Content-Type')
         # Data...
         print('doPostRequest: start', {
             #  'self': self,
@@ -409,7 +415,7 @@ def doPostRequest(self): # : WebHandler):
         sTraceback = str(traceback.format_exc())
         sError = str(error)
         print('[doPostRequest] error', sError, sTraceback)
-        # 'Server error occured. See server log for more details.'
+        # TODO: To send only 'Server error occured. See server log for more details'?
         self.send_error(400, message=sError, explain=sTraceback)
         self.end_headers()
 
@@ -435,6 +441,7 @@ class WebServer(threading.Thread):
         self.ws.server_close()
         print('Closing thread...')
         self.join()
+        # TODO: Here it stucks sometimes until browser hasn't closed
 
 class WebHandler(http.server.CGIHTTPRequestHandler):  # Instead of `SimpleHTTPRequestHandler` in order to serve post requests
     # TODO: do_HEAD, do_POST
@@ -445,20 +452,30 @@ class WebHandler(http.server.CGIHTTPRequestHandler):  # Instead of `SimpleHTTPRe
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=webServerRootPath, **kwargs)
 
-    # Process post requests...
-    def do_POST(self):
-        doPostRequest(self)
-
-    def do_OPTIONS(self):
-        self.send_response(200)
+    def end_headers(self):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'X-Requested-With')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
         self.send_header('Access-Control-Allow-Headers', 'Access-Control-Allow-Origin')
-        self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate')
+        return super(WebHandler, self).end_headers()
+
+    def do_OPTIONS(self):
+        self.send_response(200)
+        #  self.send_header('Access-Control-Allow-Origin', '*')
+        #  self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        #  self.send_header('Access-Control-Allow-Headers', 'X-Requested-With')
+        #  self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        #  self.send_header('Access-Control-Allow-Headers', 'Access-Control-Allow-Origin')
+        #  self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate')
         #  self.send_header('Access-Control-Allow-Credentials', 'true')
         self.end_headers()
+        self.flush_headers()
+
+    # Process post requests...
+    def do_POST(self):
+        doPostRequest(self)
+        self.flush_headers()
 
 # Web client...
 

@@ -96,6 +96,7 @@ function copyExtraFiles() {
       // prettier-ignore
       '*.py',
       '*.html',
+      '*.js',
       'requirements-general.txt',
     ])
     .pipe(gulp.dest('build/'));
