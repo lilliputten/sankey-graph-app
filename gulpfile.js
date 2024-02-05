@@ -1,5 +1,6 @@
 const fs = require('fs');
 const gulp = require('gulp');
+const rename = require('gulp-rename');
 const prettify = require('gulp-html-prettify');
 /* // UNUSED: For relative paths processing...
  * const path = require('path');
@@ -90,25 +91,41 @@ function writeBuildInfo(cb) {
   fs.writeFile('build/build.txt', buildInfoText, cb);
 }
 
+const startBuildPrefix = 'start-build-';
+
 function copyExtraFiles() {
   return gulp
     .src([
       // prettier-ignore
-      '*.py',
-      '*.html',
-      '*.js',
+      'start-*.{py,html,js,mjs,json,md}',
       'requirements-general.txt',
     ])
+    .pipe(
+      rename(function (path) {
+        console.log('XXX rename', path);
+        if (path.basename.startsWith(startBuildPrefix)) {
+          path.basename = path.basename.substring(startBuildPrefix.length);
+        }
+      }),
+    )
     .pipe(gulp.dest('build/'));
 }
+
+// function copyBuildPackage() {
+//   return gulp
+//     .src('start-server-package.json')
+//     .pipe(rename('package.json'))
+//     .pipe(gulp.dest('build/'));
+// }
 
 gulp.task('writeBuildInfo', writeBuildInfo);
 /* // UNUSED: For relative paths processing...
  * gulp.task('processRelativeStyleUrls', processRelativeStyleUrls);
  * gulp.task('processRelativeHtmlUrls', processRelativeHtmlUrls);
  */
-gulp.task('prettifyHtml', prettifyHtml); // NOTE: This patch causes nextjs hydration error
+gulp.task('prettifyHtml', prettifyHtml); // NOTE: This patch can cause nextjs hydration error
 gulp.task('copyExtraFiles', copyExtraFiles);
+// gulp.task('copyBuildPackage', copyBuildPackage);
 
 const patchBuildTasks = [
   /* // UNUSED: For relative paths processing...
@@ -118,6 +135,7 @@ const patchBuildTasks = [
   'writeBuildInfo',
   'prettifyHtml',
   'copyExtraFiles',
+  // 'copyBuildPackage',
 ].filter(Boolean);
 
 gulp.task('patchBuild', gulp.parallel.apply(gulp, patchBuildTasks));
