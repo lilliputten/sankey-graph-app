@@ -89,6 +89,17 @@
         "--demo-files-data-set-folder", "sweet-corn",
         "--no-demo-files-omit-date-tag"
       ]
+    },
+    {
+      "name": "Python: Run start-server.mjs",
+      "type": "node",
+      "request": "launch",
+      "program": "start-server.mjs",
+      "console": "integratedTerminal",
+      "args": [
+        "--web-port",
+        "3000"
+      ]
     }
   ]
 }

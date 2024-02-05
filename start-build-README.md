@@ -1,65 +1,16 @@
 <!--
-@since 2023.11.12, 00:38
-@changed 2023.12.17, 01:10
+@since 2024.02.05, 20:21
+@changed 2024.02.05, 20:21
 -->
 
-# sankey-graph-app
+# sankey-graph-app-server
 
-Sankey graph viewer and editor application.
+Dedicated sankey graph app server.
 
 - Version: 0.0.25
 - Last changes timestamp: 2024.02.05, 20:14 GMT+7
 
-TODO: Add project description.
-
-## See also
-
-- [CHANGELOG](CHANGELOG.md)
-- [TODO](TODO.md)
-
-## Resources
-
-Repository: https://github.com/lilliputten/sankey-graph-app
-
-Deploy server (with recent build): http://sankey-graph-app.lilliputten.ru/
-
-## Project workflow
-
-Install all required node dependencies:
-
-```
-npm i
-```
-
-Start dev server (locate in browser with `http://localhost:3000`):
-
-```
-npm run start
-```
-
-Make build:
-
-```
-npm run build
-```
-
-Build and publish:
-
-For successful publishing the build application the environment should be
-propeply set up (see npm script command `postinstall-publish-submodule`).
-
-```
-npm run build-and-publish
-```
-
-To just publish previously created build:
-
-```
-npm run publish
-```
-
-Builds published into the `publish` branch. See utilities configuration in
-`utils/config.sh`.
+TODO: Add server description.
 
 ## Run application under python script
 
@@ -91,10 +42,20 @@ python start-app.py --dev --data-set-folder sweet-corn
 
 In this case data will be taken and written from/to respective subfolders in `public/` folder.
 
-Available script command line options could be obtained with `--help` parameter:
+## Server script verions
+
+Server script implemented (as on 2024.02.05) in two variants:
+
+- Python script (`start-app.py`), used embedded `http.server`. No dependencies required to install (`DateTime` only?).
+- NodeJS script (`start-server.mjs`), uses embedded `http`. Required to install dependencies using `npm install` before start.
+
+## Command line options
+
+Available script command line options could be obtained with `--help` parameter, the're the same for both python and node versions:
 
 ```
 $python start-app.py --help
+$node start-server.mjs --help
 
 usage: start-app.py [-h] [--data-folder {dataFolder}] [--data-set-folder {dataSetFolder}]
                     [--target-folder {targetFolder}] [--omit-date-tag | --no-omit-date-tag]
