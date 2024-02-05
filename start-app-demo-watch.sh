@@ -26,5 +26,6 @@
 # TODO: Clear 'build/temp*' folders?
 
 npx copy-and-watch --watch \
-  start-app*.{py,html,js} \
+  server/**/*.{js,mjs,md} \
+  start-*.{py,html,js,mjs,md} \
   build/

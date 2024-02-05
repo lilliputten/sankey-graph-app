@@ -3,10 +3,12 @@
   "version": "0.0.25",
   "timetag": "240205-2014",
   "timestamp": "2024.02.05, 20:14 GMT+7",
-  "changed": "2024.02.05, 20:14",
+  "changed": "2024.02.05, 23:29",
   "dependencies": {
     "command-line-args": "^5.2.1",
-    "command-line-usage": "^7.0.1"
+    "command-line-usage": "^7.0.1",
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
   },
   "scripts": {
     "start": "echo --Start app server-- && node start-server.mjs"

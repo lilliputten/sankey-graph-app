@@ -91,18 +91,23 @@ function writeBuildInfo(cb) {
   fs.writeFile('build/build.txt', buildInfoText, cb);
 }
 
+/** This file name prefix will be removed after copy to the build folder */
 const startBuildPrefix = 'start-build-';
 
+// TODO: Create a 'watch' task for these files?
 function copyExtraFiles() {
   return gulp
-    .src([
-      // prettier-ignore
-      'start-*.{py,html,js,mjs,json,md}',
-      'requirements-general.txt',
-    ])
+    .src(
+      [
+        // prettier-ignore
+        'start-*.{py,html,js,mjs,json,md}',
+        'requirements-general.txt',
+        'server/**/*.{js,mjs,ts,md}',
+      ],
+      { base: './' },
+    )
     .pipe(
-      rename(function (path) {
-        console.log('XXX rename', path);
+      rename((path) => {
         if (path.basename.startsWith(startBuildPrefix)) {
           path.basename = path.basename.substring(startBuildPrefix.length);
         }
@@ -111,13 +116,6 @@ function copyExtraFiles() {
     .pipe(gulp.dest('build/'));
 }
 
-// function copyBuildPackage() {
-//   return gulp
-//     .src('start-server-package.json')
-//     .pipe(rename('package.json'))
-//     .pipe(gulp.dest('build/'));
-// }
-
 gulp.task('writeBuildInfo', writeBuildInfo);
 /* // UNUSED: For relative paths processing...
  * gulp.task('processRelativeStyleUrls', processRelativeStyleUrls);
@@ -125,7 +123,6 @@ gulp.task('writeBuildInfo', writeBuildInfo);
  */
 gulp.task('prettifyHtml', prettifyHtml); // NOTE: This patch can cause nextjs hydration error
 gulp.task('copyExtraFiles', copyExtraFiles);
-// gulp.task('copyBuildPackage', copyBuildPackage);
 
 const patchBuildTasks = [
   /* // UNUSED: For relative paths processing...
@@ -135,7 +132,6 @@ const patchBuildTasks = [
   'writeBuildInfo',
   'prettifyHtml',
   'copyExtraFiles',
-  // 'copyBuildPackage',
 ].filter(Boolean);
 
 gulp.task('patchBuild', gulp.parallel.apply(gulp, patchBuildTasks));

@@ -1,6 +1,6 @@
 #!/bin/sh
 # @desc Update version number & build timestamps
-# @changed 2024.02.05, 20:13
+# @changed 2024.02.05, 23:32
 
 # Import config variables (expected variables `$DIST_REPO` and `$PUBLISH_FOLDER`)...
 test -f "./utils/config.sh" && . "./utils/config.sh"
@@ -66,5 +66,5 @@ UPDATE_FILE "README.md"
 UPDATE_FILE "public/package.json"
 UPDATE_FILE "public/README.md"
 UPDATE_FILE "public/package.json"
-UPDATE_FILE "start-build-package.json"
-UPDATE_FILE "start-build-README.md"
+UPDATE_FILE "server/package.json"
+UPDATE_FILE "server/README.md"
