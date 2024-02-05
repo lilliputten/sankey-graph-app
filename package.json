@@ -62,7 +62,9 @@
   },
   "dependencies": {
     "command-line-args": "^5.2.1",
-    "command-line-usage": "^7.0.1"
+    "command-line-usage": "^7.0.1",
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
@@ -78,6 +80,9 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@types/command-line-args": "^5.2.3",
+    "@types/command-line-usage": "^5.0.4",
+    "@types/cors": "^2.8.17",
     "@types/jest": "^27.5.2",
     "@types/lodash.debounce": "^4.0.9",
     "@types/node": "^16.18.61",

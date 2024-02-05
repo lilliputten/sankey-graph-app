@@ -9,16 +9,12 @@ import {
   defaultTargetFolder,
   defaultWebPort,
   devBuildFolder,
-} from './start-server-defaults.mjs';
+} from './config.mjs';
 
 // Parse options...
-export const options = {};
 
-/*
- * export const defaultOptions = {
- *   'web-port': defaultWebPort,
- * };
- */
+/** @type {Partial<TOptions>} */
+export const options = {};
 
 // prettier-ignore
 export const optionDefinitions = [
@@ -49,13 +45,12 @@ export function printUsage() {
       },
       {
         header: 'Options',
-        optionList: optionDefinitions.map(({ name, alias, paramName, description }) => {
-          if (alias) {
-            name += ', -' + alias;
-          }
-          const data = { name, description };
-          const param = paramName;
-          data.typeLabel = param ? '{underline ' + param + '}' : ' '; // NOTE: Using non-empty string for avoiding
+        optionList: optionDefinitions.map((option) => {
+          const { name, alias, description } = option;
+          const showName = alias ? name + ', -' + alias : name;
+          const data = { name: showName, description };
+          // const param = paramName;
+          // data.typeLabel = param ? '{underline ' + param + '}' : ' '; // NOTE: Using non-empty string for avoiding
           return data;
         }),
       },
@@ -65,7 +60,7 @@ export function printUsage() {
     console.log(usage);
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('Usage error:', error);
+    console.error('Options usage info creating error:', error);
     // eslint-disable-next-line no-debugger
     debugger;
   }
@@ -82,7 +77,7 @@ export function parseOptions() {
     Object.assign(options, parsedOptions);
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('Options parsing error:', error.message || error);
+    console.error('Options parsing error:', error);
     // eslint-disable-next-line no-debugger
     debugger;
     printUsage();
