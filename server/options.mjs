@@ -25,15 +25,15 @@ export const optionDefinitions = [
 
   { alias: 'p', name: 'web-port', type: String, defaultValue: defaultWebPort, description: 'Web server port (default: "' + defaultWebPort + '")' },
 
-  { name: 'demo-post', type: Boolean, description: 'Make demo POST request' },
-  { name: 'demo-files', type: Boolean, description: 'Open the app with links to demo files' },
+  { name: 'demo-post', type: Boolean, defaultValue: false, description: 'Make demo POST request' },
+  { name: 'demo-files', type: Boolean, defaultValue: false, description: 'Open the app with links to demo files' },
 
   { name: 'demo-files-data-folder', type: String, defaultValue: defaultDataFolder, description: 'Data folder name (default: "' + defaultDataFolder + '")' },
   { name: 'demo-files-data-set-folder', type: String, defaultValue: defaultDataSetFolder, description: 'Data set folder name (default: "' + defaultDataSetFolder + '")' },
   { name: 'demo-files-target-folder', type: String, defaultValue: defaultTargetFolder, description: 'Target folder name (default: "' + defaultTargetFolder + '")' },
-  { name: 'demo-files-omit-date-tag', type: String, description: 'Omit date tag postfix for auto-generated target folder name (datetime module required)' },
+  { name: 'demo-files-omit-date-tag', type: Boolean, defaultValue: false, description: 'Omit date tag postfix for auto-generated target folder name (datetime module required)' },
 
-  { alias: 'd', name: 'dev', type: Boolean, description: 'Use "public" folder prefix for demo data files and "' + devBuildFolder + '" for local web server (for non-built dev environment)' },
+  { alias: 'd', name: 'dev', type: Boolean, defaultValue: false, description: 'Use "public" folder prefix for demo data files and "' + devBuildFolder + '" for local web server (for non-built dev environment)' },
 ];
 
 export function printUsage() {

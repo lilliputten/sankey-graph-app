@@ -14,9 +14,10 @@ import express from 'express';
 // import http from 'http';
 // import https from 'https';
 
-import { defaultWebPort } from 'config.mjs';
+import { defaultWebPort } from './config.mjs';
+import { getRequestOriginIp, notFoundHandler } from './helpers.mjs';
 
-/** @type {import('express-serve-static-core').Express} */
+/** @type {TExpressServer} */
 let server;
 
 /** @param {Error} error */
@@ -39,26 +40,65 @@ function listenerError(error) {
   debugger; // eslint-disable-line no-debugger
 }
 
+/**
+ * @param {TExpressRequest} req
+ * @param {TExpressResponse} res
+ * @param {string} filePath
+ */
+function fileNotFound(req, res, filePath) {
+  const ip = getRequestOriginIp(req);
+  const { method, url } = req;
+  // eslint-disable-next-line no-console
+  console.warn('[core:fileNotFound]', { ip, method, url, filePath });
+  debugger; // eslint-disable-line no-debugger
+  return res.status(404).send('File not found: ' + filePath + ' (' + url + ')');
+}
+
+/**
+ * @param {TExpressRequest} req
+ * @param {TExpressResponse} res
+ */
+function testRoute(req, res) {
+  console.log('[core:testRoute]', {
+    // req,
+    // res,
+  });
+  res.send('Hello World!');
+}
+
 /** @param {Partial<TOptions>} options */
 export function startServer(options) {
-  const webPort = options['web-port'] || defaultWebPort;
+  try {
+    const webPort = options['web-port'] || defaultWebPort;
 
-  console.log('[core:startServer]', {
-    webPort,
-    options,
-  });
-  debugger;
+    // eslint-disable-next-line no-console
+    console.log('[core:startServer] Starting server with options', options);
 
-  server = express();
+    server = express();
 
-  const corsOptions = {
-    origin: '*',
-    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-  };
-  server.use(cors(corsOptions));
+    // Configure CORS...
+    const corsOptions = {
+      origin: '*',
+      optionsSuccessStatus: 200, // NOTE: Some legacy browsers (IE11, various SmartTVs) choke on 204
+    };
+    server.use(cors(corsOptions));
 
-  /** @type {import('http').Server} */
-  const listener = server.listen(webPort);
+    /** @type {import('http').Server} */
+    const listener = server.listen(webPort);
 
-  listener.on('error', listenerError);
+    server.get('/test', testRoute);
+
+    listener.on('error', listenerError);
+
+    server.use(notFoundHandler);
+
+    // eslint-disable-next-line no-console
+    console.log('[core:startServer] Starting has already started.');
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    // eslint-disable-next-line no-console
+    console.error('[core:core] error', message, {
+      error,
+    });
+  }
 }
