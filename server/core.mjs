@@ -1,8 +1,5 @@
 // @ts-check
 
-// import fs from 'fs';
-// import path from 'path';
-
 // import ip from 'ip';
 
 import cors from 'cors';
@@ -15,7 +12,7 @@ import express from 'express';
 // import https from 'https';
 
 import { defaultWebPort } from './config.mjs';
-import { getRequestOriginIp, notFoundHandler } from './helpers.mjs';
+import { initStaticRoutes, notFoundHandler } from './helpers.mjs';
 
 /** @type {TExpressServer} */
 let server;
@@ -38,20 +35,6 @@ function listenerError(error) {
     error,
   });
   debugger; // eslint-disable-line no-debugger
-}
-
-/**
- * @param {TExpressRequest} req
- * @param {TExpressResponse} res
- * @param {string} filePath
- */
-function fileNotFound(req, res, filePath) {
-  const ip = getRequestOriginIp(req);
-  const { method, url } = req;
-  // eslint-disable-next-line no-console
-  console.warn('[core:fileNotFound]', { ip, method, url, filePath });
-  debugger; // eslint-disable-line no-debugger
-  return res.status(404).send('File not found: ' + filePath + ' (' + url + ')');
 }
 
 /**
@@ -85,6 +68,8 @@ export function startServer(options) {
 
     /** @type {import('http').Server} */
     const listener = server.listen(webPort);
+
+    initStaticRoutes(server);
 
     server.get('/test', testRoute);
 

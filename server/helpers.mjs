@@ -1,15 +1,17 @@
 // @ts-check
 
-// UNUSED: Import config parameters...
+// import fs from 'fs';
+import path from 'path';
+
 import {
   ipv6remove,
   ipv6localhost,
   realIPAddress,
-  // localhostAddress,
-  // uploadDir,
-  // replaceUploadsDir,
-  // useDebugStops,
+  maxAgeStatic,
+  rootPath,
+  staticServerRoutes,
 } from './config.mjs';
+import express from 'express';
 
 /**
  * @param {number} timeout
@@ -70,6 +72,39 @@ export function getRequestHostIp(req) {
  *   return dirName;
  * }
  */
+
+/* // UNUSED: fileNotFound
+ * [>* Response route for non-found file
+ *  * @param {TExpressRequest} req
+ *  * @param {TExpressResponse} res
+ *  * @param {string} filePath
+ *  <]
+ * function fileNotFound(req, res, filePath) {
+ *   const ip = getRequestOriginIp(req);
+ *   const { method, url } = req;
+ *   // eslint-disable-next-line no-console
+ *   console.warn('[helpers:fileNotFound]', { ip, method, url, filePath });
+ *   debugger; // eslint-disable-line no-debugger
+ *   return res.status(404).send('File not found: ' + filePath + ' (' + url + ')');
+ * }
+ */
+
+/**
+ * @param {TExpressRequest} req
+ * @param {TExpressResponse} _res
+ * @param {() => void} next
+ */
+export function logRequest(req, _res, next) {
+  // Filter corresponding to `filterServerIp`/`filterDeviceIp` parameters. See `debugRoutes:filterDebug`.
+  const ip = getRequestOriginIp(req); // Remote ip
+  const { method, protocol, url, headers } = req;
+  const host = headers.host; // Our address
+  // Last regexp excludes debugs with extended info in url
+  const ipText = ip + (host ? ' (host: ' + host + ')' : '') + ':';
+  // eslint-disable-next-line no-console
+  console.log('[helpers:logRequest]', ['Request from', ipText, protocol, method, url].join(' '));
+  next();
+}
 
 /**
  * @param {TExpressRequest} req
@@ -167,4 +202,39 @@ export function makeQuery(data, opt = {}) {
   }
 
   return query;
+}
+
+/** @param {TExpressServer} server */
+export function initStaticRoutes(server) {
+  server.use(logRequest);
+  const maxAge = maxAgeStatic;
+  staticServerRoutes.forEach((route) => {
+    const url = '/' + route;
+    const file = path.resolve(rootPath, route);
+    // eslint-disable-next-line no-console
+    console.log('[helpers:initStaticRoutes]: initStaticRoutes:route', url);
+    server.use(
+      url,
+      express.static(file, {
+        maxAge,
+        index: false,
+        // UNUSED `setHeaders` -- Doubled `logRequest`?
+        /* setHeaders: (res, filePath[> , file_stats <]) => { // Log static request
+         *   const { req } = res
+         *   const ip = common.getRequestOriginIp(req)
+         *   const { query, method, [> url, <] headers } = req
+         *   const host = headers.host
+         *   const url = '/' + path.relative(rootPath, filePath).replace(/\\/g, '/')
+         *   if (!config.noServerLogs && !excludeLogUrls.includes(url) && !url.match(/\/debug($|\?)/)) {
+         *     const data = {}
+         *     if (query && Object.keys(query).length) {
+         *       data.query = query
+         *     }
+         *     DEBUG([ 'static request', ip, method, host, url ].join(' '), data)
+         *   }
+         * },
+         */
+      }),
+    );
+  });
 }

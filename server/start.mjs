@@ -1,8 +1,5 @@
 // @ts-check
 
-// import fs from 'fs';
-// import http from 'http';
-
 import { options, parseOptions } from './options.mjs';
 import { startServer } from './core.mjs';
 
