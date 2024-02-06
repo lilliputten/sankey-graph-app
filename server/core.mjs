@@ -1,52 +1,47 @@
 // @ts-check
 
-// import ip from 'ip';
-
 import cors from 'cors';
 import express from 'express';
-// import * as expressCore from 'express-serve-static-core';
-// import bodyParser from 'body-parser';
-// import xmlparser from 'express-xml-bodyparser';
 
-// import http from 'http';
-// import https from 'https';
-
-import { defaultWebPort } from './config.mjs';
-import { initStaticRoutes, notFoundHandler } from './helpers.mjs';
+import { defaultWebPort, maxAgeStatic } from './config.mjs';
+import { initStaticRoutes, listenerError, notFoundHandler } from './helpers.mjs';
+import { initAcceptPostDataServer } from './accept-post-data.mjs';
+import { getPathPrefix } from './data-files.mjs';
 
 /** @type {TExpressServer} */
 let server;
 
-/** @param {Error} error */
-function listenerError(error) {
-  let message = 'Server listener error: ';
-  // Show only message for known errors
-  if (
-    error &&
-    // @ts-expect-error: This parameter is exist
-    error.code === 'EADDRINUSE'
-  ) {
-    message += error.message || String(error);
-  } else {
-    message += error.stack || String(error);
-  }
-  // eslint-disable-next-line no-console
-  console.error('[core:listenerError] error', message, {
-    error,
-  });
-  debugger; // eslint-disable-line no-debugger
-}
-
-/**
- * @param {TExpressRequest} req
+/** DEBUG: Test route
+ * @param {TExpressRequest} _req
  * @param {TExpressResponse} res
  */
-function testRoute(req, res) {
+function testRoute(_req, res) {
+  // eslint-disable-next-line no-console
   console.log('[core:testRoute]', {
     // req,
     // res,
   });
   res.send('Hello World!');
+}
+
+/** @param {TExpressServer} server */
+function serveApp(server) {
+  const maxAge = maxAgeStatic;
+  const pathPrefix = getPathPrefix();
+  const url = '/';
+  server.use(
+    url,
+    express.static(pathPrefix, {
+      maxAge,
+      // index: true,
+    }),
+  );
+  // eslint-disable-next-line no-console
+  console.log('[core:server] Started serve app', {
+    maxAge,
+    pathPrefix,
+    url,
+  });
 }
 
 /** @param {Partial<TOptions>} options */
@@ -69,16 +64,21 @@ export function startServer(options) {
     /** @type {import('http').Server} */
     const listener = server.listen(webPort);
 
+    serveApp(server);
+
+    // NOTE: Serve some specific static routes if defined (see `config:staticServerRoutes`)...
     initStaticRoutes(server);
 
     server.get('/test', testRoute);
+
+    initAcceptPostDataServer(server);
 
     listener.on('error', listenerError);
 
     server.use(notFoundHandler);
 
     // eslint-disable-next-line no-console
-    console.log('[core:startServer] Starting has already started.');
+    console.log('[core:startServer] Server has already started.');
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     // eslint-disable-next-line no-console

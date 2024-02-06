@@ -4,13 +4,20 @@ import path from 'path';
 import ip from 'ip';
 import { fileURLToPath } from 'url';
 
+// Date/time...
+
+// NOTE: Date formats only for 'date-fn*'...
+export const tagFormat = 'yyMMdd-HHmm';
+export const tagFormatPrecise = 'yyMMdd-HHmmss';
+export const timeFormat = 'yyyy.MM.dd, HH:mm zzz';
+
 // Local environment...
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export const currPath = path.resolve(__dirname);
-export const rootPath = path.dirname(path.basename(currPath));
+export const rootPath = path.dirname(currPath);
 
 // Network environment...
 
@@ -20,6 +27,8 @@ export const realIPAddress = ip.address();
 
 export const browserUrlPrefix = 'http://localhost:';
 export const devBuildFolder = 'build';
+
+// Server routes...
 
 export const acceptPostDataUrl = '/cgi-bin/accept-post-data';
 
@@ -50,10 +59,11 @@ export const maxAgeStatic = maxAgeLong; // maxAge value (ms) for caching static 
 
 // Express parameters...
 
+/** @type {string[]} */
 export const staticServerRoutes = [
-  // TODO: Invlove `dev` mode?
-  'start-app-demo-post.html',
-  'start-app-demo.js',
-  'build.txt', // NOTE: Only for built app
-  'favicon.ico',
+  // TODO: Involve `dev` mode to conditionally include demo routes?
+  // 'start-app-demo-post.html',
+  // 'start-app-demo.js',
+  // 'build.txt', // NOTE: Only for built app
+  // 'favicon.ico',
 ];
