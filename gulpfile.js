@@ -101,8 +101,8 @@ function copyExtraFiles() {
       [
         // prettier-ignore
         'start-*.{py,html,js,mjs,json,md}',
-        'requirements-general.txt',
-        'server/**/*.{js,mjs,ts,md}',
+        'requirements-general.txt', // Deps file for python script
+        'server/**/*.{js,mjs,ts,json,md}', // Node server routines...
       ],
       { base: './' },
     )

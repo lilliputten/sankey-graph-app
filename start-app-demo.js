@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 /**
+ * @desc Js helpers for data uploading demo. Supports 2-step (send data and receive url to redirect, nd auto redirect on the server side; see parameter `redirect`)
  * @changed 2024.02.03, 21:15
  */
 
@@ -180,8 +181,7 @@ function updateFormAction() {
     serverUrl,
     receivedUrl,
   });
-  debugger;
-  return false;
+  return true;
 }
 
 window.sendPostDataRequest = sendPostDataRequest;

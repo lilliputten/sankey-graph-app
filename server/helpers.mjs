@@ -1,7 +1,9 @@
 // @ts-check
 
-// import fs from 'fs';
+import fs from 'fs';
 import path from 'path';
+import express from 'express';
+import { format, formatInTimeZone } from 'date-fns-tz';
 
 import {
   ipv6remove,
@@ -10,8 +12,52 @@ import {
   maxAgeStatic,
   rootPath,
   staticServerRoutes,
+  tagFormatPrecise,
 } from './config.mjs';
-import express from 'express';
+
+/**
+ * @param {number | Date} date
+ * @param {string | undefined} timeZone
+ * @param {string} fmt
+ */
+export function formatDate(date, timeZone, fmt) {
+  if (timeZone) {
+    return formatInTimeZone(date, timeZone, fmt);
+  } else {
+    return format(date, fmt);
+  }
+}
+
+/**
+ * @param {string} filename
+ * @param {unknown} data
+ */
+export function writeJson(filename, data) {
+  // TODO: Use try..catch for data processing?
+  const jsonStr = JSON.stringify(data, undefined, 2);
+  // TODO: Use sync version or promise to control errors?
+  fs.writeFile(filename, jsonStr, (err) => {
+    if (err) {
+      // eslint-disable-next-line no-console
+      console.error('[helpers:writeJson] error', {
+        filename,
+        err,
+      });
+      // eslint-disable-next-line no-debugger
+      debugger;
+    }
+  });
+}
+
+/**
+ * @param {number | Date} [date]
+ */
+export function getDateTag(date) {
+  if (!date) {
+    date = new Date();
+  }
+  return formatDate(date, undefined, tagFormatPrecise);
+}
 
 /**
  * @param {number} timeout
@@ -23,7 +69,6 @@ export function delayPromise(timeout, value) {
   });
 }
 
-// UNUSED: getRequestOriginIp
 /** Get client origin host
  * @param {TExpressRequest} req
  * @return {String}
@@ -39,7 +84,6 @@ export function getRequestOriginIp(req) {
   return ip;
 }
 
-// UNUSED: getRequestHostIp
 /** Get client ip
  * @param {TExpressRequest} req
  * @return {String}
@@ -56,25 +100,8 @@ export function getRequestHostIp(req) {
   return host;
 }
 
-/* // UNUSED: prepareDestDir
- * [>*
- *  * @param {string} dirName
- *  <]
- * export function prepareDestDir(dirName) {
- *   if (uploadDir && replaceUploadsDir && dirName.indexOf(replaceUploadsDir) === 0) {
- *     dirName = dirName.substr(replaceUploadsDir.length);
- *     // if (dirName.indexOf('/') === 0) {
- *     //   dirName = dirName.substr(1)
- *     // }
- *     // dirName = path.resolve(uploadDir, dirName)
- *     dirName = path.join(uploadDir, dirName);
- *   }
- *   return dirName;
- * }
- */
-
 /* // UNUSED: fileNotFound
- * [>* Response route for non-found file
+ * [>* Response route for a non-found file
  *  * @param {TExpressRequest} req
  *  * @param {TExpressResponse} res
  *  * @param {string} filePath
@@ -89,13 +116,38 @@ export function getRequestHostIp(req) {
  * }
  */
 
+/** @param {Error} error */
+export function listenerError(error) {
+  let message = 'Server listener error: ';
+  // Show only message for known errors
+  if (
+    error &&
+    // @ts-expect-error: This parameter is exist
+    error.code === 'EADDRINUSE'
+  ) {
+    message += error.message || String(error);
+  } else {
+    message += error.stack || String(error);
+  }
+  // eslint-disable-next-line no-console
+  console.error('[core:listenerError] error', message, {
+    error,
+  });
+  debugger; // eslint-disable-line no-debugger
+}
+
+/** @param {string} pathName */
+export function posixPath(pathName) {
+  return pathName.replace(/\\/g, '/');
+}
+
 /**
  * @param {TExpressRequest} req
  * @param {TExpressResponse} _res
  * @param {() => void} next
  */
 export function logRequest(req, _res, next) {
-  // Filter corresponding to `filterServerIp`/`filterDeviceIp` parameters. See `debugRoutes:filterDebug`.
+  // TODO: Filter requests according to `filterServerIp`/`filterDeviceIp` parameters. See `debugRoutes:filterDebug`.
   const ip = getRequestOriginIp(req); // Remote ip
   const { method, protocol, url, headers } = req;
   const host = headers.host; // Our address

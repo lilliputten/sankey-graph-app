@@ -45,9 +45,9 @@ parser.add_argument('--demo-post', dest='demoPost', action=argparse.BooleanOptio
 parser.add_argument('--demo-files', dest='demoFiles', action=argparse.BooleanOptionalAction, help='Open the app with links to demo files')
 
 parser.add_argument('--demo-files-data-folder', dest='demoFilesDataFolder', metavar='{demoFilesDataFolder}', action='store', default=defaultDataFolder, help='Data folder name (default: "' + defaultDataFolder + '")')
-parser.add_argument('--demo-files-data-set-folder', dest='demoFilesDataSetFolder', metavar='{demoFilesDataSetFolder}', action='store', default=defaultDataSetFolder, help='Data set folder name (default: "' + defaultDataSetFolder + '")')
-parser.add_argument('--demo-files-target-folder', dest='demoFilesTargetFolder', metavar='{demoFilesTargetFolder}', action='store', default=defaultTargetFolder, help='Target folder name (default: "' + defaultTargetFolder + '")')
-parser.add_argument('--demo-files-omit-date-tag', dest='demoFilesOmitDateTag', action=argparse.BooleanOptionalAction, help='Omit date tag postfix for auto-generated target folder name (datetime module required)')
+parser.add_argument('--demo-files-data-set-folder', dest='filesDataSetFolder', metavar='{filesDataSetFolder}', action='store', default=defaultDataSetFolder, help='Data set folder name (default: "' + defaultDataSetFolder + '")')
+parser.add_argument('--files-target-folder', dest='filesTargetFolder', metavar='{filesTargetFolder}', action='store', default=defaultTargetFolder, help='Target folder name (default: "' + defaultTargetFolder + '")')
+parser.add_argument('--files-omit-date-tag', dest='demoFilesOmitDateTag', action=argparse.BooleanOptionalAction, help='Omit date tag postfix for auto-generated target folder name (datetime module required)')
 
 # \<\(dataFolder\|dataSetFolder\|targetFolder\|omitDateTag\)\>
 
@@ -119,14 +119,14 @@ def loadDemoAppData() -> AppData:
 
     print('isDev:', options.isDev)
     print('demoFilesDataFolder:', options.demoFilesDataFolder)
-    print('demoFilesDataSetFolder:', options.demoFilesDataSetFolder)
+    print('filesDataSetFolder:', options.filesDataSetFolder)
 
     dataPathParts = [
         'public' if options.isDev else None,  # For pre-build environment, when 'public' hasn't served at root of build files yet.
         options.demoFilesDataFolder,
     ]
     dataFolder = '/'.join(list(filter(None, dataPathParts)))
-    dataSetFolder = options.demoFilesDataSetFolder
+    dataSetFolder = options.filesDataSetFolder
 
     dataPath = posixPath(path.join(rootPath, dataFolder))
     dataSetPath = posixPath(path.join(dataPath, dataSetFolder))
@@ -152,7 +152,7 @@ def loadDemoAppData() -> AppData:
     return appData
 
 def getTargetFolder() -> str:
-    targetFolder = options.demoFilesTargetFolder
+    targetFolder = options.filesTargetFolder
     if not options.demoFilesOmitDateTag:
         targetFolder += '-' + getDateTag()
     return targetFolder

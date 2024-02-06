@@ -188,7 +188,7 @@ Or via <a href="https://github.com/lilliputten/sankey-graph-app/archive/refs/tag
 Then unpack it, go to the unpacked build folder and start the script with command:
 
 \`\`\`
-python start-app.py --data-set-folder sweet-corn
+python start-app.py --demo-files-data-set-folder sweet-corn
 \`\`\`
 
 It will load sample data from the folder \`data/sweet-corn/\` (but shared \`nodes.json\` will be loaded from \`data/\` folder).
@@ -202,7 +202,7 @@ Here \`appData\` and \`targetFileNames\` have \`AppData\` and \`TargetFileNames\
 In dev mode (when python file is locatied in the project root) -- use \`--dev\` key:
 
 \`\`\`
-python start-app.py --dev --data-set-folder sweet-corn
+python start-app.py --dev --demo-files-data-set-folder sweet-corn
 \`\`\`
 
 In this case data will be taken and written from/to respective subfolders in \`public/\` folder.
@@ -212,14 +212,6 @@ Available script command line options could be obtained with \`--help\` paramete
 \`\`\`
 $python start-app.py --help
 \`\`\`
-
-**usage:** start-app.py [-h] [--web-port {webPort}] [--demo-post | --no-demo-post]
-                    [--demo-files | --no-demo-files]
-                    [--demo-files-data-folder {demoFilesDataFolder}]
-                    [--demo-files-data-set-folder {demoFilesDataSetFolder}]
-                    [--demo-files-target-folder {demoFilesTargetFolder}]
-                    [--demo-files-omit-date-tag | --no-demo-files-omit-date-tag]
-                    [--dev | --no-dev]
 
 Launch web server for the app.
 
@@ -231,26 +223,26 @@ show this help message and exit
 **--web-port {webPort}**
 Web server port (default: "8080")
 
-**--demo-post, --no-demo-post**
+**--demo-post**
 Make demo POST request
 
-**--demo-files, --no-demo-files**
+**--demo-files**
 Open the app with links to demo files
 
 **--demo-files-data-folder {demoFilesDataFolder}**
 Data folder name (default: "data")
 
-**--demo-files-data-set-folder {demoFilesDataSetFolder}**
+**--demo-files-data-set-folder {filesDataSetFolder}**
 Data set folder name (default: "hardwood-forestry")
 
-**--demo-files-target-folder {demoFilesTargetFolder}**
+**--files-target-folder {filesTargetFolder}**
 Target folder name (default: "temp")
 
-**--demo-files-omit-date-tag, --no-demo-files-omit-date-tag**
+**--files-omit-date-tag**
 Omit date tag postfix for auto-generated target folder name (datetime
 module required)
 
-**--dev, --no-dev**
+**--dev**
 Use "public" folder prefix for demo data files and "build" for local web
 server (for non-built dev environment)
 
