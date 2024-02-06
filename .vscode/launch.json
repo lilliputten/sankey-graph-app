@@ -73,14 +73,14 @@
     },
     {
       "name": "Python: Run file",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal"
     },
     {
       "name": "Python: Run start-app.py",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "start-app.py",
       "console": "integratedTerminal",
@@ -91,14 +91,14 @@
       ]
     },
     {
-      "name": "Python: Run start-server.mjs",
+      "name": "Node: Run start-server.mjs",
       "type": "node",
       "request": "launch",
       "program": "start-server.mjs",
       "console": "integratedTerminal",
       "args": [
         "--web-port",
-        "3000"
+        "8080"
       ]
     }
   ]

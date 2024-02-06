@@ -12,9 +12,5 @@ export function start() {
     return;
   }
 
-  console.log('Server', {
-    options,
-  });
-
   startServer(options);
 }

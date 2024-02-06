@@ -8,7 +8,8 @@
     "command-line-args": "^5.2.1",
     "command-line-usage": "^7.0.1",
     "cors": "^2.8.5",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "ip": "^1.1.8"
   },
   "scripts": {
     "start": "echo --Start app server-- && node start-server.mjs"
