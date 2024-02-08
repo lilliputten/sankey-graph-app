@@ -97,9 +97,10 @@
       "program": "start-server.mjs",
       "console": "integratedTerminal",
       "args": [
-        "--dev",
-        "--web-port",
-        "8080"
+        "--help"
+        // "--dev",
+        // "--web-port",
+        // "8080"
       ]
     }
   ]
