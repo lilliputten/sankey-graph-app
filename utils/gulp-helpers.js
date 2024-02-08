@@ -7,8 +7,6 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-// const { format, formatInTimeZone } = require('date-fns-tz');
-
 const dayjsUtc = require('dayjs/plugin/utc.js');
 const dayjsTimezone = require('dayjs-timezone-iana-plugin'); // @see https://day.js.org/docs/en/plugin/timezone
 const dayjs = require('dayjs'); // @see https://day.js.org/docs/en/display/format
