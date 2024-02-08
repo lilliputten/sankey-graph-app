@@ -7,8 +7,8 @@
 
 Dedicated sankey graph app server.
 
-- Version: 0.0.27
-- Last changes timestamp: 2024.02.08 17:49 +0700
+- Version: 0.0.28
+- Last changes timestamp: 2024.02.08 18:48 +0700
 
 ## Run application under python script
 
