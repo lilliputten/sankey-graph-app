@@ -1,16 +1,16 @@
 {
   "name": "sankey-graph-app-server",
-  "version": "0.0.26",
-  "timetag": "240206-2041",
-  "timestamp": "2024.02.06, 20:41 GMT+7",
+  "version": "0.0.27",
+  "timetag": "240208-1749",
+  "timestamp": "2024.02.08 17:49 +0700",
   "changed": "2024.02.06, 20:12",
   "dependencies": {
     "body-parser": "^1.20.2",
     "command-line-args": "^5.2.1",
     "command-line-usage": "^7.0.1",
     "cors": "^2.8.5",
-    "date-fns": "^2.30.0",
-    "date-fns-tz": "^2.0.0",
+    "dayjs": "^1.11.10",
+    "dayjs-timezone-iana-plugin": "^0.1.0",
     "express": "^4.18.2",
     "ip": "^1.1.8"
   },

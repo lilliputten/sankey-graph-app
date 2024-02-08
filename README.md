@@ -7,8 +7,8 @@
 
 Dedicated sankey graph app server.
 
-- Version: 0.0.26
-- Last changes timestamp: 2024.02.06, 20:41 GMT+7
+- Version: 0.0.27
+- Last changes timestamp: 2024.02.08 17:49 +0700
 
 TODO: Add server description.
 

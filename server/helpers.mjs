@@ -3,7 +3,6 @@
 import fs from 'fs';
 import path from 'path';
 import express from 'express';
-import { format, formatInTimeZone } from 'date-fns-tz';
 
 import {
   ipv6remove,
@@ -15,17 +14,34 @@ import {
   tagFormatPrecise,
 } from './config.mjs';
 
+import dayjsUtc from 'dayjs/plugin/utc.js';
+// @ts-expect-error: No type definitions for dayjs-timezone-iana-plugin yet
+import dayjsTimezone from 'dayjs-timezone-iana-plugin'; // @see https://day.js.org/docs/en/plugin/timezone
+import dayjs from 'dayjs'; // @see https://day.js.org/docs/en/display/format
+
+dayjs.extend(dayjsUtc);
+dayjs.extend(dayjsTimezone);
+
 /**
  * @param {number | Date} date
  * @param {string | undefined} timeZone
  * @param {string} fmt
  */
-export function formatDate(date, timeZone, fmt) {
+function formatDate(date, timeZone, fmt) {
+  let dayjsDate = dayjs(date);
+  if (timeZone) {
+    // @ts-expect-error: No type definitions for dayjs-timezone-iana-plugin yet
+    dayjsDate = dayjsDate.tz(timeZone);
+  }
+  const fmtDate = dayjsDate.format(fmt);
+  return fmtDate;
+  /* // OLD_CODE: Using 'date-fns-tz' (OBSOLETE)
   if (timeZone) {
     return formatInTimeZone(date, timeZone, fmt);
   } else {
     return format(date, fmt);
   }
+  */
 }
 
 /**
