@@ -5,13 +5,26 @@
 
 const fs = require('fs');
 const path = require('path');
-const { format, formatInTimeZone } = require('date-fns-tz');
 const { execSync } = require('child_process');
+
+// const { format, formatInTimeZone } = require('date-fns-tz');
+
+const dayjsUtc = require('dayjs/plugin/utc.js');
+const dayjsTimezone = require('dayjs-timezone-iana-plugin'); // @see https://day.js.org/docs/en/plugin/timezone
+const dayjs = require('dayjs'); // @see https://day.js.org/docs/en/display/format
+
+dayjs.extend(dayjsUtc);
+dayjs.extend(dayjsTimezone);
 
 const now = new Date();
 
-const tagFormat = 'yyMMdd-HHmm';
-const timeFormat = 'yyyy.MM.dd, HH:mm zzz';
+// NOTE: Date formats for 'dayjs', @see https://day.js.org/docs/en/display/format
+const tagFormat = 'YYMMDD-HHmm';
+const timeFormat = 'YYYY.MM.DD HH:mm ZZ';
+/** // NOTE: Date formats for `date-fns*` library...
+ * const tagFormat = 'yyMMdd-HHmm';
+ * const timeFormat = 'yyyy.MM.dd, HH:mm zzz';
+ */
 
 const currPath = path.resolve(__dirname);
 const prjPath = path.resolve(path.dirname(path.basename(currPath)));
@@ -114,11 +127,19 @@ function allData() {
 }
 
 function formatDate(date, timeZone, fmt) {
+  let dayjsDate = dayjs(date);
+  if (timeZone) {
+    dayjsDate = dayjsDate.tz(timeZone);
+  }
+  const fmtDate = dayjsDate.format(fmt);
+  return fmtDate;
+  /* // OLD_CODE: Using 'date-fns-tz'
   if (timeZone) {
     return formatInTimeZone(date, timeZone, fmt);
   } else {
     return format(date, fmt);
   }
+  */
 }
 
 function getRelativeFileName(file, basePath) {

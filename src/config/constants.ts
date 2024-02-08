@@ -2,16 +2,19 @@
 
 // Date/time formats for use in DatePicker and other date/time-related
 // components, @see: https://date-fns.org/v2.16.1/docs/format
-export const dateFormat = 'yyyy.MM.dd';
+
+// NOTE: Date formats for 'dayjs', @see https://day.js.org/docs/en/display/format
+export const dateFormat = 'YYYY.MM.DD';
 export const timeFormat = 'HH:mm';
 export const timeSecFormat = 'HH:mm:ss';
 export const timeMsFormat = 'HH:mm:ss:SSS';
+export const tzFormat = 'ZZ';
 export const dateTimeFormat = dateFormat + ' ' + timeFormat;
-export const dateTimeFormatTz = dateFormat + ' ' + timeFormat + ' zzz';
+export const dateTimeFormatTz = dateFormat + ' ' + timeFormat + ' ' + tzFormat;
 export const dateTimeSecFormat = dateFormat + ' ' + timeSecFormat;
-export const dateTimeSecFormatTz = dateFormat + ' ' + timeSecFormat + ' zzz';
+export const dateTimeSecFormatTz = dateFormat + ' ' + timeSecFormat + ' ' + tzFormat;
 export const dateTimeMsFormat = dateFormat + ' ' + timeMsFormat;
-export const dateTimeMsFormatTz = dateFormat + ' ' + timeMsFormat + ' zzz';
+export const dateTimeMsFormatTz = dateFormat + ' ' + timeMsFormat + ' ' + tzFormat;
 export const dateRangeDelim = ' – ';
 
 export const timeIntervals = 60;

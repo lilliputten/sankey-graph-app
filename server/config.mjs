@@ -6,10 +6,15 @@ import { fileURLToPath } from 'url';
 
 // Date/time...
 
-// NOTE: Date formats only for 'date-fn*'...
-export const tagFormat = 'yyMMdd-HHmm';
-export const tagFormatPrecise = 'yyMMdd-HHmmss';
-export const timeFormat = 'yyyy.MM.dd, HH:mm zzz';
+// NOTE: Date formats for 'dayjs', @see https://day.js.org/docs/en/display/format
+export const tagFormat = 'YYMMDD-HHmm';
+export const tagFormatPrecise = 'YYMMDD-HHmmss';
+export const timeFormat = 'YYYY.MM.DD HH:mm ZZ';
+/* // NOTE: Date formats only for 'date-fns*' (OBSOLETE)
+ * export const tagFormat = 'yyMMdd-HHmm';
+ * export const tagFormatPrecise = 'yyMMdd-HHmmss';
+ * export const timeFormat = 'yyyy.MM.dd, HH:mm zzz';
+ */
 
 // Local environment...
 
