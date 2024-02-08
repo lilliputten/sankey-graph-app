@@ -126,7 +126,7 @@ If there was passed a 'truthy' url query parameter `redirect` (eg, `<...>//cgi-b
 
 ## Open a data post demo page:
 
-1. Start web server with: `node start-server.mjs` (or \`python start-app.py`; if starting form the project folder, with `build` subfolder, then use `--dev` comman line key).
+1. Start web server with: `node start-server.mjs` (or `python start-app.py`; if starting form the project folder, with `build` subfolder, then use `--dev` comman line key).
 2. Open demo html page in a browser: `http://localhost:8080/start-app-demo-post.html`.
 3. Submit a form manually (with a 'Submit form...' button) or send ajax request (with a 'Send post request...' button). It'll be sent to data processing endpoint `POST /cgi-bin/accept-post-data`.
 4. When/if data is successfully created it'll be redirected to main app page with corresponding parameters in the url query, or the url will be returned in response (then the highlighted button 'Follow received url' will appear and the url will be shown bellow).
