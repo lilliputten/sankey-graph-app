@@ -30,11 +30,14 @@ export const optionDefinitions = [
 
   { alias: 'd', name: 'dev', type: Boolean, defaultValue: false, description: 'Use "public" folder prefix for demo data files and "' + devBuildFolder + '" for local web server (for non-built dev environment)' },
 
-  { name: 'demo-post', type: Boolean, defaultValue: false, description: 'Make demo POST request' },
-  { name: 'demo-files', type: Boolean, defaultValue: false, description: 'Open the app with links to demo files' },
+  { alias: 'h', name: 'help', type: Boolean, defaultValue: false, description: 'Print this help and quit' },
 
-  { name: 'demo-files-data-folder', type: String, defaultValue: defaultDataFolder, description: 'Data folder name (default: "' + defaultDataFolder + '")' },
-  { name: 'demo-files-data-set-folder', type: String, defaultValue: defaultDataSetFolder, description: 'Data set folder name (default: "' + defaultDataSetFolder + '")' },
+  /* // NOTE: These demo options hasn't been implemented in js server. It's possible to use `start-app-demo-post.html` demo page (it's already included in the `build` folder).
+   * { name: 'demo-post', type: Boolean, defaultValue: false, description: 'Make demo POST request' },
+   * { name: 'demo-files', type: Boolean, defaultValue: false, description: 'Open the app with links to demo files' },
+   * { name: 'demo-files-data-folder', type: String, defaultValue: defaultDataFolder, description: 'Data folder name (default: "' + defaultDataFolder + '")' },
+   * { name: 'demo-files-data-set-folder', type: String, defaultValue: defaultDataSetFolder, description: 'Data set folder name (default: "' + defaultDataSetFolder + '")' },
+   */
 
 ];
 

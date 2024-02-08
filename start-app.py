@@ -10,7 +10,7 @@ import argparse
 from typing import TypedDict
 import http.server
 import threading
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import HTTPServer
 from time import sleep
 import webbrowser
 import traceback

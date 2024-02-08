@@ -1,6 +1,6 @@
 Project: sankey-graph-app
-Version: 0.0.27
-Branch: 34-replace-date-fn-lib-with-dayjs
-Commit: 376513a
-Fixed: 2024.02.08 17:49 +0700
-Built: 2024.02.08 17:52 +0700
+Version: 0.0.28
+Branch: 33-update-all-docs
+Commit: ccf3dd7
+Fixed: 2024.02.08 18:48 +0700
+Built: 2024.02.08 18:52 +0700
